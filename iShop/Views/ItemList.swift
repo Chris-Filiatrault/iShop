@@ -64,15 +64,17 @@ struct ItemList: View {
                HStack {
                   if globalVariables.catalogueShown == false {
                      
+                     EditButton()
+                     
                      // Remove ticked off items button
-                     Button(action: {
-                        removeTickedItemsFromList(listOrigin: self.thisList)
-                     }) {
-                        Image(systemName: "checkmark")
-                           .imageScale(.large)
-                           .foregroundColor(Color("navBarFont"))
-                           .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 5))
-                     }.padding(.vertical, 10)
+//                     Button(action: {
+//                        removeTickedItemsFromList(listOrigin: self.thisList)
+//                     }) {
+//                        Image(systemName: "checkmark")
+//                           .imageScale(.large)
+//                           .foregroundColor(Color("navBarFont"))
+//                           .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 5))
+//                     }.padding(.vertical, 10)
                      
                      // More options button
                      Button(action: {
@@ -119,20 +121,7 @@ struct ItemList: View {
                   }
             })
          
-         
-         //            // ===List of items without categories===
-         //            if globalVariables.catalogueShown == false {
-         //
-         //               List {
-         //                  ForEach(fetchRequest.wrappedValue, id: \.self) { item in
-         //                     ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
-         //                     }
-         //                        //   .onDelete(perform: deleteSwipedItem)
-         //                        .listRowBackground(Color(.white))
-         //                  }
-         //                  .background(Color("listBackground"))
-         //
-         //            }
+
          
          // ===List of items with categories===
          if globalVariables.catalogueShown == false {

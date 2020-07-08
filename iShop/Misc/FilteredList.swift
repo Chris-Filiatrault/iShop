@@ -24,25 +24,25 @@
 //}
 
 
-
-import SwiftUI
-
-struct FilteredList: View {
-   
-   
-   var fetchRequest: FetchRequest<Item>
-   
-   init(filter: String) {
-      fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [], predicate: NSPredicate(format: "name CONTAINS %@", filter))
-   }
-   
-   var body: some View {
-
-      List {
-         ForEach(fetchRequest.wrappedValue, id: \.self) { item in
-            Text("\(item.name ?? "Unknown item")")
-         }
-      }
-      
-   }
-}
+//
+//import SwiftUI
+//
+//struct FilteredList: View {
+//   
+//   
+//   var fetchRequest: FetchRequest<Item>
+//   
+//   init(filter: String) {
+//      fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [], predicate: NSPredicate(format: "name CONTAINS %@", filter))
+//   }
+//   
+//   var body: some View {
+//
+//      List {
+//         ForEach(fetchRequest.wrappedValue, id: \.self) { item in
+//            Text("\(item.name ?? "Unknown item")")
+//         }
+//      }
+//      
+//   }
+//}

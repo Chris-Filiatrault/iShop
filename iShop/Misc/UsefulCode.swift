@@ -682,3 +682,21 @@
 //      print("Could not fetch. \(error), \(error.userInfo)")
 //   }
 //}
+
+
+
+
+
+//            // ===List of items without categories===
+//            if globalVariables.catalogueShown == false {
+//
+//               List {
+//                  ForEach(fetchRequest.wrappedValue, id: \.self) { item in
+//                     ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
+//                     }
+//                        //   .onDelete(perform: deleteSwipedItem)
+//                        .listRowBackground(Color(.white))
+//                  }
+//                  .background(Color("listBackground"))
+//
+//            }

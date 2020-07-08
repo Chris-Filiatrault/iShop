@@ -50,29 +50,29 @@ struct ItemRow: View {
             }
          }
          
-         HStack {
-            
-            
-            Button(action: {
-               incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-               self.thisItemQuantity += 1
-            }) {
-               Image(systemName: "plus")
-                  .foregroundColor(.black)
-                  .imageScale(.large)
-            }
-            
-            Button(action: {
-               if self.thisItemQuantity > 1 {
-               self.thisItemQuantity -= 1
-               decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-               }
-            }) {
-               Image(systemName: "minus")
-                  .foregroundColor(.black)
-                  .imageScale(.large)
-            }
-         }
+//         HStack {
+//            
+//            
+//            Button(action: {
+//               incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+//               self.thisItemQuantity += 1
+//            }) {
+//               Image(systemName: "plus")
+//                  .foregroundColor(.black)
+//                  .imageScale(.large)
+//            }
+//            
+//            Button(action: {
+//               if self.thisItemQuantity > 1 {
+//               self.thisItemQuantity -= 1
+//               decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+//               }
+//            }) {
+//               Image(systemName: "minus")
+//                  .foregroundColor(.black)
+//                  .imageScale(.large)
+//            }
+//         }
          
       }
       

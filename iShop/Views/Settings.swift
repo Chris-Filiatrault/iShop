@@ -14,8 +14,6 @@ struct Settings: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
-   
-   
    var body: some View {
       VStack {
          NavigationView {
