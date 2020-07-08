@@ -41,6 +41,8 @@
 		6D0C5B6D24B1490C000842C2 /* Category+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B6724B1490B000842C2 /* Category+CoreDataClass.swift */; };
 		6D0C5B6E24B1490C000842C2 /* ListOfItems+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B6824B1490B000842C2 /* ListOfItems+CoreDataProperties.swift */; };
 		6D0C5B6F24B1490C000842C2 /* Category+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B6924B1490B000842C2 /* Category+CoreDataProperties.swift */; };
+		6DF5A8D824B3ECEB00AFF2BC /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF5A8D724B3ECEA00AFF2BC /* IAPManager.swift */; };
+		6DFAE5D224B5C07D005E8E6B /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DFAE5D124B5C07D005E8E6B /* UserDefaults.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +103,8 @@
 		6D0C5B6724B1490B000842C2 /* Category+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Category+CoreDataClass.swift"; sourceTree = "<group>"; };
 		6D0C5B6824B1490B000842C2 /* ListOfItems+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ListOfItems+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		6D0C5B6924B1490B000842C2 /* Category+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Category+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		6DF5A8D724B3ECEA00AFF2BC /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		6DFAE5D124B5C07D005E8E6B /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +201,8 @@
 				6D0C5B2524B147E5000842C2 /* Functions.swift */,
 				6D0C5B2624B147E5000842C2 /* Extensions.swift */,
 				6D0C5B2724B147E5000842C2 /* Globals.swift */,
+				6DFAE5D124B5C07D005E8E6B /* UserDefaults.swift */,
+				6DF5A8D724B3ECEA00AFF2BC /* IAPManager.swift */,
 				6D0C5B2824B147E5000842C2 /* AdaptsToSk.swift */,
 				6D0C5B2924B147E5000842C2 /* HostingController.swift */,
 				6D0C5B2A24B147E5000842C2 /* NavigationConfigurator.swift */,
@@ -382,8 +388,10 @@
 				6D0C5B6E24B1490C000842C2 /* ListOfItems+CoreDataProperties.swift in Sources */,
 				6D0C5B5B24B14811000842C2 /* ItemRow.swift in Sources */,
 				6D0C5B3A24B147EC000842C2 /* ContentView.swift in Sources */,
+				6DFAE5D224B5C07D005E8E6B /* UserDefaults.swift in Sources */,
 				6D0C5B3924B147EC000842C2 /* SwiftUIView.swift in Sources */,
 				6D0C5B3824B147EC000842C2 /* FilteredList.swift in Sources */,
+				6DF5A8D824B3ECEB00AFF2BC /* IAPManager.swift in Sources */,
 				6D0C5B6F24B1490C000842C2 /* Category+CoreDataProperties.swift in Sources */,
 				6D0C5B3024B147E5000842C2 /* NavigationConfigurator.swift in Sources */,
 				6D0C5B2B24B147E5000842C2 /* Functions.swift in Sources */,

@@ -13,6 +13,7 @@ struct ItemList: View {
    
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
    var fetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
@@ -40,12 +41,11 @@ struct ItemList: View {
       VStack(spacing: 0) {
          
          // ===Enter item textfield===
-         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+         TextField(globalVariables.catalogueShown == false ? "Add item" : "Lookup item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
             self.globalVariables.catalogueShown = true
          }, onCommit: {
             if self.globalVariables.itemInTextfield != "" {
                addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-               
                self.globalVariables.itemInTextfield = ""
             }
             self.globalVariables.itemInTextfield = ""
@@ -54,17 +54,15 @@ struct ItemList: View {
             .background(Color(.white))
             .padding(20)
             .padding(.vertical, 2)
+            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
             
             
             // ===Navigation bar===
-            .navigationBarTitle(thisList.wrappedName)
-            
-            
+//            .navigationBarTitle(thisList.wrappedName)
+            .navigationBarTitle(globalVariables.catalogueShown ? "Item history" : thisList.wrappedName)
             .navigationBarItems(trailing:
                HStack {
-                  
                   if globalVariables.catalogueShown == false {
-                     
                      
                      // Remove ticked off items button
                      Button(action: {
@@ -76,8 +74,7 @@ struct ItemList: View {
                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 5))
                      }.padding(.vertical, 10)
                      
-                     
-                     // More options
+                     // More options button
                      Button(action: {
                         self.showMoreOptions.toggle()
                      }) {
@@ -91,8 +88,7 @@ struct ItemList: View {
                      }
                   }
                      
-                     
-                     // Done button
+                  // Done button
                   else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count == 0 {
                      Button(action: {
                         withAnimation {
@@ -106,7 +102,7 @@ struct ItemList: View {
                      }
                   }
                      
-                     // Add button
+                  // Add button
                   else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count > 0 {
                      Button(action: {
                         UIApplication.shared.endEditing()
@@ -121,8 +117,6 @@ struct ItemList: View {
                            .foregroundColor(Color("navBarFont"))
                      }
                   }
-                  
-                  
             })
          
          
@@ -140,8 +134,6 @@ struct ItemList: View {
          //
          //            }
          
-         
-         
          // ===List of items with categories===
          if globalVariables.catalogueShown == false {
             
@@ -156,14 +148,11 @@ struct ItemList: View {
             }
          }
             
-            
-            
          // ===Catalogue===
          else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
             
          }
-         //.resignKeyboardOnDragGesture()
       }
       .background(Color("listBackground"))
       .modifier(AdaptsToSoftwareKeyboard())
@@ -175,7 +164,6 @@ struct ItemList: View {
       .onAppear() {
          self.globalVariables.catalogueShown = false
       }
-      
       
       
    }// End of body

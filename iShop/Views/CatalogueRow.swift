@@ -17,13 +17,14 @@ struct CatalogueRow: View {
    @State var removeItemAlert: Bool = false
    
    var body: some View {
+      
       Button(action: {
          
          if self.catalogueItem.addedToAList == true {
             self.removeItemAlert.toggle()
          }
-         
-         
+            
+            
          else if self.catalogueItem.addedToAList == false {
             self.catalogueItem.addedToAList = true
             //toggleCatalogueItem(item: self.catalogueItem, thisList: self.thisList)
@@ -41,7 +42,7 @@ struct CatalogueRow: View {
             Image(systemName: catalogueItem.addedToAList ? "plus.circle" : "plus.circle.fill")
                .imageScale(.medium)
                .foregroundColor(catalogueItem.addedToAList ? .clear : Color("tickedOffItemBox"))
-               
+            
             
             VStack {
                
@@ -59,19 +60,18 @@ struct CatalogueRow: View {
          }
             
          .alert(isPresented: $removeItemAlert) {
-            Alert(title: Text("Remove \n\"\(catalogueItem.wrappedName)\" from \"\(thisList.wrappedName)\"?"),
-                  primaryButton: .cancel(Text("Cancel")){
-                     print("Cancel item pressed")
-               }, secondaryButton:
+            Alert(title:
+               Text("Remove \n\"\(catalogueItem.wrappedName)\" from \"\(thisList.wrappedName)\"?"),
+                  primaryButton:
+               .default(Text("Cancel")),
+                  secondaryButton:
                .default(Text("Remove")) {
-                  
                   self.catalogueItem.addedToAList = false
                   self.catalogueItem.quantity = 1
-                  
+                
                   if self.catalogueItem.markedOff == true {
                      self.catalogueItem.markedOff = false
                   }
-                  
                   removeItemFromWithinCatalogue(item: self.catalogueItem, thisList: self.thisList)
                   self.globalVariables.itemInTextfield = ""
                   self.globalVariables.catalogueShown = true

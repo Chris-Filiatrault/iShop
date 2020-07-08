@@ -75,17 +75,11 @@ struct Home: View {
                   Button(action: {
                      self.showSettings = true
                   }) {
-                     
-                     //                     Rectangle()
-                     //                        .frame(width: 30, height: 20)
-                     //                        .hidden()
-                     
                      Image(systemName: "gear")
                         .imageScale(.large)
                         .padding()
                         .foregroundColor(Color("navBarFont"))
                         .offset(x: -5)
-                     
                   }
                   .sheet(isPresented: self.$showSettings){
                      Settings(showSettingsBinding: self.$showSettings)
@@ -98,15 +92,11 @@ struct Home: View {
                      self.showAddList = true
                      
                   }) {
-                     
-                     
                      Image(systemName: "plus")
                         .imageScale(.large)
                         .padding()
                         .foregroundColor(Color("navBarFont"))
                         .offset(x: 5)
-                     
-                     
                   }.sheet(isPresented: $showAddList) {
                      AddList(showingAddListBinding: self.$showAddList)
                   }
@@ -116,19 +106,15 @@ struct Home: View {
             .accentColor(Color("navBarFont"))
             .navigationViewStyle(StackNavigationViewStyle())
          
-         
       }
       
    } // End of body
    
    
    
-   
    // ========================================
    // ========== APP INITIALISATION ==========
    // ========================================
-   
-   
    
    init() {
       

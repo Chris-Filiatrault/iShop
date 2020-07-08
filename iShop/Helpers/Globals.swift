@@ -24,7 +24,28 @@ class GlobalVariableClass: ObservableObject {
 //
    
    // === SETTINGS ===
-   @Published var disableAutoCorrect: Bool = false
+//   @Published var disableAutoCorrect: Bool = false
    
 }
+
+
+//
+//import SwiftUI
+//
+//struct ContentView1: View {
+//    @ObservedObject var userDefaultsManager = UserDefaultsManager()
+//
+//    var body: some View {
+//        VStack {
+//            Toggle(isOn: self.$userDefaultsManager.firstToggle) {
+//                Text("First Toggle")
+//            }
+//
+//            Toggle(isOn: self.$userDefaultsManager.secondToggle) {
+//                Text("Second Toggle")
+//            }
+//        }
+//    }
+//}
+
 

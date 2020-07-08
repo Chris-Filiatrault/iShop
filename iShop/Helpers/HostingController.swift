@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// For setting the status bar to light
 class HostingController<Home>: UIHostingController<Home> where Home : View {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent

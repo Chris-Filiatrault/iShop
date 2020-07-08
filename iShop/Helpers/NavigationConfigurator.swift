@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+// For changing nav bar colours
 struct NavigationConfigurator: UIViewControllerRepresentable {
     var configure: (UINavigationController) -> Void = { _ in }
 
