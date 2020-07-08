@@ -17,35 +17,6 @@ class GlobalVariableClass: ObservableObject {
    @Published var itemInTextfield: String = ""
    @Published var catalogueShown: Bool = false
    
-   
-//   @FetchRequest(entity: Category.entity(), sortDescriptors: [
-//      NSSortDescriptor(keyPath: \Category.name, ascending: true)
-//   ]) var categoriesFromFetchRequest: FetchedResults<Category>
-//
-   
-   // === SETTINGS ===
-//   @Published var disableAutoCorrect: Bool = false
-   
+
 }
-
-
-//
-//import SwiftUI
-//
-//struct ContentView1: View {
-//    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-//
-//    var body: some View {
-//        VStack {
-//            Toggle(isOn: self.$userDefaultsManager.firstToggle) {
-//                Text("First Toggle")
-//            }
-//
-//            Toggle(isOn: self.$userDefaultsManager.secondToggle) {
-//                Text("Second Toggle")
-//            }
-//        }
-//    }
-//}
-
 

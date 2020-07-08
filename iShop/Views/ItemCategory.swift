@@ -55,7 +55,6 @@ struct ItemCategory: View {
               .multilineTextAlignment(.leading)
             }
          }
-  
            
          ForEach(fetchRequest.wrappedValue, id: \.self) { item in
             ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)

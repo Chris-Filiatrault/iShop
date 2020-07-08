@@ -65,16 +65,7 @@ struct ItemList: View {
                   if globalVariables.catalogueShown == false {
                      
                      EditButton()
-                     
-                     // Remove ticked off items button
-//                     Button(action: {
-//                        removeTickedItemsFromList(listOrigin: self.thisList)
-//                     }) {
-//                        Image(systemName: "checkmark")
-//                           .imageScale(.large)
-//                           .foregroundColor(Color("navBarFont"))
-//                           .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 5))
-//                     }.padding(.vertical, 10)
+                        .padding()
                      
                      // More options button
                      Button(action: {
@@ -120,23 +111,34 @@ struct ItemList: View {
                      }
                   }
             })
-         
+
+
+//                     // ===List of items without categories===
+//                     if globalVariables.catalogueShown == false {
+//
+//                        List {
+//                           ForEach(fetchRequest.wrappedValue, id: \.self) { item in
+//                              ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
+//                              }
+//                                 .listRowBackground(Color(.white))
+//                           }
+//                           .background(Color("listBackground"))
+//                     }
 
          
          // ===List of items with categories===
          if globalVariables.catalogueShown == false {
-            
             ScrollView {
                VStack(alignment: .leading, spacing: 0) {
                   ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
+
                      ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
                         .background(Color("listBackground"))
-                     
                   }
                }
             }
          }
-            
+         
          // ===Catalogue===
          else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
@@ -155,6 +157,8 @@ struct ItemList: View {
       }
       
       
+      
    }// End of body
+   
 }
 
