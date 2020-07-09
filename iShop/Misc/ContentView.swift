@@ -90,3 +90,31 @@
 //}
 //
 //
+
+
+
+import SwiftUI
+
+struct ContentView: View {
+
+    let topTier:[String] = ["Apple", "Banana", "Cherry"]
+    let nextTier:[String] = ["Abalone", "Brie", "Cheddar"]
+
+
+    var body: some View {
+        List {
+
+            ForEach (topTier.indices, id: \.self) { a in
+                Group {
+                    Text(self.topTier[a])
+
+                    ForEach (self.nextTier.indices, id: \.self) { b in
+
+                        Text(self.nextTier[b]).padding(.leading, 20)
+
+                    }
+                }
+            }
+        }
+    }
+}

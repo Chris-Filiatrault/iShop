@@ -584,3 +584,13 @@ func userHasNoLists() -> Bool {
 
 
 
+
+
+
+
+
+func swipeDeleteTestFunction(at offsets: IndexSet) {
+   print("Deleted")
+}
+
+

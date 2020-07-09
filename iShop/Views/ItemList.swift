@@ -30,6 +30,14 @@ struct ItemList: View {
       fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: compoundPredicate)
       
+      
+      
+      // Need predicate to ensure the category has items
+      //         let originPredicate = NSPredicate(format: "origin = %@", thisList)
+      //         let inListPredicate = NSPredicate(format: "addedToAList == true")
+      //         let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
+      //
+      //
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ])
       
@@ -58,14 +66,10 @@ struct ItemList: View {
             
             
             // ===Navigation bar===
-//            .navigationBarTitle(thisList.wrappedName)
-            .navigationBarTitle(globalVariables.catalogueShown ? "Item history" : thisList.wrappedName)
+            .navigationBarTitle(globalVariables.catalogueShown ? "Catalogue" : thisList.wrappedName)
             .navigationBarItems(trailing:
                HStack {
                   if globalVariables.catalogueShown == false {
-                     
-                     EditButton()
-                        .padding()
                      
                      // More options button
                      Button(action: {
@@ -76,12 +80,15 @@ struct ItemList: View {
                            .foregroundColor(Color("navBarFont"))
                            .padding(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 5))
                      }.padding(.vertical, 10)
-                        .sheet(isPresented: self.$showMoreOptions){
+                        //                        .sheet(isPresented: self.$showMoreOptions){
+                        //                           MoreOptions()
+                        //                     }
+                        .sheet(isPresented: self.$showMoreOptions) {
                            MoreOptions()
                      }
                   }
                      
-                  // Done button
+                     // Done button
                   else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count == 0 {
                      Button(action: {
                         withAnimation {
@@ -95,7 +102,7 @@ struct ItemList: View {
                      }
                   }
                      
-                  // Add button
+                     // Add button
                   else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count > 0 {
                      Button(action: {
                         UIApplication.shared.endEditing()
@@ -112,34 +119,18 @@ struct ItemList: View {
                   }
             })
 
-
-//                     // ===List of items without categories===
-//                     if globalVariables.catalogueShown == false {
-//
-//                        List {
-//                           ForEach(fetchRequest.wrappedValue, id: \.self) { item in
-//                              ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
-//                              }
-//                                 .listRowBackground(Color(.white))
-//                           }
-//                           .background(Color("listBackground"))
-//                     }
-
          
-         // ===List of items with categories===
+         // ===List of items with categories using List===
          if globalVariables.catalogueShown == false {
-            ScrollView {
-               VStack(alignment: .leading, spacing: 0) {
-                  ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
-
-                     ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
-                        .background(Color("listBackground"))
-                  }
+            List {
+               ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
+                  ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
                }
             }
+            
          }
-         
-         // ===Catalogue===
+            
+            // ===Catalogue===
          else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
             
@@ -148,7 +139,7 @@ struct ItemList: View {
       .background(Color("listBackground"))
       .modifier(AdaptsToSoftwareKeyboard())
       .edgesIgnoringSafeArea(.horizontal)
-      
+         
       .onDisappear() {
          self.globalVariables.itemInTextfield = ""
       }
@@ -161,4 +152,6 @@ struct ItemList: View {
    }// End of body
    
 }
+
+
 

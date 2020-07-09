@@ -32,37 +32,29 @@ struct ItemCategory: View {
       let inListPredicate = NSPredicate(format: "addedToAList == true")
       let categoryPredicate = NSPredicate(format: "categoryOrigin = %@", thisCategory)
       let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, categoryPredicate])
-   
+      
       fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: compoundPredicate)
       
    }
    
    var body: some View {
-        VStack(alignment: .leading) {
-         
+      
+      Group {
          if thisCategoryHasItems {
-            ZStack(alignment: .leading) {
-              
-           Rectangle()
-              .foregroundColor(Color("navBarFont"))
             
-           Text(thisCategory.wrappedName)
-              .font(.headline)
-              .foregroundColor(Color("standardDarkBlue"))
-              .padding(.vertical, 5)
-               .padding(.horizontal)
-              .multilineTextAlignment(.leading)
-            }
+            Text(thisCategory.wrappedName)
+               .font(.headline)
+               .foregroundColor(Color("standardDarkBlue"))
+               .listRowBackground(Color("listBackground"))
+            
+            
+            ForEach(fetchRequest.wrappedValue, id: \.self) { item in
+               ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
+            }.onDelete(perform: swipeDeleteTestFunction)
          }
-           
-         ForEach(fetchRequest.wrappedValue, id: \.self) { item in
-            ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
-               .listRowBackground(Color("listRowBackground"))
-               .padding(.horizontal)
-         }
-           Divider().hidden()
-        }
-    }
+      }
+      
+   }
 }
 

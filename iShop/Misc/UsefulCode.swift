@@ -684,3 +684,45 @@
 //}
 
 
+
+   //            List {
+   //                ForEach (topTier.indices, id: \.self) { a in
+   //                    Group {
+   //                        Text(self.topTier[a])
+   //
+   //                        ForEach (self.nextTier.indices, id: \.self) { b in
+   //
+   //                            Text(self.nextTier[b]).padding(.leading, 20)
+   //
+   //                        }
+   //                    }
+   //                }
+   //            }
+   
+   
+   
+   //         // ===List of items with categories===
+   //         if globalVariables.catalogueShown == false {
+   //            ScrollView {
+   //               VStack(alignment: .leading, spacing: 0) {
+   //                  ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
+   //
+   //                     ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
+   //                        .background(Color("listBackground"))
+   //                  }
+   //               }
+   //            }
+   //         }
+
+
+//
+//                     // ===List of items without categories===
+//                     if globalVariables.catalogueShown == false {
+//                        List {
+//                           ForEach(fetchRequest.wrappedValue, id: \.self) { item in
+//                              ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
+//                              }.onDelete(perform: swipeDeleteTestFunction)
+//                                 .listRowBackground(Color(.white))
+//                           }
+//                           .background(Color("listBackground"))
+//                     }

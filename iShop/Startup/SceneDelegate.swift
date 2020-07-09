@@ -37,7 +37,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       let contentView = Home()
          .environment(\.managedObjectContext, context)
          .environmentObject(globalVariables)
-
+      
+      
+      //let contentView = ContentView()
+      //   .environment(\.managedObjectContext, context)
+      //   .environmentObject(globalVariables)
+      
+      
       // Use a UIHostingController as window root view controller.
       // Modified window.rootViewController = UIHostingController(rootView: contentView)
       // to

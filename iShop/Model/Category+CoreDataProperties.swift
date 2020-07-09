@@ -35,6 +35,10 @@ extension Category {
       }
    }
    
+   public var wrappedItemsInCategory: Set<Item> {
+      (itemsInCategory ?? []) as! Set<Item>
+   }
+   
    
    
    

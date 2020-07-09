@@ -14,6 +14,7 @@ struct ItemRow: View {
    var thisItem: Item
    @State var itemInListMarkedOff: Bool
    @State var thisItemQuantity: Int32
+   @State var showItemDetails: Bool = false
    
    var body: some View {
       
@@ -42,17 +43,38 @@ struct ItemRow: View {
                      Text("\(thisItem.wrappedName)")
                         .strikethrough(color: itemInListMarkedOff ? .gray : .clear)
                         .foregroundColor(itemInListMarkedOff ? .gray : .black)
-                        .font(itemInListMarkedOff ? .subheadline : .headline)
                         .multilineTextAlignment(.leading)
                   }
                 Spacer()
+                  
+                  Button(action: {
+                     self.showItemDetails.toggle()
+                  }) {
+                     Image(systemName: "square.and.pencil")
+                        .imageScale(.large)
+                        .foregroundColor(Color("blackWhiteFont"))
+                  }
+                  .sheet(isPresented: $showItemDetails) {
+                     ItemDetails()
+                  }
                }
             }
          }
          
+         
+      }
+      
+   }
+   
+}
+
+
+
+
+
 //         HStack {
-//            
-//            
+//
+//
 //            Button(action: {
 //               incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
 //               self.thisItemQuantity += 1
@@ -61,7 +83,7 @@ struct ItemRow: View {
 //                  .foregroundColor(.black)
 //                  .imageScale(.large)
 //            }
-//            
+//
 //            Button(action: {
 //               if self.thisItemQuantity > 1 {
 //               self.thisItemQuantity -= 1
@@ -73,18 +95,3 @@ struct ItemRow: View {
 //                  .imageScale(.large)
 //            }
 //         }
-         
-      }
-      
-   }
-   
-}
-
-
-// toggle function, for ticking off items
-//   func toggle(){
-//      markedOff = !markedOff
-//
-//   }
-
-
