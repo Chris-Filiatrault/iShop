@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct Settings: View {
-   @State var model = ToggleModel()
    @Binding var showSettingsBinding: Bool
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
@@ -17,16 +16,16 @@ struct Settings: View {
    var body: some View {
       VStack {
          NavigationView {
+            
             Form {
                Section(header: Text("General")) {
-                  
                   Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
                      Text("Disable autocorrect")
                   }
-                  
                }
             }.padding(.top, 15)
-               
+                  
+               // === Nav bar ===
                .navigationBarTitle("Settings", displayMode: .inline)
                .navigationBarItems(trailing:
                   Button(action: {
@@ -51,34 +50,6 @@ struct Settings: View {
          }
          
       } // End of VStack
-   }
-}
-
-
-
-struct ToggleModel {
-   @EnvironmentObject var globalVariables: GlobalVariableClass
-   var isWifiOpen: Bool = true {
-      willSet {
-         
-         //         self.globalVariables.disableAutoCorrect.toggle()
-         
-         
-      }
-   }
-}
-
-struct ToggleDemo: View {
-   @State var model = ToggleModel()
-   
-   var body: some View {
-      Toggle(isOn: $model.isWifiOpen) {
-         HStack {
-            Image(systemName: "wifi")
-            Text("wifi")
-         }
-      }.accentColor(.pink)
-         .padding()
    }
 }
 

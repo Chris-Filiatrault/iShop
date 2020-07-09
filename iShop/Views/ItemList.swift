@@ -60,8 +60,8 @@ struct ItemList: View {
          })
             .textFieldStyle(RoundedBorderTextFieldStyle())
             .background(Color(.white))
-            .padding(20)
-            .padding(.vertical, 2)
+            .padding(15)
+            .padding(.top, 10)
             .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
             
             
@@ -120,7 +120,7 @@ struct ItemList: View {
             })
 
          
-         // ===List of items with categories using List===
+         // ===List of items with categories===
          if globalVariables.catalogueShown == false {
             List {
                ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in

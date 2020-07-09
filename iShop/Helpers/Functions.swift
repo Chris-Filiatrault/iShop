@@ -174,40 +174,47 @@ func removeItemFromWithinCatalogue(item: Item, thisList: ListOfItems) {
 
 
 
-//// ===RENAME ITEM===
-//// REVISE THIS TO ENSURE ALL ITEMS OF THE SAME NAME ARE UPDATED IN ALL LISTS
-//func renameItem(currentItem: String, itemNewValue: String) {
-//   print("currentItem = \(currentItem) --- changing name to = \(itemNewValue)")
-//
-//   guard let appDelegate =
-//      UIApplication.shared.delegate as? AppDelegate else {
-//         return
-//   }
-//
-//   let managedContext =
-//      appDelegate.persistentContainer.viewContext
-//
-//   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-//   fetchRequest.predicate = NSPredicate(format: "name = %@", currentItem)
-//
-//   do {
-//      let fetchReturn = try managedContext.fetch(fetchRequest)
-//
+// ===RENAME ITEM===
+// REVISE THIS TO ENSURE ALL ITEMS OF THE SAME NAME ARE UPDATED IN ALL LISTS
+func renameItem(currentName: String, newName: String) {
+   print("currentItem = \(currentName) --- changing name to = \(newName)")
+
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+
+   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+//   fetchRequest.predicate = NSPredicate(format: "name = %@", currentName)
+
+   do {
+      let items = try managedContext.fetch(fetchRequest) as! [Item]
+
+      if items != [] {
+         for item in items {
+            if item.wrappedName == currentName {
+               item.name = newName
+            }
+         }
+      }
+      
 //      let objectUpdate = fetchReturn[0] as! NSManagedObject
 //
-//      objectUpdate.setValue(itemNewValue, forKey: "name")
-//
-//      do {
-//         try managedContext.save()
-//         print("updated successfully")
-//      } catch let error as NSError {
-//         print("Could not save. \(error), \(error.userInfo)")
-//      }
-//
-//   } catch let error as NSError {
-//      print("Could not fetch. \(error), \(error.userInfo)")
-//   }
-//}
+//      objectUpdate.setValue(newName, forKey: "name")
+
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not save. \(error), \(error.userInfo)")
+      }
+
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
 
 
 func incrementItemQuantity(thisItem: Item, thisList: ListOfItems) {

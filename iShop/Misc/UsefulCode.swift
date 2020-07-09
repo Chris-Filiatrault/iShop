@@ -726,3 +726,19 @@
 //                           }
 //                           .background(Color("listBackground"))
 //                     }
+
+
+
+//         for offset in offsets {
+//
+//            // get item to be deleted
+//            let thisItem = thisListFetchReturn[offset] as! Item
+//
+//            // delete that item and all items with the same name
+//            for item in items {
+//               if item.wrappedName == thisItem.wrappedName {
+//                  managedContext.delete(item)
+//               }
+//            }
+//
+//         }

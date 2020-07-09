@@ -7,6 +7,7 @@
 //
 // 
 import SwiftUI
+import CoreData
 
 struct ItemCategory: View {
    var thisList: ListOfItems
@@ -45,16 +46,46 @@ struct ItemCategory: View {
             
             Text(thisCategory.wrappedName)
                .font(.headline)
-               .foregroundColor(Color("standardDarkBlue"))
+//               .foregroundColor(Color("standardDarkBlue"))
                .listRowBackground(Color("listBackground"))
             
             
             ForEach(fetchRequest.wrappedValue, id: \.self) { item in
                ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
-            }.onDelete(perform: swipeDeleteTestFunction)
+            }.onDelete(perform: removeSwipedItem)
          }
       }
       
    }
+   
+   // REMOVE (swiped) ITEM
+   func removeSwipedItem(at offsets: IndexSet) {
+      
+      guard let appDelegate =
+         UIApplication.shared.delegate as? AppDelegate else {
+            return
+      }
+      
+      let managedContext =
+         appDelegate.persistentContainer.viewContext
+      
+      let thisListsAndCategoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+      thisListsAndCategoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      ]
+      thisListsAndCategoryFetchRequest.predicate = NSPredicate(format: "origin = %@", thisList)
+      thisListsAndCategoryFetchRequest.predicate = NSPredicate(format: "categoryOrigin = %@", thisCategory)
+      
+      for offset in offsets {
+         let thisItem = fetchRequest.wrappedValue[offset]
+         thisItem.addedToAList = false
+         thisItem.markedOff = false
+      }
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not delete. \(error), \(error.userInfo)")
+      }
+   } // End of function
+   
 }
 
