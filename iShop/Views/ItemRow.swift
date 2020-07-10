@@ -16,7 +16,6 @@ struct ItemRow: View {
    var thisList: ListOfItems
    var thisItem: Item
    @State var itemInListMarkedOff: Bool
-   @State var thisItemQuantity: Int32
    @State var showItemDetails: Bool = false
    
    var body: some View {
@@ -56,9 +55,16 @@ struct ItemRow: View {
                      Image(systemName: "square.and.pencil")
                         .imageScale(.large)
                         .foregroundColor(Color("blackWhiteFont"))
+                        .padding(5)
                   }
                   .sheet(isPresented: $showItemDetails) {
-                     ItemDetails(thisItem: self.thisItem, showItemDetails: self.$showItemDetails, itemName: self.thisItem.wrappedName, oldItemCategory: self.thisItem.categoryOrigin!, newItemCategory: self.thisItem.categoryOrigin!)
+                     ItemDetails(thisItem: self.thisItem,
+                                 showItemDetails: self.$showItemDetails,
+                                 itemName: self.thisItem.wrappedName,
+                                 oldItemCategory: self.thisItem.categoryOrigin!,
+                                 newItemCategory: self.thisItem.categoryOrigin!,
+                                 thisItemQuantity: self.thisItem.quantity,
+                                 thisList: self.thisList)
                         .environment(\.managedObjectContext, self.context)
                   }
                }
@@ -74,28 +80,3 @@ struct ItemRow: View {
 
 
 
-
-
-//         HStack {
-//
-//
-//            Button(action: {
-//               incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-//               self.thisItemQuantity += 1
-//            }) {
-//               Image(systemName: "plus")
-//                  .foregroundColor(.black)
-//                  .imageScale(.large)
-//            }
-//
-//            Button(action: {
-//               if self.thisItemQuantity > 1 {
-//               self.thisItemQuantity -= 1
-//               decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-//               }
-//            }) {
-//               Image(systemName: "minus")
-//                  .foregroundColor(.black)
-//                  .imageScale(.large)
-//            }
-//         }

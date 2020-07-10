@@ -48,10 +48,11 @@ struct ItemCategory: View {
                .font(.headline)
 //               .foregroundColor(Color("standardDarkBlue"))
                .listRowBackground(Color("listBackground"))
+               .offset(y: 5)
             
             
             ForEach(fetchRequest.wrappedValue, id: \.self) { item in
-               ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff, thisItemQuantity: item.quantity)
+               ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff)
             }.onDelete(perform: removeSwipedItem)
          }
       }
