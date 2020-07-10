@@ -34,6 +34,7 @@
 
 
 // OLD
+import SwiftUI
 import Foundation
 import CoreData
 
@@ -74,7 +75,6 @@ extension Item {
    public var wrappedID: UUID {
       id ?? UUID()
    }
-   
    
 }
    

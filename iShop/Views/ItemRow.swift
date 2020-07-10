@@ -58,7 +58,7 @@ struct ItemRow: View {
                         .foregroundColor(Color("blackWhiteFont"))
                   }
                   .sheet(isPresented: $showItemDetails) {
-                     ItemDetails(thisItem: self.thisItem, showItemDetails: self.$showItemDetails, itemName: self.thisItem.wrappedName, itemCategory: self.thisItem.categoryOrigin!)
+                     ItemDetails(thisItem: self.thisItem, showItemDetails: self.$showItemDetails, itemName: self.thisItem.wrappedName, oldItemCategory: self.thisItem.categoryOrigin!, newItemCategory: self.thisItem.categoryOrigin!)
                         .environment(\.managedObjectContext, self.context)
                   }
                }

@@ -177,7 +177,6 @@ func removeItemFromWithinCatalogue(item: Item, thisList: ListOfItems) {
 // ===RENAME ITEM===
 // REVISE THIS TO ENSURE ALL ITEMS OF THE SAME NAME ARE UPDATED IN ALL LISTS
 func renameItem(currentName: String, newName: String) {
-   print("currentItem = \(currentName) --- changing name to = \(newName)")
 
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
@@ -217,6 +216,7 @@ func renameItem(currentName: String, newName: String) {
 }
 
 
+// === Increment Quantity ===
 func incrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -536,6 +536,43 @@ func listNameIsUnique(name: String) -> Bool {
 // =====================================================
 // =============== Category functions ==================
 // =====================================================
+
+
+
+// ===CHANGE CATEGORY===
+func changeCategory(thisItem: Item, oldCategory: Category, newCategory: Category) {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   fetchRequest.sortDescriptors = [
+      NSSortDescriptor(keyPath: \Item.name, ascending: true)
+   ]
+   fetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
+   
+   do {
+      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      for item in items {
+         if items != [] {
+         item.categoryOrigin = newCategory
+         }
+      }
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not delete. \(error), \(error.userInfo)")
+      }
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
+
 
 
 

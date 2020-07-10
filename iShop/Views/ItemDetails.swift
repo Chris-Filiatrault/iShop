@@ -19,173 +19,75 @@ struct ItemDetails: View {
    var thisItem: Item
    @Binding var showItemDetails: Bool
    @State var itemName: String
-   @State var itemCategory: Category
+   @State var oldItemCategory: Category
+   @State var newItemCategory: Category
+   
    
    var body: some View {
       
       NavigationView {
          GeometryReader { geometry in
-         VStack(alignment: .leading) {
-            
-            Form {
-               Section(header: Text("Name")) {
-                  TextField("", text: self.$itemName, onCommit: {
+            VStack(alignment: .leading) {
+               
+               Form {
+                  Section(header: Text("Name")) {
+                     TextField("Enter name", text: self.$itemName, onCommit: {
+                        if self.itemName != "" {
+                           renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
+                        }
+                     })
+                        .cornerRadius(5)
+                        .frame(width: geometry.size.width * 0.9)
+                  }
+                  
+                  Section(header: Text("")) {
+                     Picker(selection: self.$newItemCategory, label: Text("Category")) {
+                        ForEach(self.categories, id: \.self) { category in
+                           Text(category.wrappedName)
+                        }
+                        .onReceive([self.newItemCategory].publisher.first()) { (category) in
+                           changeCategory(thisItem: self.thisItem,
+                                          oldCategory: self.thisItem.categoryOrigin!,
+                                          newCategory: self.newItemCategory)
+                        }
+                     }
+                  }
+               }
+            }
+               
+               // === Nav bar ===
+               .navigationBarTitle("Details", displayMode: .inline)
+               .navigationBarItems(trailing:
+                  Button(action: {
+                     self.showItemDetails.toggle()
                      if self.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
                      }
-                  })
-                  .cornerRadius(5)
-                  .frame(width: geometry.size.width * 0.9)
-               }
-               
-               Section(header: Text("Category")) {
-                  Picker(selection: self.$itemCategory, label: Text("Category")) {
-                     ForEach(self.categories, id: \.self) { category in
-                        Text(category.wrappedName)
+                     
+                     /* Changing an item category happens in two parts:
+                     a) onReceive() above changes the categoryOrigin
+                     b) If a change was made to the item category, all items with the same name are removed from the old category's item array and added to the new one */
+                     if self.oldItemCategory != self.newItemCategory {
+                        for item in self.oldItemCategory.itemsInCategoryArray {
+                           if item.wrappedName == self.thisItem.wrappedName {
+                              self.oldItemCategory.removeFromItemsInCategory(item)
+                           }
+                        }
+                        for item in self.newItemCategory.itemsInCategoryArray {
+                           if item.wrappedName == self.thisItem.wrappedName {
+                              self.newItemCategory.addToItemsInCategory(item)
+                           }
+                        }
                      }
-                  }.pickerStyle(WheelPickerStyle())
-               }
-            }
+                     
+                  }) {
+                     Text("Done")
+                        .font(.headline)
+                        .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
+               })
          }
-         .padding()
-            
-         // === Nav bar ===
-         .navigationBarTitle("Details", displayMode: .large)
-         .navigationBarItems(trailing:
-            Button(action: {
-               self.showItemDetails.toggle()
-               if self.itemName != "" {
-                  renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
-               }
-            }) {
-               Text("Done")
-                  .font(.headline)
-                  .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
-         })
-      }
       }
    }
 }
 
-
-//
-//
-////
-////  EditNameView.swift
-////  Simple List
-////
-////  Created by Chris Filiatrault on 13/6/20.
-////  Copyright © 2020 Chris Filiatrault. All rights reserved.
-//
-//
-//import SwiftUI
-//
-//struct EditNameView: View {
-//
-//   var thisItem: Item
-//   @State var newName: String
-//   @Binding var showEditNameView: Bool
-//   @Binding var isEditMode: EditMode
-//
-//   var body: some View {
-//
-//      NavigationView {
-//         GeometryReader { geometry in
-//            VStack {
-//                  Text("Rename ")
-//                     .font(.title)
-//
-//
-//               // ===Enter item textfield===
-//               TextField("Enter new name...", text: self.$newName, onCommit: {
-//                  if self.newName != "" {
-//                     editName(thisItem: self.thisItem, itemNewName: self.newName)
-//                     self.showEditNameView.toggle()
-//                     self.newName = ""
-//                  }
-//                  print(self.showEditNameView)
-//               })
-//                  .textFieldStyle(RoundedBorderTextFieldStyle())
-//                  .padding(5)
-//                  .cornerRadius(5)
-//                  .padding(.bottom, 10)
-//
-//
-//               // ===Buttons===
-//               HStack(alignment: .center) {
-//
-//                  // Cancel button
-//                  Button(action: {
-//                     self.showEditNameView.toggle()
-//                     print(self.showEditNameView)
-//                  }) {
-//                     Text("Cancel")
-//                        .bold()
-//                        .cornerRadius(20)
-//                        .font(.subheadline)
-//                        .frame(minWidth: 50)
-//                  }.contentShape(Rectangle())
-//
-//                  // Add button
-//                  Button(action: {
-//                     if self.newName != "" {
-//                        editName(thisItem: self.thisItem, itemNewName: self.newName)
-//                        self.newName = ""
-//                        self.showEditNameView.toggle()
-//                        print(self.showEditNameView)
-//                     }
-//                  }) {
-//
-//
-//                     Text("Done")
-//                        .bold()
-//                        .frame(minWidth: 50)
-//                        .font(.subheadline)
-//                        .padding(10)
-//                        .background(Color("blueButton"))
-//                        .foregroundColor(.white)
-//                        .cornerRadius(10)
-//                        .transition(.scale)
-//                        .edgesIgnoringSafeArea(.horizontal)
-//                  }
-//                  .contentShape(Rectangle())
-//                  .padding(.leading, 20)
-//               }
-//            }
-//            .padding(.bottom, geometry.size.height * 0.55)
-//            .padding()
-//            .onDisappear {
-//               withAnimation {
-//                  self.isEditMode = .inactive
-//                  self.showEditNameView = false
-//               }
-//            }
-//         }
-//
-//
-//         // === Nav bar items ===
-//         .navigationBarTitle("", displayMode: .inline)
-//         .navigationBarItems(leading:
-//            Button(action: {
-//               self.showEditNameView.toggle()
-//               print(self.showEditNameView)
-//            }) {
-//               Text("Cancel")
-//                  .padding(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 15))
-//            }
-//         )
-//
-//      }
-//      .environment(\.horizontalSizeClass, .compact)
-//   }
-//}
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
