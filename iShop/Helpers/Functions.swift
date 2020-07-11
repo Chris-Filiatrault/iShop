@@ -24,8 +24,6 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-  // let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in: managedContext)!
-   
    let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
    
    let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
@@ -36,17 +34,8 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    
    do {
       let lists = try managedContext.fetch(listFetchRequest) as! [ListOfItems]
-      //let items = try managedContext.fetch(itemFetchRequest) as! [Item]
       
-      print("Trying to fetch categories")
       let returnedCategories = try managedContext.fetch(categoryFetchRequest) as! [Category]
-      print("Fetch succeeded.\nNo. categories is: \(returnedCategories.count)")
-      
-//      for category in categories {
-//         if category.wrappedName == "Uncategorised" {
-//         let uncategorised = category
-//         }
-//      }
       
       // Unique item name --> create a new object of that name for every list
       if itemNameIsUnique(name: itemName.wrappedValue) {
@@ -65,9 +54,10 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             if returnedCategories != [] {
                let uncategorised = returnedCategories[0]
                print("Got \(uncategorised.wrappedName)")
-            // add to uncategorised category
-            uncategorised.addToItemsInCategory(newItem)
-            print("Added item to \(uncategorised.wrappedName) category in \(list.wrappedName)")
+               
+               // add to uncategorised category
+               uncategorised.addToItemsInCategory(newItem)
+               print("Added item to \(uncategorised.wrappedName) category in \(list.wrappedName)")
             }
             
             // Add a copy of the new item to the list in which it was added
@@ -76,10 +66,10 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             }
          }
       }
-      
          
-      // Existing item name --> add from current catalogue to the current list
-      // Or increase quantity by 1 if already in the list
+         
+         // Existing item name --> add from current catalogue to the current list
+         // Or increase quantity by 1 if already in the list
       else if !itemNameIsUnique(name: itemName.wrappedValue) {
          
          let originPredicate = NSPredicate(format: "origin = %@", listOrigin)
@@ -177,21 +167,21 @@ func removeItemFromWithinCatalogue(item: Item, thisList: ListOfItems) {
 // ===RENAME ITEM===
 // REVISE THIS TO ENSURE ALL ITEMS OF THE SAME NAME ARE UPDATED IN ALL LISTS
 func renameItem(currentName: String, newName: String) {
-
+   
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
          return
    }
-
+   
    let managedContext =
       appDelegate.persistentContainer.viewContext
-
+   
    let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-//   fetchRequest.predicate = NSPredicate(format: "name = %@", currentName)
-
+   //   fetchRequest.predicate = NSPredicate(format: "name = %@", currentName)
+   
    do {
       let items = try managedContext.fetch(fetchRequest) as! [Item]
-
+      
       if items != [] {
          for item in items {
             if item.wrappedName == currentName {
@@ -200,16 +190,12 @@ func renameItem(currentName: String, newName: String) {
          }
       }
       
-//      let objectUpdate = fetchReturn[0] as! NSManagedObject
-//
-//      objectUpdate.setValue(newName, forKey: "name")
-
       do {
          try managedContext.save()
       } catch let error as NSError {
          print("Could not save. \(error), \(error.userInfo)")
       }
-
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -269,6 +255,36 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
       print("Checked off successfully")
    } catch let error as NSError {
       print("Could not save checked off status. \(error), \(error.userInfo)")
+   }
+}
+
+
+
+
+// ===CHANGE LIST===
+func changeItemList(thisItem: Item, newList: ListOfItems) {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   for item in newList.itemArray {
+      if item.wrappedName == thisItem.wrappedName {
+         item.addedToAList = true
+         item.markedOff = thisItem.markedOff
+         item.quantity = thisItem.quantity
+      }
+   }
+   thisItem.addedToAList = false
+   thisItem.markedOff = false
+   thisItem.quantity = 1
+   
+   do {
+      try managedContext.save()
+   } catch let error as NSError {
+      print("Could not save. \(error), \(error.userInfo)")
    }
 }
 
@@ -400,18 +416,18 @@ func addList(stateVariable: Binding<String>) {
    
    let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in: managedContext)!
    let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
-
+   
    let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
    
    let newList = ListOfItems(entity: listEntity, insertInto: managedContext)
    newList.name = stateVariable.wrappedValue
    newList.id = UUID()
-
+   
    
    do {
       let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
       let items = itemFetchReturn as! [Item]
-            
+      
       var itemsToBeAdded: [Item] = []
       for item in items {
          if itemNameInListIsUnique(name: item.wrappedName, thisList: newList) {
@@ -540,7 +556,7 @@ func listNameIsUnique(name: String) -> Bool {
 
 
 // ===CHANGE CATEGORY===
-func changeCategory(thisItem: Item, oldCategory: Category, newCategory: Category) {
+func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Category) {
    
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
@@ -560,7 +576,7 @@ func changeCategory(thisItem: Item, oldCategory: Category, newCategory: Category
       let items = try managedContext.fetch(fetchRequest) as! [Item]
       for item in items {
          if items != [] {
-         item.categoryOrigin = newCategory
+            item.categoryOrigin = newCategory
          }
       }
       do {
@@ -573,7 +589,18 @@ func changeCategory(thisItem: Item, oldCategory: Category, newCategory: Category
    }
 }
 
-
+func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
+    for item in oldItemCategory.itemsInCategoryArray {
+       if item.wrappedName == thisItem.wrappedName {
+          oldItemCategory.removeFromItemsInCategory(item)
+       }
+    }
+    for item in newItemCategory.itemsInCategoryArray {
+       if item.wrappedName == thisItem.wrappedName {
+          newItemCategory.addToItemsInCategory(item)
+       }
+    }
+}
 
 
 

@@ -35,18 +35,13 @@ struct ItemRow: View {
                      .imageScale(.large)
                      .foregroundColor(itemInListMarkedOff ? .gray : .black)
                   
-                  if thisItem.quantity > 1 {
-                     Text("\(self.thisItem.quantity) x \(thisItem.wrappedName)")
-                        .foregroundColor(thisItem.markedOff ? .gray : .black)
-                        .font(thisItem.markedOff ? .subheadline : .headline)
-                        .multilineTextAlignment(.leading)
-                  }
-                  else {
-                     Text("\(thisItem.wrappedName)")
+                     Text(thisItem.quantity > 1 ?
+                        "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
+                        "\(thisItem.wrappedName)")
                         .strikethrough(color: itemInListMarkedOff ? .gray : .clear)
                         .foregroundColor(itemInListMarkedOff ? .gray : .black)
                         .multilineTextAlignment(.leading)
-                  }
+                  
                 Spacer()
                   
                   Button(action: {
@@ -64,6 +59,8 @@ struct ItemRow: View {
                                  oldItemCategory: self.thisItem.categoryOrigin!,
                                  newItemCategory: self.thisItem.categoryOrigin!,
                                  thisItemQuantity: self.thisItem.quantity,
+                                 oldList: self.thisItem.origin!,
+                                 newList: self.thisItem.origin!,
                                  thisList: self.thisList)
                         .environment(\.managedObjectContext, self.context)
                   }

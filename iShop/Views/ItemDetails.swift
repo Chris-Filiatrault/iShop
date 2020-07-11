@@ -16,12 +16,19 @@ struct ItemDetails: View {
       NSSortDescriptor(keyPath: \Category.name, ascending: true)
    ]) var categories: FetchedResults<Category>
    
+   @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
+      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+   ]) var lists: FetchedResults<ListOfItems>
+   
    var thisItem: Item
    @Binding var showItemDetails: Bool
    @State var itemName: String
    @State var oldItemCategory: Category
    @State var newItemCategory: Category
    @State var thisItemQuantity: Int32
+   @State var oldList: ListOfItems
+   @State var newList: ListOfItems
+   
    var thisList: ListOfItems
    
    
@@ -53,7 +60,7 @@ struct ItemDetails: View {
                            Text(category.wrappedName)
                         }
                         .onReceive([self.newItemCategory].publisher.first()) { (category) in
-                           changeCategory(thisItem: self.thisItem,
+                           changeCategory1(thisItem: self.thisItem,
                                           oldCategory: self.thisItem.categoryOrigin!,
                                           newCategory: self.newItemCategory)
                         }
@@ -90,6 +97,20 @@ struct ItemDetails: View {
                         .padding(.leading, 10)
                      }
                   }
+                  
+                  
+                  // List
+                  Section(header: Text("")) {
+                     Picker(selection: self.$newList, label: Text("List")) {
+                        ForEach(self.lists, id: \.self) { list in
+                           Text(list.wrappedName)
+                        }
+                           
+                        }
+                     }
+                  
+                  
+                  
                }
             }
             .padding()
@@ -98,25 +119,20 @@ struct ItemDetails: View {
                .navigationBarTitle("Details", displayMode: .large)
                .navigationBarItems(trailing:
                   Button(action: {
-                     self.showItemDetails.toggle()
+                     self.showItemDetails = false
                      if self.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
                      }
                      
                      /* Changing an item category happens in two parts:
                       a) onReceive() above changes the categoryOrigin
-                      b) If a change was made to the item category, all items with the same name are removed from the old category's item array and added to the new one */
+                      b) Below, if a change was made to the item category, all items with the same name are removed from the old category's item array and added to the new one */
                      if self.oldItemCategory != self.newItemCategory {
-                        for item in self.oldItemCategory.itemsInCategoryArray {
-                           if item.wrappedName == self.thisItem.wrappedName {
-                              self.oldItemCategory.removeFromItemsInCategory(item)
-                           }
-                        }
-                        for item in self.newItemCategory.itemsInCategoryArray {
-                           if item.wrappedName == self.thisItem.wrappedName {
-                              self.newItemCategory.addToItemsInCategory(item)
-                           }
-                        }
+                        changeCategory2(thisItem: self.thisItem, oldItemCategory: self.oldItemCategory, newItemCategory: self.newItemCategory)
+                     }
+                     
+                     if self.oldList != self.newList {
+                        changeItemList(thisItem: self.thisItem, newList: self.newList)
                      }
                      
                   }) {

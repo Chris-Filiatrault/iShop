@@ -30,17 +30,8 @@ struct ItemList: View {
       fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: compoundPredicate)
       
-      
-      
-      // Need predicate to ensure the category has items
-      //         let originPredicate = NSPredicate(format: "origin = %@", thisList)
-      //         let inListPredicate = NSPredicate(format: "addedToAList == true")
-      //         let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
-      //
-      //
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ])
-      
    }
    
    
@@ -126,7 +117,7 @@ struct ItemList: View {
                ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
                   ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
                }
-            }
+            }.padding(.bottom)
             
          }
             
@@ -139,7 +130,6 @@ struct ItemList: View {
       .background(Color("listBackground"))
       .modifier(AdaptsToSoftwareKeyboard())
       .edgesIgnoringSafeArea(.horizontal)
-         
       .onDisappear() {
          self.globalVariables.itemInTextfield = ""
       }
