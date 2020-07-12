@@ -46,9 +46,8 @@ struct ItemCategory: View {
             
             Text(thisCategory.wrappedName)
                .font(.headline)
-//               .foregroundColor(Color("standardDarkBlue"))
                .listRowBackground(Color("listBackground"))
-               .offset(y: 5)
+               .offset(y: 7)
             
             
             ForEach(fetchRequest.wrappedValue, id: \.self) { item in

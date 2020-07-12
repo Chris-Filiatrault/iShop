@@ -20,40 +20,52 @@ struct ChooseCategory: View {
    
    
    
-    var body: some View {
+   var body: some View {
       
       VStack {
-         List {
          
-            Button(action: {
-               print("Pressed")
-            }) {
-               Text("Button")
+         List {
+            
+            NavigationLink(destination: AddCategory()) {
+               HStack {
+               Text("Add new")
+                  .bold()
+                  
+               Image(systemName: "plus.circle.fill")
+                  .imageScale(.medium)
+                  .foregroundColor(.green)
+                  
+               }
             }
             
-         ForEach(self.categories, id: \.self) { category in
-            Button(action: {
-            changeCategory1(thisItem: self.thisItem,
-                            oldCategory: self.thisItem.categoryOrigin!,
-                            newCategory: category)
-               self.newItemCategory = category
-               self.presentationMode.wrappedValue.dismiss()
-            }) {
-               HStack {
-                  
-            Text(category.wrappedName)
-               .foregroundColor(category.wrappedName == self.thisItem.categoryOrigin!.wrappedName ? .blue : .black)
-
-               if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
-                  Spacer()
-                  Image(systemName: "checkmark")
-                     .imageScale(.medium)
-               }
+            ForEach(self.categories, id: \.self) { category in
+               Button(action: {
+                  changeCategory1(thisItem: self.thisItem,
+                                  oldCategory: self.thisItem.categoryOrigin!,
+                                  newCategory: category)
+                  self.newItemCategory = category
+                  self.presentationMode.wrappedValue.dismiss()
+               }) {
+                  HStack {
+                     if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
+                        HStack {
+                           Text(category.wrappedName)
+                           Spacer()
+                           Image(systemName: "checkmark")
+                              .imageScale(.medium)
+                        }.foregroundColor(.blue)
+                     }
+                     else {
+                        Text(category.wrappedName)
+                           .foregroundColor(.black)
+                     }
+                     
+                  }
                }
             }
          }
       }
-    }
+      .navigationBarTitle(Text("Choose Category"), displayMode: .inline)
    }
 }
 

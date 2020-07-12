@@ -81,14 +81,6 @@ struct ItemDetails: View {
                         
                      }
                      
-//                     Picker(selection: self.$newItemCategory, label: Text("Category")) {
-//                        .onReceive([self.newItemCategory].publisher.first()) { (category) in
-//                           changeCategory1(thisItem: self.thisItem,
-//                                           oldCategory: self.thisItem.categoryOrigin!,
-//                                           newCategory: self.newItemCategory)
-//                        }
-//                     }
-                     
                      // List
                      Picker(selection: self.$newList, label: Text("List")) {
                         ForEach(self.lists, id: \.self) { list in
@@ -110,10 +102,10 @@ struct ItemDetails: View {
                
 
             }// End of VStack
-               .padding()
+               .background(Color("listBackground"))
                
                // === Nav bar ===
-               .navigationBarTitle("Details", displayMode: .large)
+               .navigationBarTitle("Details", displayMode: .inline)
                .navigationBarItems(trailing:
                   Button(action: {
                      self.showItemDetails = false

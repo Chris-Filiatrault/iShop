@@ -50,7 +50,7 @@ struct ItemRow: View {
                      Image(systemName: "square.and.pencil")
                         .imageScale(.large)
                         .foregroundColor(Color("blackWhiteFont"))
-                        .padding(5)
+                        .padding(7)
                   }
                      
                   .sheet(isPresented: self.$showItemDetails) {
