@@ -210,7 +210,6 @@ struct Home: View {
          uncategorisedCategory.id = UUID()
          uncategorisedCategory.dateAdded = Date()
          
-         
          do {
             try managedContext.save()
          } catch let error as NSError {

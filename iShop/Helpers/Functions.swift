@@ -142,8 +142,8 @@ func addItemFromCatalogue(item: Item, listOrigin: ListOfItems) {
 }
 
 
-// ===REMOVE ITEM FROM LIST, FROM WITHIN CATALOGUE===
-func removeItemFromWithinCatalogue(item: Item, thisList: ListOfItems) {
+// ===REMOVE ITEM FROM LIST===
+func removeItemFromList(item: Item) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -153,6 +153,7 @@ func removeItemFromWithinCatalogue(item: Item, thisList: ListOfItems) {
    
    item.addedToAList = false
    item.markedOff = false
+   item.quantity = 1
    
    do {
       try managedContext.save()
@@ -177,7 +178,6 @@ func renameItem(currentName: String, newName: String) {
       appDelegate.persistentContainer.viewContext
    
    let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-   //   fetchRequest.predicate = NSPredicate(format: "name = %@", currentName)
    
    do {
       let items = try managedContext.fetch(fetchRequest) as! [Item]

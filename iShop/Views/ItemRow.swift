@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ItemRow: View {
    
-   
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.managedObjectContext) var context
    
    var thisList: ListOfItems
@@ -52,7 +52,8 @@ struct ItemRow: View {
                         .foregroundColor(Color("blackWhiteFont"))
                         .padding(5)
                   }
-                  .sheet(isPresented: $showItemDetails) {
+                     
+                  .sheet(isPresented: self.$showItemDetails) {
                      ItemDetails(thisItem: self.thisItem,
                                  showItemDetails: self.$showItemDetails,
                                  itemName: self.thisItem.wrappedName,

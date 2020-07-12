@@ -72,7 +72,7 @@ struct CatalogueRow: View {
                   if self.catalogueItem.markedOff == true {
                      self.catalogueItem.markedOff = false
                   }
-                  removeItemFromWithinCatalogue(item: self.catalogueItem, thisList: self.thisList)
+                  removeItemFromList(item: self.catalogueItem)
                   self.globalVariables.itemInTextfield = ""
                   self.globalVariables.catalogueShown = true
                }

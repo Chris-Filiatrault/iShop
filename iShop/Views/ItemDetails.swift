@@ -12,10 +12,6 @@ import CoreData
 struct ItemDetails: View {
    
    
-   @FetchRequest(entity: Category.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \Category.name, ascending: true)
-   ]) var categories: FetchedResults<Category>
-   
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ]) var lists: FetchedResults<ListOfItems>
@@ -28,6 +24,7 @@ struct ItemDetails: View {
    @State var thisItemQuantity: Int32
    @State var oldList: ListOfItems
    @State var newList: ListOfItems
+   @State var showAddNewCategory: Bool = false
    
    var thisList: ListOfItems
    
@@ -38,11 +35,9 @@ struct ItemDetails: View {
          GeometryReader { geometry in
             VStack(alignment: .leading) {
                
-               Form {
-                  
-                  // Name
-                  Section(header: Text("Name")) {
+                  Form {
                      
+                     // Name
                      TextField("Enter name", text: self.$itemName, onCommit: {
                         if self.itemName != "" {
                            renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
@@ -51,69 +46,71 @@ struct ItemDetails: View {
                         .cornerRadius(5)
                         .frame(width: geometry.size.width * 0.9)
                         .font(.headline)
-                  }
-                  
-                  // Category
-                  Section(header: Text("")) {
-                     Picker(selection: self.$newItemCategory, label: Text("Category")) {
-                        ForEach(self.categories, id: \.self) { category in
-                           Text(category.wrappedName)
-                        }
-                        .onReceive([self.newItemCategory].publisher.first()) { (category) in
-                           changeCategory1(thisItem: self.thisItem,
-                                          oldCategory: self.thisItem.categoryOrigin!,
-                                          newCategory: self.newItemCategory)
-                        }
-                     }
-                  }
-                  
-                  // Quantity
-                  Section {
                      
+                     // Quantity
                      HStack {
                         Text("Quantity: ")
-                        
                         Text("\(self.thisItemQuantity)")
-                        
                         Spacer()
-                        
                         Image(systemName: "plus")
                            .foregroundColor(.black)
                            .imageScale(.large)
                            .onTapGesture {
-                        incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-                        self.thisItemQuantity += 1
+                              incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+                              self.thisItemQuantity += 1
                         }
-                     
-                     Image(systemName: "minus")
-                        .foregroundColor(.black)
-                        .imageScale(.large)
-                        .onTapGesture {
-                           if self.thisItemQuantity > 1 {
-                              self.thisItemQuantity -= 1
-                              decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-                           }
+                        Image(systemName: "minus")
+                           .foregroundColor(.black)
+                           .imageScale(.large)
+                           .onTapGesture {
+                              if self.thisItemQuantity > 1 {
+                                 self.thisItemQuantity -= 1
+                                 decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+                              }
                         }
                         .padding(.leading, 10)
                      }
-                  }
-                  
-                  
-                  // List
-                  Section(header: Text("")) {
+                     
+                     // Category
+                     NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory)) {
+                        HStack {
+                           Text("Category")
+                           Spacer()
+                           Text("\(self.newItemCategory.wrappedName)").foregroundColor(.gray)
+                        }
+                        
+                     }
+                     
+//                     Picker(selection: self.$newItemCategory, label: Text("Category")) {
+//                        .onReceive([self.newItemCategory].publisher.first()) { (category) in
+//                           changeCategory1(thisItem: self.thisItem,
+//                                           oldCategory: self.thisItem.categoryOrigin!,
+//                                           newCategory: self.newItemCategory)
+//                        }
+//                     }
+                     
+                     // List
                      Picker(selection: self.$newList, label: Text("List")) {
                         ForEach(self.lists, id: \.self) { list in
                            Text(list.wrappedName)
                         }
-                           
-                        }
                      }
+                     
+                     // Delete (remove from list)
+                     Button(action: {
+                        removeItemFromList(item: self.thisItem)
+                        self.showItemDetails = false
+                     }) {
+                        Text("Delete")
+                           .foregroundColor(.red)
+                     }
+                     
+                  }// End of form
                   
-                  
-                  
-               }
-            }
-            .padding()
+               
+
+            }// End of VStack
+               .padding()
                
                // === Nav bar ===
                .navigationBarTitle("Details", displayMode: .large)
