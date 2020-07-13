@@ -403,7 +403,7 @@ func removeTickedItemsFromList(listOrigin: ListOfItems) {
 
 
 // ===ADD LIST===
-func addList(stateVariable: Binding<String>) {
+func addList(listName: String) {
    
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate
@@ -420,7 +420,7 @@ func addList(stateVariable: Binding<String>) {
    let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
    
    let newList = ListOfItems(entity: listEntity, insertInto: managedContext)
-   newList.name = stateVariable.wrappedValue
+   newList.name = listName
    newList.id = UUID()
    
    
@@ -456,7 +456,7 @@ func addList(stateVariable: Binding<String>) {
    
    do {
       try managedContext.save()
-      print("Saved list successfully -- \(stateVariable.wrappedValue)")
+      print("Saved list successfully -- \(listName)")
       
    } catch let error as NSError {
       print("Could not save list. \(error), \(error.userInfo)")
@@ -490,7 +490,6 @@ func deleteSwipedList(at offsets: IndexSet) {
          let listToBeDeleted = returnedObject as! ListOfItems
          for item in listToBeDeleted.itemArray {
             managedContext.delete(item)
-            print("Deleted \(item.wrappedName)")
          }
          
          managedContext.delete(listToBeDeleted)
@@ -555,7 +554,9 @@ func listNameIsUnique(name: String) -> Bool {
 
 
 // ===ADD CATEGORY===
-func addCategory(stateVariable: Binding<String>) {
+// Initialise category
+// Add the current item to it
+func addCategory(categoryName: String, thisItem: Item) {
    
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate
@@ -566,49 +567,34 @@ func addCategory(stateVariable: Binding<String>) {
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
-   let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in: managedContext)!
-   let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
+   let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in: managedContext)!
+
+   let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
+   newCategory.name = categoryName
+   newCategory.id = UUID()
+   newCategory.dateAdded = Date()
    
    let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-   
-   let newList = ListOfItems(entity: listEntity, insertInto: managedContext)
-   newList.name = stateVariable.wrappedValue
-   newList.id = UUID()
-   
+   itemFetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
    
    do {
+      
       let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
       let items = itemFetchReturn as! [Item]
-      
-      var itemsToBeAdded: [Item] = []
-      for item in items {
-         if itemNameInListIsUnique(name: item.wrappedName, thisList: newList) {
-            
-            let newItem = Item(entity: itemEntity, insertInto: managedContext)
-            newItem.name = item.wrappedName
-            newItem.id = UUID()
-            newItem.dateAdded = Date()
-            newItem.addedToAList = false
-            newItem.markedOff = false
-            newItem.quantity = 1
-            newItem.origin = newList
-            newItem.categoryOrigin = item.categoryOrigin
-            
-            itemsToBeAdded.append(newItem)
-         }
-         for item in itemsToBeAdded {
-            newList.addToItems(item)
+
+      if items != [] {
+         for item in items {
+            item.categoryOrigin = newCategory
+            newCategory.addToItemsInCategory(item)
          }
       }
-      
+ 
    } catch let error as NSError {
       print("Could not fetch. \(error)")
    }
-   
-   
    do {
       try managedContext.save()
-      print("Saved list successfully -- \(stateVariable.wrappedValue)")
+      print("Saved category successfully -- \(categoryName)")
       
    } catch let error as NSError {
       print("Could not save list. \(error), \(error.userInfo)")

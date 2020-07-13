@@ -30,7 +30,7 @@ struct AddList: View {
                         }},
                       onCommit: {
                         if self.newList != "" && listNameIsUnique(name: self.newList) {
-                           addList(stateVariable: self.$newList)
+                           addList(listName: self.newList)
                            self.showingAddListBinding = false
                            self.newList = ""
                         }
@@ -66,7 +66,7 @@ struct AddList: View {
                // Add button
                Button(action: {
                   if self.newList != "" && listNameIsUnique(name: self.newList) {
-                     addList(stateVariable: self.$newList)
+                     addList(listName: self.newList)
                      self.showingAddListBinding = false
                      self.newList = ""
                   }

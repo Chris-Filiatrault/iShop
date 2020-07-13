@@ -25,6 +25,7 @@ struct ItemDetails: View {
    @State var oldList: ListOfItems
    @State var newList: ListOfItems
    @State var showAddNewCategory: Bool = false
+   @State var categoryName: String
    
    var thisList: ListOfItems
    
@@ -72,11 +73,11 @@ struct ItemDetails: View {
                   }
                   
                   // Category
-                  NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory)) {
+                  NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory, categoryName: self.$categoryName)) {
                      HStack {
                         Text("Category")
                         Spacer()
-                        Text("\(self.newItemCategory.wrappedName)").foregroundColor(.gray)
+                        Text("\(self.categoryName)").foregroundColor(.gray)
                      }
                      
                   }

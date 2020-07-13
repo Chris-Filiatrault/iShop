@@ -11,8 +11,11 @@ import SwiftUI
 struct AddCategory: View {
    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
    
-   @State var newCategory: String = ""
+   @State var createdCategoryName: String = ""
    @State var duplicateCategoryAlert = false
+   var thisItem: Item
+   @Binding var newItemCategory: Category
+   @Binding var categoryName: String
    
    
    
@@ -20,17 +23,18 @@ struct AddCategory: View {
       NavigationView {
          VStack {
             // ===Enter item textfield===
-            TextField("Enter category name", text: $newCategory,
+            TextField("Enter category name", text: $createdCategoryName,
                       onCommit: {
-                        if self.newCategory != "" && categoryNameIsUnique(name: self.newCategory) {
-                           //                             addList(stateVariable: self.$newCategory)
-                           print("Add category")
-                           self.newCategory = ""
+                        if self.createdCategoryName != "" && categoryNameIsUnique(name: self.createdCategoryName) {
+                           addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
+                           self.categoryName = self.createdCategoryName
+                           self.createdCategoryName = ""
+                           self.presentationMode.wrappedValue.dismiss()
                         }
-                        else if !categoryNameIsUnique(name: self.newCategory) {
+                        else if !categoryNameIsUnique(name: self.createdCategoryName) {
                            self.duplicateCategoryAlert = true
                         }
-                        else if self.newCategory == "" {
+                        else if self.createdCategoryName == "" {
                            self.presentationMode.wrappedValue.dismiss()
                         }
             })
@@ -60,12 +64,13 @@ struct AddCategory: View {
                
                // Add button
                Button(action: {
-                  if self.newCategory != "" && categoryNameIsUnique(name: self.newCategory) {
-                     print("Add category")
-                     //                       addList(stateVariable: self.$newCategory)
-                     self.newCategory = ""
+                  if self.createdCategoryName != "" && categoryNameIsUnique(name: self.createdCategoryName) {
+                     addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
+                     self.categoryName = self.createdCategoryName
+                     self.createdCategoryName = ""
+                     self.presentationMode.wrappedValue.dismiss()
                   }
-                  else if !categoryNameIsUnique(name: self.newCategory) {
+                  else if !categoryNameIsUnique(name: self.createdCategoryName) {
                      self.duplicateCategoryAlert = true
                   }
                }) {
@@ -90,13 +95,8 @@ struct AddCategory: View {
          .modifier(AdaptsToSoftwareKeyboard())
          
       } // End of VStack
-      .navigationBarTitle(Text("New category"), displayMode: .inline)
+         .navigationBarTitle("Add category", displayMode: .inline)
    }
 }
 
-
-struct AddCategory_Previews: PreviewProvider {
-   static var previews: some View {
-      AddCategory()
-   }
-}
+  

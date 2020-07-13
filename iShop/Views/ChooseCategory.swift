@@ -17,6 +17,7 @@ struct ChooseCategory: View {
    
    var thisItem: Item
    @Binding var newItemCategory: Category
+   @Binding var categoryName: String
    
    
    
@@ -25,7 +26,7 @@ struct ChooseCategory: View {
       VStack {
          
          List {
-            NavigationLink(destination: AddCategory()) {
+            NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
                HStack {
                Text("Add new")
                   .bold()
@@ -38,6 +39,7 @@ struct ChooseCategory: View {
                                   oldCategory: self.thisItem.categoryOrigin!,
                                   newCategory: category)
                   self.newItemCategory = category
+                  self.categoryName = category.wrappedName
                   self.presentationMode.wrappedValue.dismiss()
                }) {
                   HStack {
