@@ -52,9 +52,7 @@ struct Home: View {
                }.onDelete(perform: deleteSwipedList)
             }
                
-            .background(Color("listBackground"))
-            .edgesIgnoringSafeArea(.bottom)
-            .edgesIgnoringSafeArea(.horizontal)
+            .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
                
                

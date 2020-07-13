@@ -33,76 +33,75 @@ struct ItemDetails: View {
       
       NavigationView {
          GeometryReader { geometry in
-            VStack(alignment: .leading) {
+            VStack {
                
-                  Form {
-                     
-                     // Name
-                     TextField("Enter name", text: self.$itemName, onCommit: {
-                        if self.itemName != "" {
-                           renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
-                        }
-                     })
-                        .cornerRadius(5)
-                        .frame(width: geometry.size.width * 0.9)
-                        .font(.headline)
-                     
-                     // Quantity
-                     HStack {
-                        Text("Quantity: ")
-                        Text("\(self.thisItemQuantity)")
-                        Spacer()
-                        Image(systemName: "plus")
-                           .foregroundColor(.black)
-                           .imageScale(.large)
-                           .onTapGesture {
-                              incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-                              self.thisItemQuantity += 1
-                        }
-                        Image(systemName: "minus")
-                           .foregroundColor(.black)
-                           .imageScale(.large)
-                           .onTapGesture {
-                              if self.thisItemQuantity > 1 {
-                                 self.thisItemQuantity -= 1
-                                 decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
-                              }
-                        }
-                        .padding(.leading, 10)
-                     }
-                     
-                     // Category
-                     NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory)) {
-                        HStack {
-                           Text("Category")
-                           Spacer()
-                           Text("\(self.newItemCategory.wrappedName)").foregroundColor(.gray)
-                        }
-                        
-                     }
-                     
-                     // List
-                     Picker(selection: self.$newList, label: Text("List")) {
-                        ForEach(self.lists, id: \.self) { list in
-                           Text(list.wrappedName)
-                        }
-                     }
-                     
-                     // Delete (remove from list)
-                     Button(action: {
-                        removeItemFromList(item: self.thisItem)
-                        self.showItemDetails = false
-                     }) {
-                        Text("Delete")
-                           .foregroundColor(.red)
-                     }
-                     
-                  }// End of form
+               Form {
                   
+                  // Name
+                  TextField("Enter name", text: self.$itemName, onCommit: {
+                     if self.itemName != "" {
+                        renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
+                     }
+                  })
+                     .cornerRadius(5)
+                     .frame(width: geometry.size.width * 0.9)
+                     .font(.headline)
+                  
+                  // Quantity
+                  HStack {
+                     Text("Quantity: ")
+                     Text("\(self.thisItemQuantity)")
+                     Spacer()
+                     Image(systemName: "plus")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .onTapGesture {
+                           incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+                           self.thisItemQuantity += 1
+                     }
+                     Image(systemName: "minus")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .onTapGesture {
+                           if self.thisItemQuantity > 1 {
+                              self.thisItemQuantity -= 1
+                              decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+                           }
+                     }
+                     .padding(.leading, 10)
+                  }
+                  
+                  // Category
+                  NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory)) {
+                     HStack {
+                        Text("Category")
+                        Spacer()
+                        Text("\(self.newItemCategory.wrappedName)").foregroundColor(.gray)
+                     }
+                     
+                  }
+                  
+                  // List
+                  Picker(selection: self.$newList, label: Text("List")) {
+                     ForEach(self.lists, id: \.self) { list in
+                        Text(list.wrappedName)
+                     }
+                  }
+                  
+                  // Delete (remove from list)
+                  Button(action: {
+                     removeItemFromList(item: self.thisItem)
+                     self.showItemDetails = false
+                  }) {
+                     Text("Delete")
+                        .foregroundColor(.red)
+                  }
+                  
+               }// End of form
                
-
+               
             }// End of VStack
-               .background(Color("listBackground"))
+               .background(Color("listBackground").edgesIgnoringSafeArea(.all))
                
                // === Nav bar ===
                .navigationBarTitle("Details", displayMode: .inline)
@@ -130,8 +129,6 @@ struct ItemDetails: View {
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
                })
          }
-      }
+      }.environment(\.horizontalSizeClass, .compact)
    }
 }
-
-

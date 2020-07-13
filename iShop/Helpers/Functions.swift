@@ -554,6 +554,67 @@ func listNameIsUnique(name: String) -> Bool {
 // =====================================================
 
 
+// ===ADD CATEGORY===
+func addCategory(stateVariable: Binding<String>) {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate
+      else {
+         return
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in: managedContext)!
+   let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
+   
+   let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   
+   let newList = ListOfItems(entity: listEntity, insertInto: managedContext)
+   newList.name = stateVariable.wrappedValue
+   newList.id = UUID()
+   
+   
+   do {
+      let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
+      let items = itemFetchReturn as! [Item]
+      
+      var itemsToBeAdded: [Item] = []
+      for item in items {
+         if itemNameInListIsUnique(name: item.wrappedName, thisList: newList) {
+            
+            let newItem = Item(entity: itemEntity, insertInto: managedContext)
+            newItem.name = item.wrappedName
+            newItem.id = UUID()
+            newItem.dateAdded = Date()
+            newItem.addedToAList = false
+            newItem.markedOff = false
+            newItem.quantity = 1
+            newItem.origin = newList
+            newItem.categoryOrigin = item.categoryOrigin
+            
+            itemsToBeAdded.append(newItem)
+         }
+         for item in itemsToBeAdded {
+            newList.addToItems(item)
+         }
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error)")
+   }
+   
+   
+   do {
+      try managedContext.save()
+      print("Saved list successfully -- \(stateVariable.wrappedValue)")
+      
+   } catch let error as NSError {
+      print("Could not save list. \(error), \(error.userInfo)")
+   }
+}
+
 
 // ===CHANGE CATEGORY===
 func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Category) {
@@ -603,6 +664,40 @@ func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory:
 }
 
 
+
+
+//===CHECK FOR DUPLICATE CATEGORY===
+func categoryNameIsUnique(name: String) -> Bool {
+   
+   var result: Bool = true
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else {
+         return true
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   
+   do {
+      let categoriesFromFetchRequest = try managedContext.fetch(fetchRequest) as! [Category]
+      var listOfCategoryNames: [String] = []
+      for category in categoriesFromFetchRequest {
+         listOfCategoryNames.append(category.wrappedName)
+      }
+      for categoryName in listOfCategoryNames {
+         if name == categoryName {
+            result = false
+         }
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+   return result
+}
 
 
 

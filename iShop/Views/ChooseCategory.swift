@@ -25,16 +25,10 @@ struct ChooseCategory: View {
       VStack {
          
          List {
-            
             NavigationLink(destination: AddCategory()) {
                HStack {
                Text("Add new")
                   .bold()
-                  
-               Image(systemName: "plus.circle.fill")
-                  .imageScale(.medium)
-                  .foregroundColor(.green)
-                  
                }
             }
             
@@ -65,7 +59,7 @@ struct ChooseCategory: View {
             }
          }
       }
-      .navigationBarTitle(Text("Choose Category"), displayMode: .inline)
+      .navigationBarTitle(Text("Category"), displayMode: .inline)
    }
 }
 

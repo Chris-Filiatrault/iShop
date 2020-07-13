@@ -127,9 +127,8 @@ struct ItemList: View {
             
          }
       }
-      .background(Color("listBackground"))
+      .background(Color("listBackground").edgesIgnoringSafeArea(.all))
       .modifier(AdaptsToSoftwareKeyboard())
-      .edgesIgnoringSafeArea(.horizontal)
       .onDisappear() {
          self.globalVariables.itemInTextfield = ""
       }

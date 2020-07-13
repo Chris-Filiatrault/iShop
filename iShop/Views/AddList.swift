@@ -59,12 +59,11 @@ struct AddList: View {
                      .bold()
                      .cornerRadius(20)
                      .font(.subheadline)
-                     .foregroundColor(Color("darkBlueFont"))
+                     .foregroundColor(.black)
                      .frame(minWidth: 50)
                }.contentShape(Rectangle())
                
                // Add button
-               //  if addItemButtonIsShown == true {
                Button(action: {
                   if self.newList != "" && listNameIsUnique(name: self.newList) {
                      addList(stateVariable: self.$newList)
@@ -79,15 +78,14 @@ struct AddList: View {
                      .frame(minWidth: 50)
                      .font(.subheadline)
                      .padding(10)
-                     .background(Color(.systemTeal))
-                     .foregroundColor(Color("standardDarkBlue"))
+                     .background(Color("blueButton"))
+                     .foregroundColor(.white)
                      .cornerRadius(10)
                      .transition(.scale)
                      .edgesIgnoringSafeArea(.horizontal)
                }
                .contentShape(Rectangle())
                .padding(.leading, 20)
-               // }
                
             }
             Spacer()

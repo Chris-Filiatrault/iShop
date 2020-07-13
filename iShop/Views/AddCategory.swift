@@ -9,91 +9,94 @@
 import SwiftUI
 
 struct AddCategory: View {
+   @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
    
-//   @State var newList: String = ""
-//   @State var addItemButtonIsShown: Bool = false
-//   @State var duplicateListAlert = false
-//   
-//   @Binding var showingAddListBinding: Bool
-    var body: some View {
-      Text("Hi")
-//        NavigationView {
-//           VStack {
-//              // ===Enter item textfield===
-//              TextField("Enter list name", text: $newList,
-//                        onEditingChanged: { tfActive in
-//                          withAnimation {
-//                             self.addItemButtonIsShown = tfActive
-//                          }},
-//                        onCommit: {
-//                          if self.newList != "" && listNameIsUnique(name: self.newList) {
-//                             addList(stateVariable: self.$newList)
-//                             self.showingAddListBinding = false
-//                             self.newList = ""
-//                          }
-//                          else if !listNameIsUnique(name: self.newList) {
-//                             self.duplicateListAlert = true
-//                          }
-//                          else if self.newList == "" {
-//                             self.showingAddListBinding = false
-//                          }
-//              })
-//                 .textFieldStyle(RoundedBorderTextFieldStyle())
-//                 .padding(5)
-//                 .cornerRadius(5)
-//                 .padding(.bottom, 20)
-//                 .alert(isPresented: $duplicateListAlert) {
-//                    Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-//              }
-//              
-//              
-//              // ===Buttons===
-//              HStack(alignment: .center) {
-//                 
-//                 // Cancel button
-//                 Button(action: {self.showingAddListBinding = false}) {
-//                    Text("Cancel")
-//                       .bold()
-//                       .cornerRadius(20)
-//                       .font(.subheadline)
-//                       .foregroundColor(Color("darkBlueFont"))
-//                       .frame(minWidth: 50)
-//                 }.contentShape(Rectangle())
-//                 
-//                 // Add button
-//                 //  if addItemButtonIsShown == true {
-//                 Button(action: {
-//                    if self.newList != "" && listNameIsUnique(name: self.newList) {
-//                       addList(stateVariable: self.$newList)
-//                       self.showingAddListBinding = false
-//                       self.newList = ""
-//                    }
-//                    else if !listNameIsUnique(name: self.newList) { self.duplicateListAlert = true
-//                    }
-//                 }) {
-//                    Text("Add")
-//                       .bold()
-//                       .frame(minWidth: 50)
-//                       .font(.subheadline)
-//                       .padding(10)
-//                       .background(Color(.systemTeal))
-//                       .foregroundColor(Color("standardDarkBlue"))
-//                       .cornerRadius(10)
-//                       .transition(.scale)
-//                       .edgesIgnoringSafeArea(.horizontal)
-//                 }
-//                 .contentShape(Rectangle())
-//                 .padding(.leading, 20)
-//                 // }
-//                 
-//              }
-//              Spacer()
-//           }
-//           .navigationBarTitle("Add new list")
-//           .padding()
-//           .modifier(AdaptsToSoftwareKeyboard())
-//           
-//        } // End of VStack
-    }
+   @State var newCategory: String = ""
+   @State var duplicateCategoryAlert = false
+   
+   
+   
+   var body: some View {
+      NavigationView {
+         VStack {
+            // ===Enter item textfield===
+            TextField("Enter category name", text: $newCategory,
+                      onCommit: {
+                        if self.newCategory != "" && categoryNameIsUnique(name: self.newCategory) {
+                           //                             addList(stateVariable: self.$newCategory)
+                           print("Add category")
+                           self.newCategory = ""
+                        }
+                        else if !categoryNameIsUnique(name: self.newCategory) {
+                           self.duplicateCategoryAlert = true
+                        }
+                        else if self.newCategory == "" {
+                           self.presentationMode.wrappedValue.dismiss()
+                        }
+            })
+               .textFieldStyle(RoundedBorderTextFieldStyle())
+               .padding(5)
+               .cornerRadius(5)
+               .padding(.bottom, 20)
+               .alert(isPresented: $duplicateCategoryAlert) {
+                  Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
+            }
+            
+            
+            // ===Buttons===
+            HStack(alignment: .center) {
+               
+               // Cancel button
+               Button(action: {
+                  self.presentationMode.wrappedValue.dismiss()
+               }) {
+                  Text("Cancel")
+                     .bold()
+                     .cornerRadius(20)
+                     .font(.subheadline)
+                     .foregroundColor(.black)
+                     .frame(minWidth: 50)
+               }.contentShape(Rectangle())
+               
+               // Add button
+               Button(action: {
+                  if self.newCategory != "" && categoryNameIsUnique(name: self.newCategory) {
+                     print("Add category")
+                     //                       addList(stateVariable: self.$newCategory)
+                     self.newCategory = ""
+                  }
+                  else if !categoryNameIsUnique(name: self.newCategory) {
+                     self.duplicateCategoryAlert = true
+                  }
+               }) {
+                  Text("Add")
+                     .bold()
+                     .frame(minWidth: 50)
+                     .font(.subheadline)
+                     .padding(10)
+                     .background(Color("blueButton"))
+                     .foregroundColor(.white)
+                     .cornerRadius(10)
+                     .transition(.scale)
+                     .edgesIgnoringSafeArea(.horizontal)
+               }
+               .contentShape(Rectangle())
+               .padding(.leading, 20)
+               
+            }
+            Spacer()
+         }
+         .padding()
+         .modifier(AdaptsToSoftwareKeyboard())
+         
+      } // End of VStack
+      .navigationBarTitle(Text("New category"), displayMode: .inline)
+   }
 }
 
+
+struct AddCategory_Previews: PreviewProvider {
+   static var previews: some View {
+      AddCategory()
+   }
+}
