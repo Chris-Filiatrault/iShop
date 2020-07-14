@@ -568,11 +568,12 @@ func addCategory(categoryName: String, thisItem: Item) {
       appDelegate.persistentContainer.viewContext
    
    let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in: managedContext)!
-
+   
    let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
    newCategory.name = categoryName
    newCategory.id = UUID()
    newCategory.dateAdded = Date()
+   newCategory.defaultCategory = false
    
    let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
    itemFetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
@@ -581,14 +582,14 @@ func addCategory(categoryName: String, thisItem: Item) {
       
       let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
       let items = itemFetchReturn as! [Item]
-
+      
       if items != [] {
          for item in items {
             item.categoryOrigin = newCategory
             newCategory.addToItemsInCategory(item)
          }
       }
- 
+      
    } catch let error as NSError {
       print("Could not fetch. \(error)")
    }
@@ -637,16 +638,16 @@ func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Categor
 }
 
 func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
-    for item in oldItemCategory.itemsInCategoryArray {
-       if item.wrappedName == thisItem.wrappedName {
-          oldItemCategory.removeFromItemsInCategory(item)
-       }
-    }
-    for item in newItemCategory.itemsInCategoryArray {
-       if item.wrappedName == thisItem.wrappedName {
-          newItemCategory.addToItemsInCategory(item)
-       }
-    }
+   for item in oldItemCategory.itemsInCategoryArray {
+      if item.wrappedName == thisItem.wrappedName {
+         oldItemCategory.removeFromItemsInCategory(item)
+      }
+   }
+   for item in newItemCategory.itemsInCategoryArray {
+      if item.wrappedName == thisItem.wrappedName {
+         newItemCategory.addToItemsInCategory(item)
+      }
+   }
 }
 
 
@@ -684,6 +685,9 @@ func categoryNameIsUnique(name: String) -> Bool {
    
    return result
 }
+
+
+
 
 
 

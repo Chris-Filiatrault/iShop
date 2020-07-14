@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct AddCategory: View {
    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -16,7 +17,6 @@ struct AddCategory: View {
    var thisItem: Item
    @Binding var newItemCategory: Category
    @Binding var categoryName: String
-   
    
    
    var body: some View {
@@ -89,13 +89,14 @@ struct AddCategory: View {
                .padding(.leading, 20)
                
             }
+            
             Spacer()
          }
          .padding()
          .modifier(AdaptsToSoftwareKeyboard())
          
+            .navigationBarTitle("Add Category", displayMode: .large)
       } // End of VStack
-         .navigationBarTitle("Add category", displayMode: .inline)
    }
 }
 

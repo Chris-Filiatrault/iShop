@@ -88,12 +88,13 @@ struct AddList: View {
                .padding(.leading, 20)
                
             }
+            
             Spacer()
          }
-         .navigationBarTitle("Add new list")
          .padding()
          .modifier(AdaptsToSoftwareKeyboard())
          
+         .navigationBarTitle("Add List", displayMode: .large)
       } // End of VStack
       
    }

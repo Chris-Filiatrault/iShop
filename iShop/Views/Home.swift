@@ -201,12 +201,14 @@ struct Home: View {
          inBasketCategory.name = "In Basket"
          inBasketCategory.id = UUID()
          inBasketCategory.dateAdded = Date()
+         inBasketCategory.defaultCategory = true
          
          // Uncategorised category
          let uncategorisedCategory = Category(entity: categoryEntity, insertInto: managedContext)
          uncategorisedCategory.name = "Uncategorised"
          uncategorisedCategory.id = UUID()
          uncategorisedCategory.dateAdded = Date()
+         uncategorisedCategory.defaultCategory = true
          
          do {
             try managedContext.save()

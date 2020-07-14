@@ -62,7 +62,7 @@ struct ItemRow: View {
                                  thisItemQuantity: self.thisItem.quantity,
                                  oldList: self.thisItem.origin!,
                                  newList: self.thisItem.origin!,
-                                 categoryName: self.thisItem.wrappedName,
+                                 categoryName: self.thisItem.categoryOrigin!.wrappedName,
                                  thisList: self.thisList)
                         .environment(\.managedObjectContext, self.context)
                   }
