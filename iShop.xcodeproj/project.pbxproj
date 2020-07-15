@@ -216,8 +216,8 @@
 		6D0C5B3124B147EC000842C2 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
-				6D0C5B3524B147EC000842C2 /* ContentView.swift */,
 				6D0C5B3224B147EC000842C2 /* UsefulCode.swift */,
+				6D0C5B3524B147EC000842C2 /* ContentView.swift */,
 				6D0C5B3324B147EC000842C2 /* FilteredList.swift */,
 				6D0C5B3424B147EC000842C2 /* SwiftUIView.swift */,
 				6D0C5B3624B147EC000842C2 /* LiveTextfieldTest.swift */,

@@ -742,3 +742,18 @@
 //            }
 //
 //         }
+
+
+//         .alert(isPresented: $removeItemAlert) {
+//            Alert(title:
+//               Text("Remove \n\"\(catalogueItem.wrappedName)\" from \"\(thisList.wrappedName)\"?"),
+//                  primaryButton:
+//               .default(Text("Cancel")),
+//                  secondaryButton:
+//               .default(Text("Remove")) {
+//                  removeItemFromList(item: self.catalogueItem)
+//                  self.globalVariables.itemInTextfield = ""
+//                  self.globalVariables.catalogueShown = true
+//               }
+//            )
+//         }

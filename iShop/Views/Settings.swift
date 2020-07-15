@@ -29,7 +29,7 @@ struct Settings: View {
                .navigationBarTitle("Settings", displayMode: .inline)
                .navigationBarItems(trailing:
                   Button(action: {
-                     self.showSettingsBinding = false
+                     self.showSettingsBinding.toggle()
                   }) {
                      Text("Done")
                         .font(.headline)

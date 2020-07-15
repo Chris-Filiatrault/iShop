@@ -20,6 +20,7 @@ struct ChooseCategory: View {
    var thisItem: Item
    @Binding var newItemCategory: Category
    @Binding var categoryName: String
+   @Binding var textfieldActive: Bool
    
    var body: some View {
       
@@ -61,18 +62,23 @@ struct ChooseCategory: View {
                }
             }
             .onDelete(perform: deleteSwipedCategory)
-            
-         }
          
+            
+            if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
+               HStack {
+                  Text("Uncategorised")
+                  Spacer()
+                  Image(systemName: "checkmark")
+                     .imageScale(.medium)
+               }.foregroundColor(.blue)
+            }
+         }
       }
       .navigationBarTitle(Text("Category"), displayMode: .inline)
       .navigationBarItems(trailing:
       EditButton()
          .padding()
       )
-      
-      
-      
       
       
    }

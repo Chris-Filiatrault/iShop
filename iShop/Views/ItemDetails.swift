@@ -26,7 +26,7 @@ struct ItemDetails: View {
    @State var newList: ListOfItems
    @State var showAddNewCategory: Bool = false
    @State var categoryName: String
-   
+   @State var textfieldActive: Bool = false
    var thisList: ListOfItems
    
    
@@ -39,7 +39,10 @@ struct ItemDetails: View {
                Form {
                   
                   // Name
-                  TextField("Enter name", text: self.$itemName, onCommit: {
+                  TextField("Enter name", text: self.$itemName,
+                     onEditingChanged: { edit in
+                              self.textfieldActive = true
+                  }, onCommit: {
                      if self.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
                      }
@@ -73,7 +76,7 @@ struct ItemDetails: View {
                   }
                   
                   // Category
-                  NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory, categoryName: self.$categoryName)) {
+                  NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory, categoryName: self.$categoryName, textfieldActive: self.$textfieldActive)) {
                      HStack {
                         Text("Category")
                         Spacer()
@@ -96,12 +99,14 @@ struct ItemDetails: View {
                   }) {
                      Text("Delete")
                         .foregroundColor(.red)
+                     
                   }
                   
                }// End of form
                
                
             }// End of VStack
+               
                .background(Color("listBackground").edgesIgnoringSafeArea(.all))
                
                // === Nav bar ===
