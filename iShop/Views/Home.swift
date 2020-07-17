@@ -23,6 +23,9 @@ struct Home: View {
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ]) var listsFromFetchRequest: FetchedResults<ListOfItems>
    
+   @FetchRequest(entity: Category.entity(), sortDescriptors:[],
+                 predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
+   
    
    @State var showSettings: Bool = false
    @State var showAddList: Bool = false
@@ -35,9 +38,6 @@ struct Home: View {
       VStack {
          
          // ===List of lists===
-         
-         // ===========HERE===========
-         // Try and setup the navigation list as buttons with a shadow, not just boring rows
          NavigationView {
             List {
                Text(" ")

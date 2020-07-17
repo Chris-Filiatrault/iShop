@@ -38,8 +38,8 @@ struct ItemRow: View {
                      Text(thisItem.quantity > 1 ?
                         "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
                         "\(thisItem.wrappedName)")
-                        .strikethrough(color: itemInListMarkedOff ? .gray : .clear)
-                        .foregroundColor(itemInListMarkedOff ? .gray : .black)
+//                        .strikethrough(color: itemInListMarkedOff ? .gray : .clear)
+//                        .foregroundColor(itemInListMarkedOff ? .gray : .black)
                         .multilineTextAlignment(.leading)
                   
                 Spacer()
@@ -72,9 +72,7 @@ struct ItemRow: View {
          
          
       }
-      
    }
-   
 }
 
 

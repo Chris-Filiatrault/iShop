@@ -690,6 +690,61 @@ func categoryNameIsUnique(name: String) -> Bool {
 
 
 
+// ===UNCATEGORISED CATEGORY===
+func uncategorisedCategory() -> Category? {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return nil
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   fetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
+   
+   do {
+      let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
+      if fetchReturn != [] {
+      let uncategorised = fetchReturn[0]
+      return uncategorised
+      }
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   return nil
+}
+
+// ===UNCATEGORISED CATEGORY===
+func inBasketCategory() -> Category? {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return nil
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   fetchRequest.predicate = NSPredicate(format: "name == %@", "In Basket")
+   
+   do {
+      let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
+      if fetchReturn != [] {
+      let uncategorised = fetchReturn[0]
+      return uncategorised
+      }
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   return nil
+}
+
+
+
+
 
 
 
