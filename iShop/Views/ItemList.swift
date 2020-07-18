@@ -65,18 +65,16 @@ struct ItemList: View {
          
          // ===List of items with categories===
          if globalVariables.catalogueShown == false {
+            
             List {
                ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
                   ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
-               }.animation(nil)
-               ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!).animation(nil)
+               }
+               ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!)
                
-               InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!).animation(nil)
-//               InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
-               
+               InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
             }.padding(.bottom)
 
-            
          }
             
             // ===Catalogue===

@@ -50,6 +50,7 @@ struct Settings: View {
          }
          
       } // End of VStack
+      .environment(\.horizontalSizeClass, .compact)
    }
 }
 

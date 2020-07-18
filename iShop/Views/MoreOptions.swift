@@ -19,6 +19,7 @@ struct MoreOptions: View {
    var body: some View {
       
       Text("More options menu")
-         
+      
+      .environment(\.horizontalSizeClass, .compact)
     }
 }

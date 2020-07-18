@@ -258,6 +258,24 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
    }
 }
 
+func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   thisItem.markedOff = false
+   
+   do {
+      try managedContext.save()
+      print("Restored successfully")
+   } catch let error as NSError {
+      print("Could not save checked off status. \(error), \(error.userInfo)")
+   }
+}
+
 
 
 

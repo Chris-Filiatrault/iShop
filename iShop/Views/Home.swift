@@ -13,12 +13,7 @@ import CoreData
 struct Home: View {
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
-   
-   // Set this to false once some code has been run
-   var runCodeOnce: Bool = true
-   
-   
-   
+      
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ]) var listsFromFetchRequest: FetchedResults<ListOfItems>

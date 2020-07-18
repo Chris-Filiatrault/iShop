@@ -95,7 +95,8 @@ struct AddList: View {
          .modifier(AdaptsToSoftwareKeyboard())
          
          .navigationBarTitle("Add List", displayMode: .large)
+         
       } // End of VStack
-      
+      .environment(\.horizontalSizeClass, .compact)
    }
 }

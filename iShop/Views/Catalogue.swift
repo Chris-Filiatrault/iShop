@@ -65,12 +65,6 @@ struct Catalogue: View {
       
       let allItemsFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
       
-      //      let thisListsItemsFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-      //      thisListsItemsFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      //      ]
-      //      thisListsItemsFetchRequest.predicate = NSPredicate(format: "origin = %@", thisList)
-      
-      
       do {
          let items = try managedContext.fetch(allItemsFetchRequest) as! [Item]
          for offset in offsets {

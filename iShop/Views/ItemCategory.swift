@@ -10,6 +10,7 @@ import SwiftUI
 import CoreData
 
 struct ItemCategory: View {
+   
    var thisList: ListOfItems
    var thisCategory: Category
    var items: FetchRequest<Item>
@@ -90,6 +91,7 @@ struct ItemCategory: View {
          let thisItem = items.wrappedValue[offset]
          thisItem.addedToAList = false
          thisItem.markedOff = false
+         thisItem.quantity = 1
       }
       do {
          try managedContext.save()

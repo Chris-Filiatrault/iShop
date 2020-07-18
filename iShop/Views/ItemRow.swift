@@ -23,23 +23,25 @@ struct ItemRow: View {
       HStack {
          
          Button(action: {
+            withAnimation {               
             self.itemInListMarkedOff.toggle()
+            }
             markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
-         }) {
+            }) {
             
             ZStack {
                Rectangle().hidden()
                
                HStack {
-                  Image(systemName: itemInListMarkedOff ? "checkmark.circle" : "circle")
+                  Image(systemName: itemInListMarkedOff ? "checkmark.circle.fill" : "circle")
                      .imageScale(.large)
-                     .foregroundColor(itemInListMarkedOff ? .gray : .black)
+                     .foregroundColor(itemInListMarkedOff ? Color("navBarFont") : .black)
                   
                      Text(thisItem.quantity > 1 ?
                         "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
                         "\(thisItem.wrappedName)")
-//                        .strikethrough(color: itemInListMarkedOff ? .gray : .clear)
-//                        .foregroundColor(itemInListMarkedOff ? .gray : .black)
+                        .strikethrough(color: itemInListMarkedOff ? .white : .clear)
+                        .foregroundColor(itemInListMarkedOff ? .white : .black)
                         .multilineTextAlignment(.leading)
                   
                 Spacer()
@@ -49,7 +51,7 @@ struct ItemRow: View {
                   }) {
                      Image(systemName: "square.and.pencil")
                         .imageScale(.large)
-                        .foregroundColor(Color("blackWhiteFont"))
+                        .foregroundColor(itemInListMarkedOff ? .white : .black)
                         .padding(7)
                   }
                      
@@ -72,6 +74,7 @@ struct ItemRow: View {
          
          
       }
+      .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
    }
 }
 
