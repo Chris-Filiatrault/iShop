@@ -40,8 +40,16 @@ struct Home: View {
                
                ForEach(listsFromFetchRequest, id: \.self) { list in
                   NavigationLink(destination: ItemList(listFromHomePage: list)) {
+                     HStack {
                      Text(list.wrappedName)
                         .font(.headline)
+                        Spacer()
+                        if numListUntickedItems(list: list) > 0 {
+                           Text("\(numListUntickedItems(list: list))")
+                              .font(.headline)
+                              .padding(.trailing, 5)
+                        }
+                     }
                      
                   }
                }.onDelete(perform: deleteSwipedList)

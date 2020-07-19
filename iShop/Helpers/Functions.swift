@@ -563,6 +563,24 @@ func listNameIsUnique(name: String) -> Bool {
 
 
 
+//===GET NUMBER OF UNTICKED ITEMS===
+func numListUntickedItems(list: ListOfItems) -> Int {
+   
+   var result: Int = 0
+   
+   for item in list.itemArray {
+      if item.markedOff == false && item.addedToAList == true {
+         result += 1
+      }
+   }
+   return result
+}
+
+
+
+
+
+
 
 
 

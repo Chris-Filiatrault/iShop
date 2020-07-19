@@ -7,22 +7,44 @@
 //
 
 import SwiftUI
+import MessageUI
 
 struct Settings: View {
    @Binding var showSettingsBinding: Bool
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
+   @State var result: Result<MFMailComposeResult, Error>? = nil
+   @State var isShowingMailView = false
+   @State var alertNoMail = false
+   
    var body: some View {
       VStack {
          NavigationView {
             
             Form {
-               Section(header: Text("General")) {
+               Section(header: Text("GENERAL")) {
                   Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
                      Text("Disable autocorrect")
                   }
+                  
+                  Button(action: {
+                  MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
+                  }) {
+                     Text("Send feedback")
+                        .foregroundColor(.black)
+                  }
+                  .sheet(isPresented: $isShowingMailView) {
+                     MailView(result: self.$result)
+                  }
+                  .alert(isPresented: self.$alertNoMail) {
+                      Alert(title: Text("Can't send mail on this device."))
+                  }
+
                }
+               
+               
+
             }.padding(.top, 15)
                   
                // === Nav bar ===
