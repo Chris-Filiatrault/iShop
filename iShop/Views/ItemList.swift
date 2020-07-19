@@ -47,7 +47,7 @@ struct ItemList: View {
       VStack(spacing: 0) {
          
          // ===Enter item textfield===
-         TextField(globalVariables.catalogueShown == false ? "Add item" : "Lookup item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
             self.globalVariables.catalogueShown = true
          }, onCommit: {
             if self.globalVariables.itemInTextfield != "" {

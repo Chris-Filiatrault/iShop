@@ -28,9 +28,9 @@ struct Home: View {
    @State var action: Int? = 0
    @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
    
-   @State var navBarColor: UIColor = UIColor.white
-   @State var navBarFont: UIColor = UIColor.black
-//   let standardDarkBlueUIColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
+   
+   @State var navBarFont: UIColor = UIColor.white
+   @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    
    var body: some View {
       VStack {
