@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-// For changing nav bar colours
+// For changing nav bar colours & font
 struct NavigationConfigurator: UIViewControllerRepresentable {
     var configure: (UINavigationController) -> Void = { _ in }
 

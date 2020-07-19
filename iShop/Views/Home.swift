@@ -26,87 +26,96 @@ struct Home: View {
    @State var showAddList: Bool = false
    @State var initialListName: String = "Groceries"
    @State var action: Int? = 0
+   @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
    
-   let standardDarkBlueUIColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
+   @State var navBarColor: UIColor = UIColor.white
+   @State var navBarFont: UIColor = UIColor.black
+//   let standardDarkBlueUIColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    
    var body: some View {
       VStack {
-         
-         // ===List of lists===
-         NavigationView {
-            List {
-               Text(" ")
-                  .listRowBackground(Color("listBackground"))
-               
-               ForEach(listsFromFetchRequest, id: \.self) { list in
-                  NavigationLink(destination: ItemList(listFromHomePage: list)) {
-                     HStack {
-                     Text(list.wrappedName)
-                        .font(.headline)
-                        Spacer()
-                        if numListUntickedItems(list: list) > 0 {
-                           Text("\(numListUntickedItems(list: list))")
-                              .font(.headline)
-                              .padding(.trailing, 5)
-                        }
-                     }
-                     
-                  }
-               }.onDelete(perform: deleteSwipedList)
-            }
-               
-            .background(Color("listBackground").edgesIgnoringSafeArea(.all))
-            .navigationBarTitle(Text("Lists"), displayMode: .inline)
-               
-               
-            .background(NavigationConfigurator { nc in
-               nc.navigationBar.barTintColor = self.standardDarkBlueUIColor
-               nc.navigationBar.titleTextAttributes = [.foregroundColor : UIColor.white]
-            })
-               
-               
-               
-               
-               
-               // ===Nav bar items===
-               .navigationBarItems(
-                  
-                  // Settings gear button
-                  leading:
-                  Button(action: {
-                     self.showSettings = true
-                  }) {
-                     Image(systemName: "gear")
-                        .imageScale(.large)
-                        .padding()
-                        .foregroundColor(Color("navBarFont"))
-                        .offset(x: -5)
-                  }
-                  .sheet(isPresented: self.$showSettings){
-                     Settings(showSettingsBinding: self.$showSettings)
-                        .environmentObject(self.globalVariables)
-                  },
-                  
-                  // Add list plus button
-                  trailing:
-                  Button(action: {
-                     self.showAddList = true
-                     
-                  }) {
-                     Image(systemName: "plus")
-                        .imageScale(.large)
-                        .padding()
-                        .foregroundColor(Color("navBarFont"))
-                        .offset(x: 5)
-                  }.sheet(isPresented: $showAddList) {
-                     AddList(showingAddListBinding: self.$showAddList)
-                  }
-            )
+         if onboardingShown != true {
+            OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
          }
-            // ===Nav bar modifiers===
-            .accentColor(Color("navBarFont"))
-            .navigationViewStyle(StackNavigationViewStyle())
-         
+         else {
+         VStack {
+            
+            // ===List of lists===
+            NavigationView {
+               List {
+                  Text(" ")
+                     .listRowBackground(Color("listBackground"))
+                  
+                  ForEach(listsFromFetchRequest, id: \.self) { list in
+                     NavigationLink(destination: ItemList(listFromHomePage: list)) {
+                        HStack {
+                        Text(list.wrappedName)
+                           .font(.headline)
+                           Spacer()
+                           if numListUntickedItems(list: list) > 0 {
+                              Text("\(numListUntickedItems(list: list))")
+                                 .font(.headline)
+                                 .padding(.trailing, 5)
+                           }
+                        }
+                        
+                     }
+                  }.onDelete(perform: deleteSwipedList)
+               }
+                  
+               .background(Color("listBackground").edgesIgnoringSafeArea(.all))
+               .navigationBarTitle(Text("Lists"), displayMode: .inline)
+                  
+                  
+               .background(NavigationConfigurator { nc in
+                  nc.navigationBar.barTintColor = self.navBarColor
+                  nc.navigationBar.titleTextAttributes = [.foregroundColor : self.navBarFont]
+               })
+                  
+                  
+                  
+                  
+                  
+                  // ===Nav bar items===
+                  .navigationBarItems(
+                     
+                     // Settings gear button
+                     leading:
+                     Button(action: {
+                        self.showSettings = true
+                     }) {
+                        Image(systemName: "gear")
+                           .imageScale(.large)
+                           .padding()
+                           .foregroundColor(Color("navBarFont"))
+                           .offset(x: -5)
+                     }
+                     .sheet(isPresented: self.$showSettings){
+                        Settings(showSettingsBinding: self.$showSettings)
+                           .environmentObject(self.globalVariables)
+                     },
+                     
+                     // Add list plus button
+                     trailing:
+                     Button(action: {
+                        self.showAddList = true
+                        
+                     }) {
+                        Image(systemName: "plus")
+                           .imageScale(.large)
+                           .padding()
+                           .foregroundColor(Color("navBarFont"))
+                           .offset(x: 5)
+                     }.sheet(isPresented: $showAddList) {
+                        AddList(showingAddListBinding: self.$showAddList)
+                     }
+               )
+            }
+               // ===Nav bar modifiers===
+               .accentColor(Color("navBarFont"))
+               .navigationViewStyle(StackNavigationViewStyle())
+            }
+         }
       }
       
    } // End of body
@@ -118,6 +127,8 @@ struct Home: View {
    // ========================================
    
    init() {
+      
+      
       
       // To remove all separators in list:
       // UITableView.appearance().separatorStyle = .none

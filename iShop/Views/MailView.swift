@@ -60,25 +60,3 @@ struct MailView: UIViewControllerRepresentable {
 
     }
 }
-
-
-import SwiftUI
-import MessageUI
-
-struct New: View {
-
-   @State var result: Result<MFMailComposeResult, Error>? = nil
-   @State var isShowingMailView = false
-
-    var body: some View {
-        Button(action: {
-            self.isShowingMailView.toggle()
-        }) {
-            Text("Tap Me")
-        }
-        .disabled(!MFMailComposeViewController.canSendMail())
-        .sheet(isPresented: $isShowingMailView) {
-            MailView(result: self.$result)
-        }
-    }
-}
