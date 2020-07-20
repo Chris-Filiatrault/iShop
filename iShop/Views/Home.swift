@@ -35,7 +35,11 @@ struct Home: View {
    var body: some View {
       VStack {
          if onboardingShown != true {
+            ZStack {
+               
             OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+            
+            }
          }
          else {
          VStack {

@@ -93,7 +93,7 @@ struct ItemList: View {
          
          
       // ===Navigation bar===
-      .navigationBarTitle(globalVariables.catalogueShown ? "Catalogue" : thisList.wrappedName)
+      .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
       .navigationBarItems(trailing:
          HStack {
             if globalVariables.catalogueShown == false {

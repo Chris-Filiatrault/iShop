@@ -17,94 +17,157 @@ struct OnboardingView: View {
    @Binding var onboardingShown: Bool?
    @Binding var navBarColor: UIColor
    @Binding var navBarFont: UIColor
-
+   
    let standardDarkBlueUIColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    
    var subviews = [
-      UIHostingController(rootView: ImageView(imageString: "meditating")),
-      UIHostingController(rootView: ImageView(imageString: "skydiving")),
-      UIHostingController(rootView: ImageView(imageString: "sitting"))
+      UIHostingController(rootView: Subview(
+         imageString: "darkIconRounded",
+         title:  "Welcome to iShop",
+         caption: ""
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "HomeView",
+         title: "Create Multiple Lists",
+         caption: "A number shows how many unchecked items are in each list."
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "ListView",
+         title: "Organise Using Categories",
+         caption: "Manage categories by deleting or making your own."
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "CatalogueView",
+         title: "Item History",
+         caption: "All items entered in any list are saved for quick reference."
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "FilteredCatalogueView",
+         title: "Item Lookup",
+         caption: "Start typing to filter the list and quickly find the item you're looking for."
+      )),
+      UIHostingController(rootView: LastSubview())
    ]
    
-   var titles = [
-      "Take some time out",
-      "Overcome obstacles",
-      "Create a peaceful mind"]
-   
-   var captions =  [
-      "Take your time out and bring awareness into your everyday life",
-      "Meditating helps you dealing with anxiety and other psychic problems",
-      "Regular meditation sessions creates a peaceful inner mind"
-   ]
    
    
    var body: some View {
       
       
-      VStack(alignment: .leading) {
-         GeometryReader { geometry in
-            PageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
-               .frame(height: geometry.size.height * 0.9)
+      
+      
+      ZStack {
+         
+         PageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
+            .edgesIgnoringSafeArea(.all)
+         
+         VStack {
+            Spacer()
+            
+            HStack {
+               if currentPageIndex == 0 {
+                  Text("Continue")
+                     .font(.headline)
+                     .foregroundColor(.gray)
+                  
+                  Image(systemName: "arrow.right")
+                     .imageScale(.large)
+                     .foregroundColor(.gray)
+               }
+            }
+            
+            PageControl(numberOfPages: subviews.count, currentPageIndex: $currentPageIndex)
+               .padding(.leading, 5)
+               .padding(.bottom)
+            
+            
          }
          
          
-         Group {
-            Text(titles[currentPageIndex])
-               .font(.title)
-            
-            Text(captions[currentPageIndex])
-               .font(.subheadline)
-               .foregroundColor(.gray)
-               .lineLimit(nil)
-               .padding(.vertical, 5)
-            
-            HStack {
-               PageControl(numberOfPages: subviews.count, currentPageIndex: $currentPageIndex)
-                  .padding(.leading, 5)
-               Spacer()
-               Button(action: {
-                  if self.currentPageIndex + 1 == self.subviews.count {
-                     UserDefaults.standard.set(true, forKey: "onboardingShown")
-                     self.onboardingShown = true
-                     self.navBarColor = self.standardDarkBlueUIColor
-                     self.navBarFont = UIColor.white
-                     self.currentPageIndex = 0
-                  } else {
-                  }
-                  self.currentPageIndex += 1
-               }) {
-                  ButtonContent()
-               }
-            }
-         }.padding()
       }
+      .onTapGesture {
+         if self.currentPageIndex + 1 == self.subviews.count {
+            UserDefaults.standard.set(true, forKey: "onboardingShown")
+            self.onboardingShown = true
+            self.navBarColor = self.standardDarkBlueUIColor
+            self.navBarFont = UIColor.white
+            self.currentPageIndex = 0
+         } else if self.currentPageIndex <= self.subviews.count {
+            withAnimation {
+               self.currentPageIndex += 1
+            }
+         }
+      }
+      
+      
    }
 }
 
 
-
-struct ButtonContent: View {
-   var body: some View {
-      Image(systemName: "arrow.right")
-         .resizable()
-         .foregroundColor(.white)
-         .frame(width: 30, height: 30)
-         .padding()
-         .background(Color.orange)
-         .cornerRadius(30)
-   }
-}
-
-
-struct ImageView: View {
+struct Subview: View {
    
    var imageString: String
+   var title: String
+   var caption: String
+   
    
    var body: some View {
-      Image(self.imageString)
-         .resizable()
-         .aspectRatio(contentMode: .fill)
-         .clipped()
+      
+      ZStack {
+         
+         Color(.black).edgesIgnoringSafeArea(.all)
+         GeometryReader { geometry in
+            VStack {
+               
+               Text(self.title)
+                  .font(.title)
+                  .foregroundColor(.white)
+               Image(self.imageString)
+                  .resizable()
+                  .aspectRatio(contentMode: .fill)
+                  .clipped()
+               
+               Text(self.caption)
+                  .font(.headline)
+                  .foregroundColor(.white)
+                  .lineLimit(nil)
+                  .padding(.vertical, 5)
+               
+            }
+            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6,
+                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6)
+         }
+      }
+      
+   }
+}
+
+struct LastSubview: View {
+   
+   var body: some View {
+      
+      ZStack {
+         
+         Color(.black).edgesIgnoringSafeArea(.all)
+         GeometryReader { geometry in
+            VStack {
+               
+               Text("Get Started")
+                  .bold()
+                  .frame(minWidth: 50)
+                  .font(.headline)
+                  .padding(10)
+                  .background(Color("blueButton"))
+                  .foregroundColor(.white)
+                  .cornerRadius(10)
+               
+               
+            }
+            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6,
+                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6)
+         }
+         
+      }
    }
 }
 
@@ -119,13 +182,16 @@ struct PageViewController: UIViewControllerRepresentable {
       Coordinator(self)
    }
    
+   
    func makeUIViewController(context: Context) -> UIPageViewController {
       let pageViewController = UIPageViewController(
          transitionStyle: .scroll,
          navigationOrientation: .horizontal)
       
+      
       pageViewController.dataSource = context.coordinator
       pageViewController.delegate = context.coordinator
+      
       
       return pageViewController
    }
@@ -139,9 +205,13 @@ struct PageViewController: UIViewControllerRepresentable {
       
       var parent: PageViewController
       
+      
       init(_ pageViewController: PageViewController) {
          self.parent = pageViewController
+         
+         
       }
+      
       
       func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
          //retrieves the index of the currently displayed view controller
@@ -155,6 +225,7 @@ struct PageViewController: UIViewControllerRepresentable {
          }
          
          //show the view controller before the currently displayed view controller
+         
          return parent.viewControllers[index - 1]
          
       }
@@ -194,8 +265,8 @@ struct PageControl: UIViewRepresentable {
    func makeUIView(context: Context) -> UIPageControl {
       let control = UIPageControl()
       control.numberOfPages = numberOfPages
-      control.currentPageIndicatorTintColor = UIColor.orange
-      control.pageIndicatorTintColor = UIColor.gray
+      control.currentPageIndicatorTintColor = UIColor.white
+      control.pageIndicatorTintColor = UIColor.darkGray
       
       return control
    }
