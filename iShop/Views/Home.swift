@@ -85,6 +85,13 @@ struct Home: View {
                      
                      // Settings gear button
                      leading:
+                     HStack {
+                     Button(action: {
+                        resetMOC()
+                     }) {
+                        Text("Del")
+                     }
+                     
                      Button(action: {
                         self.showSettings = true
                      }) {
@@ -93,6 +100,7 @@ struct Home: View {
                            .padding()
                            .foregroundColor(Color("navBarFont"))
                            .offset(x: -5)
+                     }
                      }
                      .sheet(isPresented: self.$showSettings){
                         Settings(showSettingsBinding: self.$showSettings)
@@ -144,96 +152,110 @@ struct Home: View {
       UITableView.appearance().backgroundColor = .clear
       
       
-                
-      //            if userHasNoLists() {
-      //
-      //               guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-      //                  return
-      //               }
-      //
-      //               let managedContext = appDelegate.persistentContainer.viewContext
-      //
-      //               let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
-      //                  managedContext)!
-      //
-      //               let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
-      //                  managedContext)!
-      //
-      //               let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
-      //                  managedContext)!
-      //
-      //
-      //               // The startup categories and items below need to have the same number of elements in the array
-      //               // String for categories, [String] for items
-      //               let startupCategories: [String] = ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
-      //
-      //               let startupItems: [[String]] = [
-      //                  ["Oranges", "Apples", "Bananas"], // Fruit
-      //                  ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
-      //                  ["Milk", "Cheese", "Eggs"], // Dairy
-      //                  ["Coffee", "Bread", "Tea", "Soda", "Cereal", "Beer",  ], // Pantry
-      //                  ["Chicken", "Bacon"], // Meat
-      //                  ["Chocolate", "Chips"], // Snacks
-      //                  ["Sunscreen", "Moisturiser"], // Skin care
-      //                  ["Probiotic", "Multivitamin"], // Supplements
-      //                  ["Tylenol", "Ibuprofen"], // Medicine
-      //                  ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
-      //                  ["Band-aids", "Antiseptic"] // First aid
-      //               ]
-      //
-      //
-      //               // Groceries list
-      //               let groceriesList = ListOfItems(entity: listEntity, insertInto: managedContext)
-      //               groceriesList.name = "Groceries"
-      //               groceriesList.id = UUID()
-      //               groceriesList.dateAdded = Date()
-      //
-      //
-      //               // Grocery categories & items
-      //               var groceryIndex: Int = 0
-      //               for categoryName in startupCategories {
-      //                  let newGroceryCategory = Category(entity: categoryEntity, insertInto: managedContext)
-      //                  newGroceryCategory.name = categoryName
-      //                  newGroceryCategory.id = UUID()
-      //                  newGroceryCategory.dateAdded = Date()
-      //
-      //                  for itemName in startupItems[groceryIndex] {
-      //
-      //                     let item = Item(entity: itemEntity, insertInto: managedContext)
-      //                     item.name = itemName
-      //                     item.id = UUID()
-      //                     item.dateAdded = Date()
-      //                     item.addedToAList = false
-      //                     item.markedOff = false
-      //                     item.quantity = 1
-      //                     item.origin = groceriesList
-      //                     groceriesList.addToItems(item)
-      //                     newGroceryCategory.addToItemsInCategory(item)
-      //                  }
-      //                  groceryIndex += 1
-      //               }
-      //
-      //
-      //               // In Basket category
-      //               let inBasketCategory = Category(entity: categoryEntity, insertInto: managedContext)
-      //               inBasketCategory.name = "In Basket"
-      //               inBasketCategory.id = UUID()
-      //               inBasketCategory.dateAdded = Date()
-      //               inBasketCategory.defaultCategory = true
-      //
-      //               // Uncategorised category
-      //               let uncategorisedCategory = Category(entity: categoryEntity, insertInto: managedContext)
-      //               uncategorisedCategory.name = "Uncategorised"
-      //               uncategorisedCategory.id = UUID()
-      //               uncategorisedCategory.dateAdded = Date()
-      //               uncategorisedCategory.defaultCategory = true
-      //
-      //               do {
-      //                  try managedContext.save()
-      //               } catch let error as NSError {
-      //                  print("Could not save items. \(error), \(error.userInfo)")
-      //               }
-      //            }
+      
+      // Setup code
+      if userHasNoLists() {
+      
+                     print("Creating new list, items and categories")
+                     print("Printing startupCodeRun value: \(SceneDelegate().globalVariables.keyValStore.set(true, forKey: "startupCodeRun"))")
+                     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                        return
+                     }
+      
+                     let managedContext = appDelegate.persistentContainer.viewContext
+      
+                     let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
+                        managedContext)!
+      
+                     let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
+                        managedContext)!
+      
+                     let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
+                        managedContext)!
+      
+      
+                     // The startup categories and items below need to have the same number of elements in the array
+                     // String for categories, [String] for items
+                     let startupCategories: [String] = ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
+      
+                     let startupItems: [[String]] = [
+                        ["Oranges", "Apples", "Bananas"], // Fruit
+                        ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
+                        ["Milk", "Cheese", "Eggs"], // Dairy
+                        ["Coffee", "Bread", "Tea", "Soda", "Cereal", "Beer",  ], // Pantry
+                        ["Chicken", "Bacon"], // Meat
+                        ["Chocolate", "Chips"], // Snacks
+                        ["Sunscreen", "Moisturiser"], // Skin care
+                        ["Probiotic", "Multivitamin"], // Supplements
+                        ["Tylenol", "Ibuprofen"], // Medicine
+                        ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
+                        ["Band-aids", "Antiseptic"] // First aid
+                     ]
+                     
+      
+                     // Groceries list
+                     let groceriesList = ListOfItems(entity: listEntity, insertInto: managedContext)
+                     groceriesList.name = "Groceries"
+                     groceriesList.id = UUID()
+                     groceriesList.dateAdded = Date()
+         
+                     // Groceries list
+                        let chemistList = ListOfItems(entity: listEntity, insertInto: managedContext)
+                        chemistList.name = "Chemist"
+                        chemistList.id = UUID()
+                        chemistList.dateAdded = Date()
+      
+      
+                     // Grocery categories & items
+                     var groceryIndex: Int = 0
+                     for categoryName in startupCategories {
+                        let newGroceryCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                        newGroceryCategory.name = categoryName
+                        newGroceryCategory.id = UUID()
+                        newGroceryCategory.dateAdded = Date()
+      
+                        for itemName in startupItems[groceryIndex] {
+      
+                           let item = Item(entity: itemEntity, insertInto: managedContext)
+                           item.name = itemName
+                           item.id = UUID()
+                           item.dateAdded = Date()
+                           item.addedToAList = false
+                           item.markedOff = false
+                           item.quantity = 1
+                           item.origin = groceriesList
+                           groceriesList.addToItems(item)
+                           newGroceryCategory.addToItemsInCategory(item)
+                        }
+                        groceryIndex += 1
+                     }
+      
+      
+                     // In Basket category
+                     let inBasketCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                     inBasketCategory.name = "In Basket"
+                     inBasketCategory.id = UUID()
+                     inBasketCategory.dateAdded = Date()
+                     inBasketCategory.defaultCategory = true
+      
+                     // Uncategorised category
+                     let uncategorisedCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                     uncategorisedCategory.name = "Uncategorised"
+                     uncategorisedCategory.id = UUID()
+                     uncategorisedCategory.dateAdded = Date()
+                     uncategorisedCategory.defaultCategory = true
+      
+                     do {
+                        try managedContext.save()
+                     } catch let error as NSError {
+                        print("Could not save items. \(error), \(error.userInfo)")
+                     }
+   
+   
+                     SceneDelegate().globalVariables.keyValStore.set(true, forKey: "startupCodeRun")
+                     SceneDelegate().globalVariables.keyValStore.synchronize()
+         
+                  }
                   
       
       

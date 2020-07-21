@@ -793,13 +793,13 @@ func inBasketCategory() -> Category? {
 
 // CHECK WHETHER FIRST TIME LAUNCH
 // Returns true if yes
-func firstTimeLaunch() -> Bool {
-   let defaults = UserDefaults.standard
-   if let _ = defaults.string(forKey: "isAppAlreadyLaunchedOnce") {
-      return false
-   } else {
-      defaults.set(false, forKey: "isAppAlreadyLaunchedOnce")
+func isFirstTimeLaunch() -> Bool {
+   if SceneDelegate().globalVariables.keyValStore.bool(forKey: "startupCodeRun") != true {
       return true
+   } else {
+      SceneDelegate().globalVariables.keyValStore.set(true, forKey: "startupCodeRun")
+      SceneDelegate().globalVariables.keyValStore.synchronize()
+      return false
    }
 }
 
@@ -831,13 +831,70 @@ func userHasNoLists() -> Bool {
 
 
 
-
-
-
-
-
 func swipeDeleteTestFunction(at offsets: IndexSet) {
    print("Deleted")
 }
 
 
+
+func resetMOC() {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let itemFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let categoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+   
+   do {
+      let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
+      let items = itemFetchReturn as! [Item]
+
+      let categoryFetchReturn = try managedContext.fetch(categoryFetchRequest)
+      let categories = categoryFetchReturn as! [Category]
+
+      let listFetchReturn = try managedContext.fetch(listFetchRequest)
+      let lists = listFetchReturn as! [ListOfItems]
+
+      
+      for item in items {
+         managedContext.delete(item)
+      }
+      for list in lists {
+         managedContext.delete(list)
+      }
+      for category in categories {
+         managedContext.delete(category)
+      }
+      
+      
+      do {
+         try managedContext.save()
+         print("deleted successfully")
+      } catch let error as NSError {
+         print("Could not delete. \(error), \(error.userInfo)")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
+
+
+
+
+
+//func firstTimeLaunch() -> Bool {
+//   let defaults = UserDefaults.standard
+//   if let _ = defaults.string(forKey: "isAppAlreadyLaunchedOnce") {
+//      return false
+//   } else {
+//      defaults.set(false, forKey: "isAppAlreadyLaunchedOnce")
+//      return true
+//   }
+//}
