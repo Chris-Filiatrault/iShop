@@ -14,3 +14,11 @@ import CoreData
 public class ListOfItems: NSManagedObject {
 
 }
+
+extension ListOfItems {
+   static func getListsFetchRequest() -> NSFetchRequest<ListOfItems> {
+      let request: NSFetchRequest<ListOfItems> = ListOfItems.fetchRequest()
+      request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: false)]
+      return request
+   }
+}

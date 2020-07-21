@@ -38,12 +38,12 @@ struct OnboardingView: View {
       )),
       UIHostingController(rootView: Subview(
          imageString: "CatalogueView",
-         title: "Item History",
-         caption: "All items entered in any list are saved for quick reference."
+         title: "Add From Item History",
+         caption: "All items entered in any list are saved. Simply tap an item to add it to the current list."
       )),
       UIHostingController(rootView: Subview(
          imageString: "FilteredCatalogueView",
-         title: "Item Lookup",
+         title: "Filter The Item History",
          caption: "Start typing to filter the list and quickly find the item you're looking for."
       )),
       UIHostingController(rootView: LastSubview())
@@ -53,11 +53,7 @@ struct OnboardingView: View {
    
    var body: some View {
       
-      
-      
-      
       ZStack {
-         
          PageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
             .edgesIgnoringSafeArea(.all)
          
@@ -75,15 +71,10 @@ struct OnboardingView: View {
                      .foregroundColor(.gray)
                }
             }
-            
             PageControl(numberOfPages: subviews.count, currentPageIndex: $currentPageIndex)
                .padding(.leading, 5)
                .padding(.bottom)
-            
-            
          }
-         
-         
       }
       .onTapGesture {
          if self.currentPageIndex + 1 == self.subviews.count {
@@ -98,7 +89,6 @@ struct OnboardingView: View {
             }
          }
       }
-      
       
    }
 }
@@ -128,7 +118,7 @@ struct Subview: View {
                   .clipped()
                
                Text(self.caption)
-                  .font(.headline)
+                  .font(.subheadline)
                   .foregroundColor(.white)
                   .lineLimit(nil)
                   .padding(.vertical, 5)
@@ -151,10 +141,10 @@ struct LastSubview: View {
          Color(.black).edgesIgnoringSafeArea(.all)
          GeometryReader { geometry in
             VStack {
-               
-               Text("Get Started")
+               Spacer()
+               Text("Start")
                   .bold()
-                  .frame(minWidth: 50)
+//                  .frame(minWidth: 50)
                   .font(.headline)
                   .padding(10)
                   .background(Color("blueButton"))

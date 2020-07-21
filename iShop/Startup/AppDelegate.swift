@@ -46,6 +46,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
        error conditions that could cause the creation of the store to fail.
        */
       let container = NSPersistentCloudKitContainer(name: "iShop")
+      
+      // Use the persistent containers ability to check for changes, so we can pull/push changes when the order of items is changed
+      guard let description = container.persistentStoreDescriptions.first else {
+         fatalError("No descriptions found")
+      }
+      description.setOption(true as NSObject, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+      
+      
       container.loadPersistentStores(completionHandler: { (storeDescription, error) in
          if let error = error as NSError? {
             // Replace this implementation with code to handle the error appropriately.
@@ -62,11 +70,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("Unresolved error \(error), \(error.userInfo)")
          }
       })
+      
+      // Allow conflicts to be merged
+      container.viewContext.automaticallyMergesChangesFromParent = true
+      
+      // Make the iCloud store the source of truth
+//      container.viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+      
+      // Make in memory values the source of truth
+      container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+      
+      
+      NotificationCenter.default.addObserver(self, selector: #selector(self.processUpdate), name: .NSPersistentStoreRemoteChange, object: nil)
+      
       return container
    }()
    
    // MARK: - Core Data Saving support
-   
    func saveContext () {
       let context = persistentContainer.viewContext
       if context.hasChanges {
@@ -80,6 +100,136 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          }
       }
    }
+   
+   
+   // Function for performing actions as updates are processed
+   @objc
+   func processUpdate(notification: NSNotification) {
+      operationQueue.addOperation {
+         
+         let managedContext = self.persistentContainer.viewContext
+         managedContext.performAndWait {
+            
+            // Create initial lists and items, if the user doesn't have any saved on their phone
+            let lists: [ListOfItems]
+            do {
+               try lists = managedContext.fetch(ListOfItems.getListsFetchRequest())
+               
+               var numLists: Int = 0
+               for _ in lists {
+                  numLists += 1
+               }
+               print("numlists: \(numLists)")
+               
+               if numLists == 0 {
+                  
+                  print("Creating new list, items and categories")
+                  
+                  let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
+                     managedContext)!
+                  
+                  let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
+                     managedContext)!
+                  
+                  let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
+                     managedContext)!
+                  
+                  
+                  // The startup categories and items below need to have the same number of elements in the array
+                  // String for categories, [String] for items
+                  let startupCategories: [String] = ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
+                  
+                  let startupItems: [[String]] = [
+                     ["Oranges", "Apples", "Bananas"], // Fruit
+                     ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
+                     ["Milk", "Cheese", "Eggs"], // Dairy
+                     ["Coffee", "Bread", "Tea", "Soda", "Cereal", "Beer",  ], // Pantry
+                     ["Chicken", "Bacon"], // Meat
+                     ["Chocolate", "Chips"], // Snacks
+                     ["Sunscreen", "Moisturiser"], // Skin care
+                     ["Probiotic", "Multivitamin"], // Supplements
+                     ["Tylenol", "Ibuprofen"], // Medicine
+                     ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
+                     ["Band-aids", "Antiseptic"] // First aid
+                  ]
+                  
+                  
+                  // Groceries list
+                  let groceriesList = ListOfItems(entity: listEntity, insertInto: managedContext)
+                  groceriesList.name = "Groceries"
+                  groceriesList.id = UUID()
+                  groceriesList.dateAdded = Date()
+                  
+                  
+                  // Grocery categories & items
+                  var groceryIndex: Int = 0
+                  for categoryName in startupCategories {
+                     let newGroceryCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                     newGroceryCategory.name = categoryName
+                     newGroceryCategory.id = UUID()
+                     newGroceryCategory.dateAdded = Date()
+                     
+                     for itemName in startupItems[groceryIndex] {
+                        
+                        let item = Item(entity: itemEntity, insertInto: managedContext)
+                        item.name = itemName
+                        item.id = UUID()
+                        item.dateAdded = Date()
+                        item.addedToAList = false
+                        item.markedOff = false
+                        item.quantity = 1
+                        item.origin = groceriesList
+                        groceriesList.addToItems(item)
+                        newGroceryCategory.addToItemsInCategory(item)
+                     }
+                     groceryIndex += 1
+                  }
+                  
+                  
+                  // In Basket category
+                  let inBasketCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                  inBasketCategory.name = "In Basket"
+                  inBasketCategory.id = UUID()
+                  inBasketCategory.dateAdded = Date()
+                  inBasketCategory.defaultCategory = true
+                  
+                  // Uncategorised category
+                  let uncategorisedCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                  uncategorisedCategory.name = "Uncategorised"
+                  uncategorisedCategory.id = UUID()
+                  uncategorisedCategory.dateAdded = Date()
+                  uncategorisedCategory.defaultCategory = true
+                  
+                  do {
+                     try managedContext.save()
+                  } catch let error as NSError {
+                     print("Could not save startup list, items and categories.. \(error), \(error.userInfo)")
+                  }
+                  
+                  
+               }
+               
+               
+            } catch {
+               let nserror = error as NSError
+               fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+
+
+            
+            
+         }
+      }
+   }
+   
+   
+   // Operation cue, for performing changes
+   // Only allow 1 operation at a time, to avoid syncing issues
+   lazy var operationQueue: OperationQueue = {
+      var queue = OperationQueue()
+      queue.maxConcurrentOperationCount = 1
+      return queue
+   }()
    
 }
 

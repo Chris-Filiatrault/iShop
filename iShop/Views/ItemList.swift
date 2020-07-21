@@ -60,7 +60,7 @@ struct ItemList: View {
             .background(Color(.white))
             .padding(15)
             .padding(.top, 10)
-            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
+            .disableAutocorrection(self.globalVariables.keyValStore.bool(forKey: "disableAutocorrect"))
             
          
          // ===List of items with categories===
