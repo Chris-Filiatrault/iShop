@@ -579,11 +579,6 @@ func numListUntickedItems(list: ListOfItems) -> Int {
 
 
 
-
-
-
-
-
 // =====================================================
 // =============== Category functions ==================
 // =====================================================
@@ -640,6 +635,7 @@ func addCategory(categoryName: String, thisItem: Item) {
 
 
 // ===CHANGE CATEGORY===
+// Happens in two parts (changing categoryOrigin + changing itemsInCategoryArray) to avoid mutating state warnings etc
 func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Category) {
    
    guard let appDelegate =
@@ -769,8 +765,8 @@ func inBasketCategory() -> Category? {
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
       if fetchReturn != [] {
-      let uncategorised = fetchReturn[0]
-      return uncategorised
+      let inBasket = fetchReturn[0]
+      return inBasket
       }
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
@@ -781,6 +777,101 @@ func inBasketCategory() -> Category? {
 
 
 
+//===MERGE STARTUP CATEGORIES TOGETHER===
+// For when a user starts using the app on another device and startup items/lists/categories are duplicated
+
+func mergeStartupCategories() {
+   
+   // Get all categories
+   // 
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else {
+         return
+   }
+
+   let managedContext = appDelegate.persistentContainer.viewContext
+
+   let idPredicate = NSPredicate(format: "id == %@", "4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+   let namePredicate = NSPredicate(format: "name = %@", "Groceries")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [idPredicate, namePredicate])
+
+   let listFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+   listFetchRequest.predicate = compoundPredicate
+
+   let categoryFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+
+
+   do {
+      let lists = try managedContext.fetch(listFetchRequest) as! [ListOfItems]
+      let categories = try managedContext.fetch(categoryFetchRequest) as! [Category]
+
+      print("Number of lists named Groceries with same id is: \(lists.count)")
+
+      // If listsFromFetchRequest is not empty, and there are more than 1 start up lists named "Groceries"
+      if lists != [] && lists.count > 1 {
+
+         // Grab the first list
+         print("Got first list")
+         let firstList = lists[0]
+
+         // For all items in all other lists
+         for index in 1..<lists.count {
+            for item in lists[index].itemArray {
+
+               // If the first list doesn't have that item, add it
+               if !firstList.nameArray.contains(item.wrappedName) {
+                  print("Adding \(item.wrappedName) to Groceries")
+                  firstList.addToItems(item)
+                  item.origin = firstList
+                  for category in categories {
+                     if category.wrappedName == item.categoryOrigin?.wrappedName ?? "" {
+                        category.addToItemsInCategory(item)
+                     }
+                  }
+               }
+            }
+            // Delete the list
+            managedContext.delete(lists[index])
+            print("Successfully deleted Groceries duplicate list")
+         }
+
+      }
+
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
+
+
+
+
+
+
+// =====================================================
+// ==================== InitDate =======================
+// =====================================================
+
+func createNewInitDate() {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   let initDateEntity = NSEntityDescription.entity(forEntityName: "InitDate", in: managedContext)!
+   
+      let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
+      newInitDate.initDate = Date()
+      print("The date is: \(newInitDate.initDate)")
+
+   do {
+      try managedContext.save()
+   } catch let error as NSError {
+      print("Could not save. \(error), \(error.userInfo)")
+   }
+}
 
 
 
@@ -794,11 +885,10 @@ func inBasketCategory() -> Category? {
 // CHECK WHETHER FIRST TIME LAUNCH
 // Returns true if yes
 func isFirstTimeLaunch() -> Bool {
-   if SceneDelegate().globalVariables.keyValStore.bool(forKey: "startupCodeRun") != true {
+   if UserDefaults.standard.bool(forKey: "userHasLaunchedPreviously") != true {
       return true
    } else {
-      SceneDelegate().globalVariables.keyValStore.set(true, forKey: "startupCodeRun")
-      SceneDelegate().globalVariables.keyValStore.synchronize()
+      UserDefaults.standard.set(true, forKey: "userHasLaunchedPreviously")
       return false
    }
 }
@@ -821,6 +911,31 @@ func userHasNoLists() -> Bool {
       let listsFromFetchRequest = try managedContext.fetch(fetchRequest) as! [ListOfItems]
       
       result = listsFromFetchRequest.count == 0
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+   return result
+}
+
+func userHasNoCategories() -> Bool {
+   
+   var result: Bool = false
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else {
+         return false
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   
+   do {
+      let categoriesFromFetchRequest = try managedContext.fetch(fetchRequest) as! [Category]
+      
+      result = categoriesFromFetchRequest.count == 0
       
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
@@ -889,12 +1004,13 @@ func resetMOC() {
 
 
 
-//func firstTimeLaunch() -> Bool {
-//   let defaults = UserDefaults.standard
-//   if let _ = defaults.string(forKey: "isAppAlreadyLaunchedOnce") {
-//      return false
-//   } else {
-//      defaults.set(false, forKey: "isAppAlreadyLaunchedOnce")
-//      return true
-//   }
-//}
+func firstTimeLaunch() -> Bool {
+   let defaults = UserDefaults.standard
+   if let _ = defaults.string(forKey: "isAppAlreadyLaunchedOnce") {
+      return false
+   } else {
+      defaults.set(false, forKey: "isAppAlreadyLaunchedOnce")
+      return true
+   }
+}
+

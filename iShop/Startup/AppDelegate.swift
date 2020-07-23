@@ -75,10 +75,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       container.viewContext.automaticallyMergesChangesFromParent = true
       
       // Make the iCloud store the source of truth
-//      container.viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+      container.viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
       
       // Make in memory values the source of truth
-      container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+//      container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
       
       
       NotificationCenter.default.addObserver(self, selector: #selector(self.processUpdate), name: .NSPersistentStoreRemoteChange, object: nil)
@@ -106,121 +106,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
    @objc
    func processUpdate(notification: NSNotification) {
       operationQueue.addOperation {
-         
          let managedContext = self.persistentContainer.viewContext
-//         managedContext.performAndWait {
-//            
-//            // Create initial lists and items, if the user doesn't have any saved on their phone
-//            let lists: [ListOfItems]
-//            do {
-//               try lists = managedContext.fetch(ListOfItems.getListsFetchRequest())
-//               
-//               var numLists: Int = 0
-//               for _ in lists {
-//                  numLists += 1
-//               }
-//               print("numlists: \(numLists)")
-//               if SceneDelegate().globalVariables.keyValStore.bool(forKey: "startupCodeRun") != true {
-////               if numLists == 0 {
-//                  print("Printing startupCodeRun value: \(SceneDelegate().globalVariables.keyValStore.set(true, forKey: "startupCodeRun"))")
-//                  print("Creating new list, items and categories")
-//                  
-//                  let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
-//                     managedContext)!
-//                  
-//                  let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
-//                     managedContext)!
-//                  
-//                  let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
-//                     managedContext)!
-//                  
-//                  
-//                  // The startup categories and items below need to have the same number of elements in the array
-//                  // String for categories, [String] for items
-//                  let startupCategories: [String] = ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
-//                  
-//                  let startupItems: [[String]] = [
-//                     ["Oranges", "Apples", "Bananas"], // Fruit
-//                     ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
-//                     ["Milk", "Cheese", "Eggs"], // Dairy
-//                     ["Coffee", "Bread", "Tea", "Soda", "Cereal", "Beer",  ], // Pantry
-//                     ["Chicken", "Bacon"], // Meat
-//                     ["Chocolate", "Chips"], // Snacks
-//                     ["Sunscreen", "Moisturiser"], // Skin care
-//                     ["Probiotic", "Multivitamin"], // Supplements
-//                     ["Tylenol", "Ibuprofen"], // Medicine
-//                     ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
-//                     ["Band-aids", "Antiseptic"] // First aid
-//                  ]
-//                  
-//                  
-//                  // Groceries list
-//                  let groceriesList = ListOfItems(entity: listEntity, insertInto: managedContext)
-//                  groceriesList.name = "Groceries"
-//                  groceriesList.id = UUID()
-//                  groceriesList.dateAdded = Date()
-//                  
-//                  
-//                  // Grocery categories & items
-//                  var groceryIndex: Int = 0
-//                  for categoryName in startupCategories {
-//                     let newGroceryCategory = Category(entity: categoryEntity, insertInto: managedContext)
-//                     newGroceryCategory.name = categoryName
-//                     newGroceryCategory.id = UUID()
-//                     newGroceryCategory.dateAdded = Date()
-//                     
-//                     for itemName in startupItems[groceryIndex] {
-//                        
-//                        let item = Item(entity: itemEntity, insertInto: managedContext)
-//                        item.name = itemName
-//                        item.id = UUID()
-//                        item.dateAdded = Date()
-//                        item.addedToAList = false
-//                        item.markedOff = false
-//                        item.quantity = 1
-//                        item.origin = groceriesList
-//                        groceriesList.addToItems(item)
-//                        newGroceryCategory.addToItemsInCategory(item)
-//                     }
-//                     groceryIndex += 1
-//                  }
-//                  
-//                  
-//                  // In Basket category
-//                  let inBasketCategory = Category(entity: categoryEntity, insertInto: managedContext)
-//                  inBasketCategory.name = "In Basket"
-//                  inBasketCategory.id = UUID()
-//                  inBasketCategory.dateAdded = Date()
-//                  inBasketCategory.defaultCategory = true
-//                  
-//                  // Uncategorised category
-//                  let uncategorisedCategory = Category(entity: categoryEntity, insertInto: managedContext)
-//                  uncategorisedCategory.name = "Uncategorised"
-//                  uncategorisedCategory.id = UUID()
-//                  uncategorisedCategory.dateAdded = Date()
-//                  uncategorisedCategory.defaultCategory = true
-//                  
-//                  do {
-//                     try managedContext.save()
-//                  } catch let error as NSError {
-//                     print("Could not save startup list, items and categories.. \(error), \(error.userInfo)")
-//                  }
-//                  
-//                  SceneDelegate().globalVariables.keyValStore.set(true, forKey: "startupCodeRun")
-//                  SceneDelegate().globalVariables.keyValStore.synchronize()
-//                  
-//               }
-//               
-//               
-//            } catch {
-//               let nserror = error as NSError
-//               fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-//            }
-//
-//
-//            
-//            
-//         }
+         managedContext.performAndWait {
+            // Make changes here as updates are processed
+//            mergeStartupLists()
+         }
       }
    }
    

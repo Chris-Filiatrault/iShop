@@ -14,7 +14,7 @@ struct ItemDetails: View {
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-   ]) var lists: FetchedResults<ListOfItems>
+   ], predicate: NSPredicate(format: "name != %@", "Groceries-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var lists: FetchedResults<ListOfItems>
    
    var thisItem: Item
    @Binding var showItemDetails: Bool

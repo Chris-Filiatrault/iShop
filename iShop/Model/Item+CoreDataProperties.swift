@@ -76,6 +76,10 @@ extension Item {
       id ?? UUID()
    }
    
+   public var wrappedCategoryOriginName: String {
+      categoryOrigin?.wrappedName ?? ""
+   }
+   
 }
    
    

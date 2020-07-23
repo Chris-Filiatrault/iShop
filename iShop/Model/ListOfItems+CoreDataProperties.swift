@@ -40,6 +40,25 @@ extension ListOfItems {
       }
    }
    
+   
+   
+   // ========
+   // ===Use this name array to continue creating the removeDuplicateList function===
+   // ========
+   
+   public var nameArray: [String] {
+      var names: [String] = []
+      let set = items as? Set<Item> ?? []
+      let itemArray = set.sorted {
+         $0.wrappedName.lowercased() < $1.wrappedName.lowercased()
+      }
+      for item in itemArray {
+         names.append(item.wrappedName)
+      }
+      return names
+   }
+   
+   
 }
 
 // MARK: Generated accessors for items

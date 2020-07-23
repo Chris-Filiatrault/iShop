@@ -7,6 +7,9 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="itemsInCategory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="categoryOrigin" inverseEntity="Item"/>
     </entity>
+    <entity name="InitDate" representedClassName="InitDate" syncable="YES">
+        <attribute name="initDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
     <entity name="Item" representedClassName="Item" syncable="YES">
         <attribute name="addedToAList" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -28,5 +31,6 @@
         <element name="Category" positionX="-36" positionY="72" width="128" height="118"/>
         <element name="Item" positionX="-63" positionY="-18" width="128" height="178"/>
         <element name="ListOfItems" positionX="-54" positionY="45" width="128" height="103"/>
+        <element name="InitDate" positionX="-45" positionY="72" width="128" height="28"/>
     </elements>
 </model>
