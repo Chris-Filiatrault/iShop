@@ -26,16 +26,16 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    
    let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
    
-   let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+   let listFetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    
-   let categoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let categoryFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
    
    
    do {
-      let lists = try managedContext.fetch(listFetchRequest) as! [ListOfItems]
+      let lists = try managedContext.fetch(listFetchRequest)
       
-      let returnedCategories = try managedContext.fetch(categoryFetchRequest) as! [Category]
+      let returnedCategories = try managedContext.fetch(categoryFetchRequest)
       
       // Unique item name --> create a new object of that name for every list
       if itemNameIsUnique(name: itemName.wrappedValue) {
@@ -1064,7 +1064,7 @@ func resetMOC() {
 // The startup categories and items below need to have the same number of elements in the array
 // String for categories, [String] for items
 func startupCategoryStrings() -> [String] {
-   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid", "Uncategorised", "In Basket"]
+   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
 }
 
 func startupItemStrings() -> [[String]] {
@@ -1079,9 +1079,7 @@ func startupItemStrings() -> [[String]] {
       ["Probiotic", "Multivitamin"], // Supplements
       ["Tylenol", "Ibuprofen"], // Medicine
       ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
-      ["Band-aids", "Antiseptic"], // First aid
-      [], // Uncategorised
-      [] // In Basket
+      ["Band-aids", "Antiseptic"] // First aid
    ]
 }
 

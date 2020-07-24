@@ -107,6 +107,24 @@ struct ItemList: View {
                      .foregroundColor(Color("navBarFont"))
                      .padding(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 5))
                }.padding(.vertical, 10)
+                  .actionSheet(isPresented: self.$showMoreOptions) {
+                     ActionSheet(title: Text("Options"), buttons: [
+                        .default(Text("Rename List")) {
+                           // Do stuff
+                        },
+                        .default(Text("Hide \"In Basket\" Category")) {
+                           // Do stuff
+                        },
+                        .default(
+                           Text("Clear List")) {
+                        // Do stuff
+                     },
+                     .default(
+                        Text("Cancel")) {
+                     // Do stuff
+                  }
+                     ])
+               }
                   .sheet(isPresented: self.$showMoreOptions) {
                      MoreOptions()
                }
@@ -144,7 +162,6 @@ struct ItemList: View {
       })
       
    }// End of body
-   
 }
 
 

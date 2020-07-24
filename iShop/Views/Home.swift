@@ -16,7 +16,7 @@ struct Home: View {
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-      ], predicate: NSPredicate(format: "name != %@", "Groceries-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var listsFromFetchRequest: FetchedResults<ListOfItems>
+      ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var listsFromFetchRequest: FetchedResults<ListOfItems>
    
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
                  predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
@@ -24,7 +24,6 @@ struct Home: View {
    
    @State var showSettings: Bool = false
    @State var showAddList: Bool = false
-   @State var initialListName: String = "Groceries"
    @State var action: Int? = 0
    @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
    
@@ -187,7 +186,7 @@ struct Home: View {
             print("Creating startup list")
             // Groceries list
             let groceriesList = ListOfItems(entity: listEntity, insertInto: managedContext)
-            groceriesList.name = "Groceries-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
+            groceriesList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
             groceriesList.id = UUID()
             groceriesList.dateAdded = newInitDate.initDate
             
@@ -219,6 +218,16 @@ struct Home: View {
                   }
                   groceryIndex += 1
                }
+               
+               let uncategorised = Category(entity: categoryEntity, insertInto: managedContext)
+               uncategorised.name = "Uncategorised"
+               uncategorised.id = UUID()
+               uncategorised.dateAdded = newInitDate.initDate
+               
+               let inBasket = Category(entity: categoryEntity, insertInto: managedContext)
+               inBasket.name = "In Basket"
+               inBasket.id = UUID()
+               inBasket.dateAdded = newInitDate.initDate
             }
          }
          
