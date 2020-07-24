@@ -576,6 +576,18 @@ func numListUntickedItems(list: ListOfItems) -> Int {
    return result
 }
 
+func numCategoryUntickedItems(category: Category) -> Int {
+   
+   var result: Int = 0
+   
+   for item in category.itemsInCategoryArray {
+      if item.markedOff == false && item.addedToAList == true {
+         result += 1
+      }
+   }
+   return result
+}
+
 
 
 
@@ -780,62 +792,62 @@ func inBasketCategory() -> Category? {
 //===MERGE STARTUP CATEGORIES TOGETHER===
 // For when a user starts using the app on another device and startup items/lists/categories are duplicated
 
-func mergeStartupCategories() {
+func mergeStartupCategories(context: NSManagedObjectContext) {
    
-   // Get all categories
-   // 
-   
-   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return
-   }
-
-   let managedContext = appDelegate.persistentContainer.viewContext
-
-   let idPredicate = NSPredicate(format: "id == %@", "4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-   let namePredicate = NSPredicate(format: "name = %@", "Groceries")
-   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [idPredicate, namePredicate])
-
-   let listFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
-   listFetchRequest.predicate = compoundPredicate
-
    let categoryFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
-
+   categoryFetchRequest.predicate = NSPredicate(format: "name IN %@", startupCategoryStrings())
+   
+   let initDateFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
+   initDateFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
 
    do {
-      let lists = try managedContext.fetch(listFetchRequest) as! [ListOfItems]
-      let categories = try managedContext.fetch(categoryFetchRequest) as! [Category]
+      let dates = try context.fetch(initDateFetchRequest) as! [InitDate]
+      let categories = try context.fetch(categoryFetchRequest) as! [Category]
+      
+      // Get the earliest date
+      if dates != [] {
+         let earliestDate = dates[0].initDate
+         
+         // Get all categories made on the earliest date + all other categories
+         var originalCategories: [Category] = []
+         var otherCategories: [Category] = []
+         var remainingCategoryNames: [String] = []
+         for category in categories {
+            if category.dateAdded == earliestDate {
+               originalCategories.append(category)
+               remainingCategoryNames.append(category.wrappedName)
+            } else {
+               otherCategories.append(category)
+            }
+         }
+         
+         // For all other categories:
 
-      print("Number of lists named Groceries with same id is: \(lists.count)")
-
-      // If listsFromFetchRequest is not empty, and there are more than 1 start up lists named "Groceries"
-      if lists != [] && lists.count > 1 {
-
-         // Grab the first list
-         print("Got first list")
-         let firstList = lists[0]
-
-         // For all items in all other lists
-         for index in 1..<lists.count {
-            for item in lists[index].itemArray {
-
-               // If the first list doesn't have that item, add it
-               if !firstList.nameArray.contains(item.wrappedName) {
-                  print("Adding \(item.wrappedName) to Groceries")
-                  firstList.addToItems(item)
-                  item.origin = firstList
-                  for category in categories {
-                     if category.wrappedName == item.categoryOrigin?.wrappedName ?? "" {
-                        category.addToItemsInCategory(item)
+         // If no original category with that name exists (deleted by user), delete any newly created categories with that name
+         for otherCategory in otherCategories {
+            if !remainingCategoryNames.contains(otherCategory.wrappedName) {
+               context.delete(otherCategory)
+            }
+            else {
+               // move all items from the newly created category with the same name into the original category
+               for originalCategory in originalCategories {
+                  if originalCategory.wrappedName == otherCategory.wrappedName {
+                     for item in otherCategory.itemsInCategoryArray {
+                        originalCategory.addToItemsInCategory(item)
+                        item.categoryOrigin = originalCategory
                      }
                   }
                }
+               // then delete the new duplicate category
+               context.delete(otherCategory)
             }
-            // Delete the list
-            managedContext.delete(lists[index])
-            print("Successfully deleted Groceries duplicate list")
          }
-
+      }
+      
+      do {
+         try context.save()
+      } catch let error as NSError {
+         print("Could not save. \(error), \(error.userInfo)")
       }
 
    } catch let error as NSError {
@@ -845,8 +857,17 @@ func mergeStartupCategories() {
 
 
 
+      
 
 
+
+
+
+
+
+//            Delete the category
+//            managedContext.delete(category)
+//            print("Successfully deleted duplicate category named: \(category)")
 
 // =====================================================
 // ==================== InitDate =======================
@@ -864,7 +885,6 @@ func createNewInitDate() {
    
       let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
       newInitDate.initDate = Date()
-      print("The date is: \(newInitDate.initDate)")
 
    do {
       try managedContext.save()
@@ -872,6 +892,39 @@ func createNewInitDate() {
       print("Could not save. \(error), \(error.userInfo)")
    }
 }
+
+func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
+   var result: Bool = false
+      
+   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
+   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
+   
+   do {
+      let dates = try context.fetch(fetchRequest) as! [InitDate]
+      
+      result = dates.count > 1
+      print("Result is: \(result)")
+      print("No. dates is: \(dates.count)")
+      
+      if dates != [] {
+         let earliestDate = dates[0].initDate
+         for date in dates {
+            if date.initDate != earliestDate {
+               context.delete(date)
+            }
+         }
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+   
+   return result
+}
+
+
+
 
 
 
@@ -965,6 +1018,7 @@ func resetMOC() {
    let itemFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
    let categoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
    let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+   let initDateFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
    
    do {
       let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
@@ -975,6 +1029,9 @@ func resetMOC() {
 
       let listFetchReturn = try managedContext.fetch(listFetchRequest)
       let lists = listFetchReturn as! [ListOfItems]
+      
+      let initDateFetchReturn = try managedContext.fetch(initDateFetchRequest)
+      let dates = initDateFetchReturn as! [InitDate]
 
       
       for item in items {
@@ -985,6 +1042,9 @@ func resetMOC() {
       }
       for category in categories {
          managedContext.delete(category)
+      }
+      for date in dates {
+         managedContext.delete(date)
       }
       
       
@@ -1001,16 +1061,27 @@ func resetMOC() {
 }
 
 
+// The startup categories and items below need to have the same number of elements in the array
+// String for categories, [String] for items
+func startupCategoryStrings() -> [String] {
+   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid", "Uncategorised", "In Basket"]
+}
 
-
-
-func firstTimeLaunch() -> Bool {
-   let defaults = UserDefaults.standard
-   if let _ = defaults.string(forKey: "isAppAlreadyLaunchedOnce") {
-      return false
-   } else {
-      defaults.set(false, forKey: "isAppAlreadyLaunchedOnce")
-      return true
-   }
+func startupItemStrings() -> [[String]] {
+   return [
+      ["Oranges", "Apples", "Bananas"], // Fruit
+      ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
+      ["Milk", "Cheese", "Eggs"], // Dairy
+      ["Coffee", "Bread", "Tea", "Soda", "Cereal", "Beer",  ], // Pantry
+      ["Chicken", "Bacon"], // Meat
+      ["Chocolate", "Chips"], // Snacks
+      ["Sunscreen", "Moisturiser"], // Skin care
+      ["Probiotic", "Multivitamin"], // Supplements
+      ["Tylenol", "Ibuprofen"], // Medicine
+      ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
+      ["Band-aids", "Antiseptic"], // First aid
+      [], // Uncategorised
+      [] // In Basket
+   ]
 }
 

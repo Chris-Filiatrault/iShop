@@ -109,7 +109,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          let managedContext = self.persistentContainer.viewContext
          managedContext.performAndWait {
             // Make changes here as updates are processed
-//            mergeStartupLists()
+            if initCodeWasRunOnAnotherDevice(context: managedContext) {
+               mergeStartupCategories(context: managedContext)
+            }
          }
       }
    }

@@ -66,6 +66,10 @@ struct ItemCategory: View {
                ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff)
             }.onDelete(perform: removeSwipedItem)
          }
+      }.onAppear {
+         for item in self.items.wrappedValue {
+            print(item.wrappedName)
+         }
       }
       
    }

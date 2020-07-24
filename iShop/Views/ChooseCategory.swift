@@ -35,6 +35,15 @@ struct ChooseCategory: View {
                }
             }
             
+            if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
+               HStack {
+                  Text("Uncategorised")
+                  Spacer()
+                  Image(systemName: "checkmark")
+                     .imageScale(.medium)
+               }.foregroundColor(.blue)
+            }
+            
             ForEach(self.categories, id: \.self) { category in
                Button(action: {
                   changeCategory1(thisItem: self.thisItem,
@@ -63,15 +72,6 @@ struct ChooseCategory: View {
             }
             .onDelete(perform: deleteSwipedCategory)
          
-            
-            if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
-               HStack {
-                  Text("Uncategorised")
-                  Spacer()
-                  Image(systemName: "checkmark")
-                     .imageScale(.medium)
-               }.foregroundColor(.blue)
-            }
          }
       }
       .navigationBarTitle(Text("Category"), displayMode: .inline)
