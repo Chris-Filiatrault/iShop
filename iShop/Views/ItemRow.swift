@@ -27,7 +27,6 @@ struct ItemRow: View {
             
             ZStack {
                Rectangle().hidden()
-               
                HStack {
                   Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
                      .imageScale(.large)
@@ -50,7 +49,6 @@ struct ItemRow: View {
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .padding(7)
                   }
-                     
                   .sheet(isPresented: self.$showItemDetails) {
                      ItemDetails(thisItem: self.thisItem,
                                  showItemDetails: self.$showItemDetails,
@@ -67,8 +65,6 @@ struct ItemRow: View {
                }
             }
          }
-         
-         
       }
       .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
    }

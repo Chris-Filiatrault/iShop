@@ -12,11 +12,12 @@ import SwiftUI
 struct RenameList: View {
    
    var thisList: ListOfItems
-   @Environment(\.managedObjectContext) var context
-   @EnvironmentObject var globalVariables: GlobalVariableClass
    @State var newListName: String
    @State var duplicateListAlert = false
    @Binding var showingRenameListBinding: Bool
+   
+   @Environment(\.managedObjectContext) var context
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    
    var body: some View {
       
@@ -25,18 +26,7 @@ struct RenameList: View {
             
             // ===Enter item textfield===
             TextField("Enter new name", text: $newListName, onCommit: {
-               if self.newListName != "" && listNameIsUnique(name: self.newListName) {
-                  renameList(thisList: self.thisList, newName: self.newListName)
-               
-                  self.showingRenameListBinding = false
-                  self.newListName = ""
-               }
-               else if !listNameIsUnique(name: self.newListName) {
-                  self.duplicateListAlert = true
-               }
-               else if self.newListName == "" {
-                  self.showingRenameListBinding = false
-               }
+               self.commit()
             })
                .textFieldStyle(RoundedBorderTextFieldStyle())
                .padding(5)
@@ -47,8 +37,6 @@ struct RenameList: View {
             }
             
 
-            
-            
             // ===Buttons===
             HStack(alignment: .center) {
                
@@ -64,18 +52,8 @@ struct RenameList: View {
                
                // Add button
                Button(action: {
-                  if self.newListName != "" && listNameIsUnique(name: self.newListName) {
-                     renameList(thisList: self.thisList, newName: self.newListName)
-                     self.showingRenameListBinding = false
-                     self.newListName = ""
-                  }
-                  else if !listNameIsUnique(name: self.newListName) {
-                     self.duplicateListAlert = true
-                  }
-                  else if self.newListName == "" {
-                     self.showingRenameListBinding = false
-                  }
-               }) {
+                  self.commit()
+                  }) {
                   Text("Rename")
                      .bold()
                      .frame(minWidth: 50)
@@ -101,5 +79,19 @@ struct RenameList: View {
          
       } // End of VStack
          .environment(\.horizontalSizeClass, .compact)
+      
+   }
+   func commit() {
+      if self.newListName != "" && listNameIsUnique(name: self.newListName) {
+         renameList(thisList: self.thisList, newName: self.newListName)
+         self.showingRenameListBinding = false
+         self.newListName = ""
+      }
+      else if !listNameIsUnique(name: self.newListName) {
+         self.duplicateListAlert = true
+      }
+      else if self.newListName == "" {
+         self.showingRenameListBinding = false
+      }
    }
 }

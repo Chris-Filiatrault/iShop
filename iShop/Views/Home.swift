@@ -12,25 +12,24 @@ import CoreData
 
 struct Home: View {
    
+   @State var navBarFont: UIColor = UIColor.white
+   @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
+   @State var showSettings: Bool = false
+   @State var showAddList: Bool = false
+   @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
+
+   @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
-   
+      
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-      ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var listsFromFetchRequest: FetchedResults<ListOfItems>
+         NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
+   var listsFromFetchRequest: FetchedResults<ListOfItems>
    
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
                  predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
    
-   
-   @State var showSettings: Bool = false
-   @State var showAddList: Bool = false
-   @State var action: Int? = 0
-   @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
-   
-   
-   @State var navBarFont: UIColor = UIColor.white
-   @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
-   
+      
    var body: some View {
       VStack {
          //                  if onboardingShown != true {
@@ -49,7 +48,11 @@ struct Home: View {
                      .listRowBackground(Color("listBackground"))
                   
                   ForEach(listsFromFetchRequest, id: \.self) { list in
-                     NavigationLink(destination: ItemList(listFromHomePage: list)) {
+                     NavigationLink(destination: ItemList(listFromHomePage: list)
+                        .environment(\.managedObjectContext, self.context)
+                        .environmentObject(self.globalVariables)
+
+                     ) {
                         HStack {
                            Text(list.wrappedName)
                               .font(.headline)
@@ -134,13 +137,13 @@ struct Home: View {
    } // End of body
    
    
-   
    // ========================================
    // ========== APP INITIALISATION ==========
    // ========================================
    
    init() {
       
+      sortListsAlphabetically()
       
       // To remove all separators in list:
       // UITableView.appearance().separatorStyle = .none
@@ -150,10 +153,6 @@ struct Home: View {
       
       // Remove UITableView background, so it can be programmed using SwiftUI
       UITableView.appearance().backgroundColor = .clear
-      
-      
-      
-      
       
       if isFirstTimeLaunch() {
          print("Is first time launch.")

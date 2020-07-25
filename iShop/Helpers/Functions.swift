@@ -642,6 +642,43 @@ func uncheckAllItems(thisList: ListOfItems) {
 
 
 
+
+
+
+
+func sortListsAlphabetically() {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate
+      else {
+         return
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+   listFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
+   
+   do {
+      let lists = try managedContext.fetch(listFetchRequest)
+      
+      var index = 0
+      for list in lists {
+         list.index = Int64(index)
+         index += 1
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error)")
+   }
+   do {
+      try managedContext.save()
+   } catch let error as NSError {
+      print("Could not save list. \(error), \(error.userInfo)")
+   }
+}
+
+
 // =====================================================
 // ==================== Category =======================
 // =====================================================

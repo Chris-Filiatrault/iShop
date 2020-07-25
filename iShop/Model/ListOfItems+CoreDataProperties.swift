@@ -13,6 +13,7 @@ extension ListOfItems {
    @NSManaged public var dateAdded: Date?
    @NSManaged public var name: String?
    @NSManaged public var id: UUID?
+   @NSManaged public var index: Int64
    @NSManaged public var items: NSSet?
    
    /*

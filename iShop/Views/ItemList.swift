@@ -11,17 +11,11 @@ import CoreData
 
 struct ItemList: View {
    
-   @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-   ]) var listsFromFetchRequest: FetchedResults<ListOfItems>
-   
    @EnvironmentObject var globalVariables: GlobalVariableClass
-   @Environment(\.presentationMode) var presentation
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
    @State var showRenameList: Bool = false
    
-   var fetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
    var thisList: ListOfItems
    let uncategorised = uncategorisedCategory()
@@ -30,19 +24,10 @@ struct ItemList: View {
    init(listFromHomePage: ListOfItems) {
       
       thisList = listFromHomePage
-   
-      let originPredicate = NSPredicate(format: "origin = %@", thisList)
-      let inListPredicate = NSPredicate(format: "addedToAList == true")
-      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
-      
-      fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ], predicate: compoundPredicate)
 
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: NSPredicate(format: "name != %@", "Uncategorised"))
-      
    }
-   
    
    var body: some View {
       
@@ -80,8 +65,6 @@ struct ItemList: View {
                RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
                   .environmentObject(self.globalVariables)
             }
-            
-
          }
             
             // ===Catalogue===
