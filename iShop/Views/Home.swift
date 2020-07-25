@@ -54,11 +54,11 @@ struct Home: View {
                            Text(list.wrappedName)
                               .font(.headline)
                            Spacer()
-                           if numListUntickedItems(list: list) > 0 {
-                              Text("\(numListUntickedItems(list: list))")
-                                 .font(.headline)
-                                 .padding(.trailing, 5)
-                           }
+//                           if numListUntickedItems(list: list) > 0 {
+//                              Text("\(numListUntickedItems(list: list))")
+//                                 .font(.headline)
+//                                 .padding(.trailing, 5)
+//                           }
                         }
                         
                      }

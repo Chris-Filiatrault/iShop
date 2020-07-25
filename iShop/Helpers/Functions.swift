@@ -10,9 +10,8 @@ import SwiftUI
 import CoreData
 
 // =====================================================
-// ================= Item functions ====================
+// ====================== Item =========================
 // =====================================================
-
 
 
 // ===ADD NEW ITEM===
@@ -120,9 +119,6 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
 }
 
 
-
-
-
 // ===ADD ITEM FROM CATALOGUE===
 func addItemFromCatalogue(item: Item, listOrigin: ListOfItems) {
    
@@ -163,10 +159,7 @@ func removeItemFromList(item: Item) {
 }
 
 
-
-
 // ===RENAME ITEM===
-// REVISE THIS TO ENSURE ALL ITEMS OF THE SAME NAME ARE UPDATED IN ALL LISTS
 func renameItem(currentName: String, newName: String) {
    
    guard let appDelegate =
@@ -202,7 +195,7 @@ func renameItem(currentName: String, newName: String) {
 }
 
 
-// === Increment Quantity ===
+// ===INCREMENT QUANTITY===
 func incrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -258,6 +251,8 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
    }
 }
 
+
+// ===RESTORE ITEM IN LIST===
 func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -275,8 +270,6 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
       print("Could not save checked off status. \(error), \(error.userInfo)")
    }
 }
-
-
 
 
 // ===CHANGE LIST===
@@ -305,7 +298,6 @@ func changeItemList(thisItem: Item, newList: ListOfItems) {
       print("Could not save. \(error), \(error.userInfo)")
    }
 }
-
 
 
 // ===CHECK FOR DUPLICATE ITEM NAMES IN MANAGED CONTEXT===
@@ -342,7 +334,6 @@ func itemNameIsUnique(name: String) -> Bool {
 }
 
 
-
 // ===CHECK FOR DUPLICATE ITEM NAMES IN AN INDIVIDUAL LIST===
 func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
    
@@ -376,7 +367,6 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
    
    return result
 }
-
 
 
 // ===REMOVE TICKED ITEMS FROM LIST===
@@ -415,9 +405,8 @@ func removeTickedItemsFromList(listOrigin: ListOfItems) {
 
 
 // =====================================================
-// ============= ListOfItems functions =================
+// ================== ListOfItems ======================
 // =====================================================
-
 
 
 // ===ADD LIST===
@@ -482,6 +471,21 @@ func addList(listName: String) {
 }
 
 
+func renameList(thisList: ListOfItems, newName: String) {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return
+   }
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   thisList.name = newName
+   
+   do {
+      try managedContext.save()
+   } catch let error as NSError {
+      print("Could not save. \(error), \(error.userInfo)")
+   }
+}
 
 // ===DELETE (swiped) LIST===
 func deleteSwipedList(at offsets: IndexSet) {
@@ -527,7 +531,6 @@ func deleteSwipedList(at offsets: IndexSet) {
 }
 
 
-
 //===CHECK FOR DUPLICATE LIST===
 func listNameIsUnique(name: String) -> Bool {
    
@@ -562,8 +565,7 @@ func listNameIsUnique(name: String) -> Bool {
 }
 
 
-
-//===GET NUMBER OF UNTICKED ITEMS===
+//===GET NUMBER OF UNTICKED ITEMS IN LIST===
 func numListUntickedItems(list: ListOfItems) -> Int {
    
    var result: Int = 0
@@ -576,6 +578,8 @@ func numListUntickedItems(list: ListOfItems) -> Int {
    return result
 }
 
+
+//===GET NUMBER OF UNTICKED ITEMS IN CATEGORY===
 func numCategoryUntickedItems(category: Category) -> Int {
    
    var result: Int = 0
@@ -589,10 +593,57 @@ func numCategoryUntickedItems(category: Category) -> Int {
 }
 
 
+// ===DELETE ALL ITEMS===
+func clearList(thisList: ListOfItems) {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   for item in thisList.itemArray {
+      item.markedOff = false
+      item.addedToAList = false
+      item.quantity = 1
+   }
+   
+   do {
+      try managedContext.save()
+      print("Checked off successfully")
+   } catch let error as NSError {
+      print("Could not save checked off status. \(error), \(error.userInfo)")
+   }
+}
+
+
+// ===UNCHECK ALL ITEMS===
+func uncheckAllItems(thisList: ListOfItems) {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   for item in thisList.itemArray {
+      item.markedOff = false
+   }
+   
+   do {
+      try managedContext.save()
+      print("Checked off successfully")
+   } catch let error as NSError {
+      print("Could not save checked off status. \(error), \(error.userInfo)")
+   }
+}
+
 
 
 // =====================================================
-// =============== Category functions ==================
+// ==================== Category =======================
 // =====================================================
 
 
@@ -680,7 +731,6 @@ func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Categor
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
-
 func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
    for item in oldItemCategory.itemsInCategoryArray {
       if item.wrappedName == thisItem.wrappedName {
@@ -693,8 +743,6 @@ func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory:
       }
    }
 }
-
-
 
 
 //===CHECK FOR DUPLICATE CATEGORY===
@@ -731,9 +779,6 @@ func categoryNameIsUnique(name: String) -> Bool {
 }
 
 
-
-
-
 // ===UNCATEGORISED CATEGORY===
 func uncategorisedCategory() -> Category? {
    
@@ -751,14 +796,15 @@ func uncategorisedCategory() -> Category? {
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
       if fetchReturn != [] {
-      let uncategorised = fetchReturn[0]
-      return uncategorised
+         let uncategorised = fetchReturn[0]
+         return uncategorised
       }
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
    return nil
 }
+
 
 // ===UNCATEGORISED CATEGORY===
 func inBasketCategory() -> Category? {
@@ -777,8 +823,8 @@ func inBasketCategory() -> Category? {
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
       if fetchReturn != [] {
-      let inBasket = fetchReturn[0]
-      return inBasket
+         let inBasket = fetchReturn[0]
+         return inBasket
       }
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
@@ -787,11 +833,8 @@ func inBasketCategory() -> Category? {
 }
 
 
-
-
 //===MERGE STARTUP CATEGORIES TOGETHER===
 // For when a user starts using the app on another device and startup items/lists/categories are duplicated
-
 func mergeStartupCategories(context: NSManagedObjectContext) {
    
    let categoryFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
@@ -799,7 +842,7 @@ func mergeStartupCategories(context: NSManagedObjectContext) {
    
    let initDateFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
    initDateFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
-
+   
    do {
       let dates = try context.fetch(initDateFetchRequest) as! [InitDate]
       let categories = try context.fetch(categoryFetchRequest) as! [Category]
@@ -822,7 +865,7 @@ func mergeStartupCategories(context: NSManagedObjectContext) {
          }
          
          // For all other categories:
-
+         
          // If no original category with that name exists (deleted by user), delete any newly created categories with that name
          for otherCategory in otherCategories {
             if !remainingCategoryNames.contains(otherCategory.wrappedName) {
@@ -849,7 +892,7 @@ func mergeStartupCategories(context: NSManagedObjectContext) {
       } catch let error as NSError {
          print("Could not save. \(error), \(error.userInfo)")
       }
-
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -857,22 +900,11 @@ func mergeStartupCategories(context: NSManagedObjectContext) {
 
 
 
-      
-
-
-
-
-
-
-
-//            Delete the category
-//            managedContext.delete(category)
-//            print("Successfully deleted duplicate category named: \(category)")
-
 // =====================================================
 // ==================== InitDate =======================
 // =====================================================
 
+// ===CREATE NEW INITDATE===
 func createNewInitDate() {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -883,9 +915,9 @@ func createNewInitDate() {
    
    let initDateEntity = NSEntityDescription.entity(forEntityName: "InitDate", in: managedContext)!
    
-      let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
-      newInitDate.initDate = Date()
-
+   let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
+   newInitDate.initDate = Date()
+   
    do {
       try managedContext.save()
    } catch let error as NSError {
@@ -893,9 +925,11 @@ func createNewInitDate() {
    }
 }
 
+
+// ===CHECK IF INIT CODE WAS RUN ON ANOTHER DEVICE===
 func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
    var result: Bool = false
-      
+   
    let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
    fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
    
@@ -924,18 +958,12 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
 }
 
 
-
-
-
-
-
-
 // =====================================================
-// ================= Misc functions ====================
+// ====================== Misc =========================
 // =====================================================
 
 
-// CHECK WHETHER FIRST TIME LAUNCH
+// ===CHECK WHETHER FIRST TIME LAUNCH===
 // Returns true if yes
 func isFirstTimeLaunch() -> Bool {
    if UserDefaults.standard.bool(forKey: "userHasLaunchedPreviously") != true {
@@ -947,6 +975,7 @@ func isFirstTimeLaunch() -> Bool {
 }
 
 
+// ===USER HAS NO LISTS===
 func userHasNoLists() -> Bool {
    
    var result: Bool = false
@@ -972,6 +1001,8 @@ func userHasNoLists() -> Bool {
    return result
 }
 
+
+// ===USER HAS NO CATEGORIES===
 func userHasNoCategories() -> Bool {
    
    var result: Bool = false
@@ -998,13 +1029,7 @@ func userHasNoCategories() -> Bool {
 }
 
 
-
-func swipeDeleteTestFunction(at offsets: IndexSet) {
-   print("Deleted")
-}
-
-
-
+// ===RESET MANAGED OBJECT CONTEXT===
 func resetMOC() {
    
    guard let appDelegate =
@@ -1023,16 +1048,16 @@ func resetMOC() {
    do {
       let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
       let items = itemFetchReturn as! [Item]
-
+      
       let categoryFetchReturn = try managedContext.fetch(categoryFetchRequest)
       let categories = categoryFetchReturn as! [Category]
-
+      
       let listFetchReturn = try managedContext.fetch(listFetchRequest)
       let lists = listFetchReturn as! [ListOfItems]
       
       let initDateFetchReturn = try managedContext.fetch(initDateFetchRequest)
       let dates = initDateFetchReturn as! [InitDate]
-
+      
       
       for item in items {
          managedContext.delete(item)
@@ -1061,12 +1086,15 @@ func resetMOC() {
 }
 
 
+// ===STARTUP CATEGORY STRINGS===
 // The startup categories and items below need to have the same number of elements in the array
 // String for categories, [String] for items
 func startupCategoryStrings() -> [String] {
    return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
 }
 
+
+// ===STARTUP ITEM STRINGS===
 func startupItemStrings() -> [[String]] {
    return [
       ["Oranges", "Apples", "Bananas"], // Fruit

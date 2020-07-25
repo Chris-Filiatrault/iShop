@@ -15,7 +15,6 @@ struct ItemRow: View {
    
    var thisList: ListOfItems
    var thisItem: Item
-   @State var itemInListMarkedOff: Bool
    @State var showItemDetails: Bool = false
    
    var body: some View {
@@ -23,25 +22,22 @@ struct ItemRow: View {
       HStack {
          
          Button(action: {
-            withAnimation {               
-            self.itemInListMarkedOff.toggle()
-            }
-            markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
+               markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
             }) {
             
             ZStack {
                Rectangle().hidden()
                
                HStack {
-                  Image(systemName: itemInListMarkedOff ? "checkmark.circle.fill" : "circle")
+                  Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
                      .imageScale(.large)
-                     .foregroundColor(itemInListMarkedOff ? Color("navBarFont") : .black)
+                     .foregroundColor(thisItem.markedOff == true ? Color("navBarFont") : .black)
                   
                      Text(thisItem.quantity > 1 ?
                         "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
                         "\(thisItem.wrappedName)")
-                        .strikethrough(color: itemInListMarkedOff ? .white : .clear)
-                        .foregroundColor(itemInListMarkedOff ? .white : .black)
+                        .strikethrough(color: thisItem.markedOff == true ? .white : .clear)
+                        .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .multilineTextAlignment(.leading)
                   
                 Spacer()
@@ -51,7 +47,7 @@ struct ItemRow: View {
                   }) {
                      Image(systemName: "square.and.pencil")
                         .imageScale(.large)
-                        .foregroundColor(itemInListMarkedOff ? .white : .black)
+                        .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .padding(7)
                   }
                      

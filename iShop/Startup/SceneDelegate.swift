@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
    var globalVariables = GlobalVariableClass()
    
     var window: UIWindow?
-
+   
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -37,6 +37,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       let contentView = Home()
          .environment(\.managedObjectContext, context)
          .environmentObject(globalVariables)
+         
       
       
       //let contentView = ContentView()

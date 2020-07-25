@@ -16,8 +16,10 @@ struct ItemList: View {
    ]) var listsFromFetchRequest: FetchedResults<ListOfItems>
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
+   @Environment(\.presentationMode) var presentation
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
+   @State var showRenameList: Bool = false
    
    var fetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
@@ -74,6 +76,11 @@ struct ItemList: View {
                
                InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
             }.padding(.bottom)
+            .sheet(isPresented: self.$showRenameList){
+               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
+                  .environmentObject(self.globalVariables)
+            }
+            
 
          }
             
@@ -90,14 +97,12 @@ struct ItemList: View {
       .onAppear() {
          self.globalVariables.catalogueShown = false
       }
-         
-         
+      
       // ===Navigation bar===
       .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
       .navigationBarItems(trailing:
          HStack {
             if globalVariables.catalogueShown == false {
-               
                // More options button
                Button(action: {
                   self.showMoreOptions.toggle()
@@ -109,24 +114,16 @@ struct ItemList: View {
                }.padding(.vertical, 10)
                   .actionSheet(isPresented: self.$showMoreOptions) {
                      ActionSheet(title: Text("Options"), buttons: [
+                        .destructive(Text("Delete All Items")) {
+                           clearList(thisList: self.thisList)
+                        },
                         .default(Text("Rename List")) {
-                           // Do stuff
+                           self.showRenameList.toggle()
                         },
-                        .default(Text("Hide \"In Basket\" Category")) {
-                           // Do stuff
+                        .default(Text("Uncheck All Items")) {
+                           uncheckAllItems(thisList: self.thisList)
                         },
-                        .default(
-                           Text("Clear List")) {
-                        // Do stuff
-                     },
-                     .default(
-                        Text("Cancel")) {
-                     // Do stuff
-                  }
-                     ])
-               }
-                  .sheet(isPresented: self.$showMoreOptions) {
-                     MoreOptions()
+                     .cancel(Text("Cancel"))])
                }
             }
                

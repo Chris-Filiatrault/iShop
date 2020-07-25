@@ -63,7 +63,7 @@ struct ItemCategory: View {
             }
             
             ForEach(items.wrappedValue, id: \.self) { item in
-               ItemRow(thisList: self.thisList, thisItem: item, itemInListMarkedOff: item.markedOff)
+               ItemRow(thisList: self.thisList, thisItem: item)
             }.onDelete(perform: removeSwipedItem)
          }
       }.onAppear {

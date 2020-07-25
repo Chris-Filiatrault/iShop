@@ -1,20 +1,22 @@
 //
-//  AddList.swift
+//  RenameList.swift
 //  iShop
 //
-//  Created by Chris Filiatrault on 11/5/20.
+//  Created by Chris Filiatrault on 25/7/20.
 //  Copyright © 2020 Chris Filiatrault. All rights reserved.
 //
 
 
 import SwiftUI
 
-struct AddList: View {
+struct RenameList: View {
    
-   @State var newList: String = ""
+   var thisList: ListOfItems
+   @Environment(\.managedObjectContext) var context
+   @EnvironmentObject var globalVariables: GlobalVariableClass
+   @State var newListName: String
    @State var duplicateListAlert = false
-   
-   @Binding var showingAddListBinding: Bool
+   @Binding var showingRenameListBinding: Bool
    
    var body: some View {
       
@@ -22,18 +24,19 @@ struct AddList: View {
          VStack {
             
             // ===Enter item textfield===
-            TextField("Enter list name", text: $newList, onCommit: {
-                        if self.newList != "" && listNameIsUnique(name: self.newList) {
-                           addList(listName: self.newList)
-                           self.showingAddListBinding = false
-                           self.newList = ""
-                        }
-                        else if !listNameIsUnique(name: self.newList) {
-                           self.duplicateListAlert = true
-                        }
-                        else if self.newList == "" {
-                           self.showingAddListBinding = false
-                        }
+            TextField("Enter new name", text: $newListName, onCommit: {
+               if self.newListName != "" && listNameIsUnique(name: self.newListName) {
+                  renameList(thisList: self.thisList, newName: self.newListName)
+               
+                  self.showingRenameListBinding = false
+                  self.newListName = ""
+               }
+               else if !listNameIsUnique(name: self.newListName) {
+                  self.duplicateListAlert = true
+               }
+               else if self.newListName == "" {
+                  self.showingRenameListBinding = false
+               }
             })
                .textFieldStyle(RoundedBorderTextFieldStyle())
                .padding(5)
@@ -43,12 +46,14 @@ struct AddList: View {
                   Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
             }
             
+
+            
             
             // ===Buttons===
             HStack(alignment: .center) {
                
                // Cancel button
-               Button(action: {self.showingAddListBinding = false}) {
+               Button(action: { self.showingRenameListBinding = false }) {
                   Text("Cancel")
                      .bold()
                      .cornerRadius(20)
@@ -59,15 +64,19 @@ struct AddList: View {
                
                // Add button
                Button(action: {
-                  if self.newList != "" && listNameIsUnique(name: self.newList) {
-                     addList(listName: self.newList)
-                     self.showingAddListBinding = false
-                     self.newList = ""
+                  if self.newListName != "" && listNameIsUnique(name: self.newListName) {
+                     renameList(thisList: self.thisList, newName: self.newListName)
+                     self.showingRenameListBinding = false
+                     self.newListName = ""
                   }
-                  else if !listNameIsUnique(name: self.newList) { self.duplicateListAlert = true
+                  else if !listNameIsUnique(name: self.newListName) {
+                     self.duplicateListAlert = true
+                  }
+                  else if self.newListName == "" {
+                     self.showingRenameListBinding = false
                   }
                }) {
-                  Text("Add")
+                  Text("Rename")
                      .bold()
                      .frame(minWidth: 50)
                      .font(.subheadline)
@@ -87,10 +96,10 @@ struct AddList: View {
          }
          .padding()
          .modifier(AdaptsToSoftwareKeyboard())
-         
-         .navigationBarTitle("Add List", displayMode: .large)
+            
+         .navigationBarTitle("Rename List", displayMode: .large)
          
       } // End of VStack
-      .environment(\.horizontalSizeClass, .compact)
+         .environment(\.horizontalSizeClass, .compact)
    }
 }

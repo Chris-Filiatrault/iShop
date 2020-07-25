@@ -45,12 +45,14 @@
 		6D67A49024C3D06300C9B377 /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D67A48F24C3D06300C9B377 /* MailView.swift */; };
 		6D67A49224C3FA9400C9B377 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D67A49124C3FA9400C9B377 /* OnboardingView.swift */; };
 		6D780D9F24C1A28F00380C17 /* InBasket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D780D9E24C1A28F00380C17 /* InBasket.swift */; };
+		6D826B4124CBF426004720C0 /* Lists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D826B4024CBF426004720C0 /* Lists.swift */; };
 		6DA186D024C9AEDC00427EA1 /* InitDate+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA186CE24C9AEDC00427EA1 /* InitDate+CoreDataClass.swift */; };
 		6DA186D124C9AEDC00427EA1 /* InitDate+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA186CF24C9AEDC00427EA1 /* InitDate+CoreDataProperties.swift */; };
 		6DEB520824C642AD0096DBC8 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DEB520724C642AD0096DBC8 /* CloudKit.framework */; };
 		6DF0947524BB330500FB051C /* ChooseCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0947424BB330500FB051C /* ChooseCategory.swift */; };
 		6DF0947724BB3F2C00FB051C /* AddCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0947624BB3F2C00FB051C /* AddCategory.swift */; };
 		6DFAE5D224B5C07D005E8E6B /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DFAE5D124B5C07D005E8E6B /* UserDefaults.swift */; };
+		6DFB6B2724CB9EC90041C999 /* RenameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DFB6B2624CB9EC90041C999 /* RenameList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +117,7 @@
 		6D67A48F24C3D06300C9B377 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		6D67A49124C3FA9400C9B377 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		6D780D9E24C1A28F00380C17 /* InBasket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InBasket.swift; sourceTree = "<group>"; };
+		6D826B4024CBF426004720C0 /* Lists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lists.swift; sourceTree = "<group>"; };
 		6DA186CE24C9AEDC00427EA1 /* InitDate+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InitDate+CoreDataClass.swift"; sourceTree = "<group>"; };
 		6DA186CF24C9AEDC00427EA1 /* InitDate+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InitDate+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		6DEB520524C642890096DBC8 /* iShop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iShop.entitlements; sourceTree = "<group>"; };
@@ -122,6 +125,7 @@
 		6DF0947424BB330500FB051C /* ChooseCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategory.swift; sourceTree = "<group>"; };
 		6DF0947624BB3F2C00FB051C /* AddCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategory.swift; sourceTree = "<group>"; };
 		6DFAE5D124B5C07D005E8E6B /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		6DFB6B2624CB9EC90041C999 /* RenameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,6 +236,7 @@
 		6D0C5B3124B147EC000842C2 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				6D826B4024CBF426004720C0 /* Lists.swift */,
 				6D0C5B3224B147EC000842C2 /* UsefulCode.swift */,
 				6D0C5B3524B147EC000842C2 /* ContentView.swift */,
 				6D0C5B3324B147EC000842C2 /* FilteredList.swift */,
@@ -272,6 +277,7 @@
 				6DF0947424BB330500FB051C /* ChooseCategory.swift */,
 				6DF0947624BB3F2C00FB051C /* AddCategory.swift */,
 				6D0C5B5824B14811000842C2 /* AddList.swift */,
+				6DFB6B2624CB9EC90041C999 /* RenameList.swift */,
 				6D0C5B5524B14811000842C2 /* MoreOptions.swift */,
 				6D0C5B5924B14811000842C2 /* Settings.swift */,
 				6D67A48F24C3D06300C9B377 /* MailView.swift */,
@@ -435,10 +441,12 @@
 				6D0C5B6D24B1490C000842C2 /* Category+CoreDataClass.swift in Sources */,
 				6D0C5B2E24B147E5000842C2 /* AdaptsToSk.swift in Sources */,
 				6D780D9F24C1A28F00380C17 /* InBasket.swift in Sources */,
+				6DFB6B2724CB9EC90041C999 /* RenameList.swift in Sources */,
 				6D0C5B3B24B147EC000842C2 /* LiveTextfieldTest.swift in Sources */,
 				6DF0947524BB330500FB051C /* ChooseCategory.swift in Sources */,
 				6D0C5B4924B14803000842C2 /* iShop.xcdatamodeld in Sources */,
 				6D0C5B5E24B14811000842C2 /* MoreOptions.swift in Sources */,
+				6D826B4124CBF426004720C0 /* Lists.swift in Sources */,
 				6D67A49024C3D06300C9B377 /* MailView.swift in Sources */,
 				6D0C5B2F24B147E5000842C2 /* HostingController.swift in Sources */,
 				6D67A49224C3FA9400C9B377 /* OnboardingView.swift in Sources */,

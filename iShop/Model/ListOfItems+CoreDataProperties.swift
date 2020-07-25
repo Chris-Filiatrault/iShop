@@ -40,11 +40,7 @@ extension ListOfItems {
       }
    }
    
-   
-   
-   // ========
-   // ===Use this name array to continue creating the removeDuplicateList function===
-   // ========
+
    
    public var nameArray: [String] {
       var names: [String] = []
