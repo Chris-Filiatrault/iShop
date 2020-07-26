@@ -48,6 +48,8 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             newItem.markedOff = false
             newItem.quantity = 1
             newItem.origin = listOrigin
+            newItem.originName = listOrigin.name
+            print("originName set to: \(newItem.originName)")
             list.addToItems(newItem)
             
             if returnedCategories != [] {
@@ -242,6 +244,7 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
    let managedContext = appDelegate.persistentContainer.viewContext
    
    thisItem.markedOff.toggle()
+   GlobalVariableClass().refreshingID = UUID()
    
    do {
       try managedContext.save()
@@ -641,13 +644,10 @@ func uncheckAllItems(thisList: ListOfItems) {
 }
 
 
-
-
-
-
-
+// ===SORT LISTS ALPHABETICALLY===
+// Using the list indicies
 func sortListsAlphabetically() {
-   
+
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate
       else {
@@ -655,19 +655,19 @@ func sortListsAlphabetically() {
    }
    let managedContext =
       appDelegate.persistentContainer.viewContext
-   
+
    let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    listFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
-   
+
    do {
       let lists = try managedContext.fetch(listFetchRequest)
-      
+
       var index = 0
       for list in lists {
          list.index = Int64(index)
          index += 1
       }
-      
+
    } catch let error as NSError {
       print("Could not fetch. \(error)")
    }
@@ -1078,19 +1078,21 @@ func resetMOC() {
       appDelegate.persistentContainer.viewContext
    
    let itemFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+//   itemFetchRequest.predicate = NSPredicate(format: "originName != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    let categoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
    let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+//   listFetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    let initDateFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
    
    do {
       let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
       let items = itemFetchReturn as! [Item]
       
-      let categoryFetchReturn = try managedContext.fetch(categoryFetchRequest)
-      let categories = categoryFetchReturn as! [Category]
-      
       let listFetchReturn = try managedContext.fetch(listFetchRequest)
       let lists = listFetchReturn as! [ListOfItems]
+
+      let categoryFetchReturn = try managedContext.fetch(categoryFetchRequest)
+      let categories = categoryFetchReturn as! [Category]
       
       let initDateFetchReturn = try managedContext.fetch(initDateFetchRequest)
       let dates = initDateFetchReturn as! [InitDate]
@@ -1126,6 +1128,20 @@ func resetMOC() {
 // ===STARTUP CATEGORY STRINGS===
 // The startup categories and items below need to have the same number of elements in the array
 // String for categories, [String] for items
+
+
+
+
+
+
+
+
+
+
+
+// =========== ADD IN BASKET + UNCATEGORISED HERE==============
+
+
 func startupCategoryStrings() -> [String] {
    return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
 }

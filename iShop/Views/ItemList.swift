@@ -10,13 +10,14 @@ import SwiftUI
 import CoreData
 
 struct ItemList: View {
-   
+      
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
    @State var showRenameList: Bool = false
    
    var categoriesFetchRequest: FetchRequest<Category>
+   var inBasketRequest: FetchRequest<Category>
    var thisList: ListOfItems
    let uncategorised = uncategorisedCategory()
    let inBasket = inBasketCategory()
@@ -27,6 +28,9 @@ struct ItemList: View {
 
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: NSPredicate(format: "name != %@", "Uncategorised"))
+      
+      inBasketRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      ], predicate: NSPredicate(format: "name == %@", "In Basket"))
    }
    
    var body: some View {
@@ -60,6 +64,11 @@ struct ItemList: View {
                ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!)
                
                InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
+               
+               ForEach(inBasketRequest.wrappedValue, id: \.self) { inBasket in
+                  Text(inBasket.wrappedName)
+               }
+               
             }.padding(.bottom)
             .sheet(isPresented: self.$showRenameList){
                RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)

@@ -9,13 +9,14 @@
 import SwiftUI
 
 struct ItemRow: View {
-   
+      
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.managedObjectContext) var context
    
    var thisList: ListOfItems
    var thisItem: Item
    @State var showItemDetails: Bool = false
+   @State var markedOff: Bool
    
    var body: some View {
       
@@ -66,6 +67,7 @@ struct ItemRow: View {
             }
          }
       }
+      .id(globalVariables.refreshingID)
       .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
    }
 }

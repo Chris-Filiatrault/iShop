@@ -23,7 +23,9 @@ struct Home: View {
       
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
          NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
+   ]
+      , predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+   )
    var listsFromFetchRequest: FetchedResults<ListOfItems>
    
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
@@ -57,11 +59,11 @@ struct Home: View {
                            Text(list.wrappedName)
                               .font(.headline)
                            Spacer()
-//                           if numListUntickedItems(list: list) > 0 {
-//                              Text("\(numListUntickedItems(list: list))")
-//                                 .font(.headline)
-//                                 .padding(.trailing, 5)
-//                           }
+                           if numListUntickedItems(list: list) > 0 {
+                              Text("\(numListUntickedItems(list: list))")
+                                 .font(.headline)
+                                 .padding(.trailing, 5)
+                           }
                         }
                         
                      }
@@ -142,8 +144,7 @@ struct Home: View {
    // ========================================
    
    init() {
-      
-      sortListsAlphabetically()
+
       
       // To remove all separators in list:
       // UITableView.appearance().separatorStyle = .none

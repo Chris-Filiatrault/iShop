@@ -36,7 +36,7 @@ struct InBasket: View {
    var body: some View {
       
          Group {
-            if items.wrappedValue.count > 0 {
+//            if items.wrappedValue.count > 0 {
                
                Text(category.wrappedName)
                   .font(.headline)
@@ -64,10 +64,10 @@ struct InBasket: View {
                }
                
                ForEach(items.wrappedValue, id: \.self) { item in
-                  ItemRow(thisList: self.thisList, thisItem: item)
+                  ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
                }.onDelete(perform: removeSwipedItem)
                
-            }
+//            }
          }
    }
    

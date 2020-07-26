@@ -18,5 +18,6 @@ class GlobalVariableClass: ObservableObject {
    @Published var catalogueShown: Bool = false
    @State var restoreItemsFromInBasket: Bool = false
    var keyValStore = NSUbiquitousKeyValueStore()
+   @State var refreshingID = UUID()
 }
 
