@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct AddCategory: View {
-   @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+   @Environment(\.presentationMode) var presentationModeChooseCategory: Binding<PresentationMode>
    
    @State var createdCategoryName: String = ""
    @State var duplicateCategoryAlert = false
@@ -29,13 +29,13 @@ struct AddCategory: View {
                            addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
                            self.categoryName = self.createdCategoryName
                            self.createdCategoryName = ""
-                           self.presentationMode.wrappedValue.dismiss()
+                           self.presentationModeChooseCategory.wrappedValue.dismiss()
                         }
                         else if !categoryNameIsUnique(name: self.createdCategoryName) {
                            self.duplicateCategoryAlert = true
                         }
                         else if self.createdCategoryName == "" {
-                           self.presentationMode.wrappedValue.dismiss()
+                           self.presentationModeChooseCategory.wrappedValue.dismiss()
                         }
             })
                .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -52,7 +52,7 @@ struct AddCategory: View {
                
                // Cancel button
                Button(action: {
-                  self.presentationMode.wrappedValue.dismiss()
+                  self.presentationModeChooseCategory.wrappedValue.dismiss()
                }) {
                   Text("Cancel")
                      .bold()
@@ -68,7 +68,7 @@ struct AddCategory: View {
                      addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
                      self.categoryName = self.createdCategoryName
                      self.createdCategoryName = ""
-                     self.presentationMode.wrappedValue.dismiss()
+                     self.presentationModeChooseCategory.wrappedValue.dismiss()
                   }
                   else if !categoryNameIsUnique(name: self.createdCategoryName) {
                      self.duplicateCategoryAlert = true

@@ -12,20 +12,19 @@ import CoreData
 
 struct Home: View {
    
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
+//   @Environment(\.presentationMode) var presentationMode
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    @State var showSettings: Bool = false
    @State var showAddList: Bool = false
    @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
-
    @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
       
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
          NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-   ]
-      , predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-   )
+   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsFromFetchRequest: FetchedResults<ListOfItems>
    
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
@@ -34,14 +33,11 @@ struct Home: View {
       
    var body: some View {
       VStack {
-         //                  if onboardingShown != true {
-         //                     ZStack {
-         //
-         //                        OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
-         //
-         //                     }
-         //                  }
-         //                  else {
+         if onboardingShown != true {
+               OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+         }
+         else {
+            
          VStack {
             // ===List of lists===
             NavigationView {
@@ -78,10 +74,7 @@ struct Home: View {
                   nc.navigationBar.barTintColor = self.navBarColor
                   nc.navigationBar.titleTextAttributes = [.foregroundColor : self.navBarFont]
                })
-                  
-                  
-                  
-                  
+
                   
                   // ===Nav bar items===
                   .navigationBarItems(
@@ -89,11 +82,11 @@ struct Home: View {
                      // Settings gear button
                      leading:
                      HStack {
-                        Button(action: {
-                           resetMOC()
-                        }) {
-                           Text("Del")
-                        }
+//                        Button(action: {
+//                           resetMOC()
+//                        }) {
+//                           Text("Del")
+//                        }
                         
                         Button(action: {
                            self.showSettings = true
@@ -133,7 +126,7 @@ struct Home: View {
             
             
          }
-         //                  }
+                           }
       }
       
    } // End of body
@@ -155,8 +148,13 @@ struct Home: View {
       // Remove UITableView background, so it can be programmed using SwiftUI
       UITableView.appearance().backgroundColor = .clear
       
+      if userDefaultsManager.useCategories != true && userDefaultsManager.useCategories != false {
+         userDefaultsManager.useCategories = true
+      }
+      
       if isFirstTimeLaunch() {
          print("Is first time launch.")
+         
          
          guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
@@ -219,15 +217,15 @@ struct Home: View {
                   groceryIndex += 1
                }
                
-               let uncategorised = Category(entity: categoryEntity, insertInto: managedContext)
-               uncategorised.name = "Uncategorised"
-               uncategorised.id = UUID()
-               uncategorised.dateAdded = newInitDate.initDate
-               
-               let inBasket = Category(entity: categoryEntity, insertInto: managedContext)
-               inBasket.name = "In Basket"
-               inBasket.id = UUID()
-               inBasket.dateAdded = newInitDate.initDate
+//               let uncategorised = Category(entity: categoryEntity, insertInto: managedContext)
+//               uncategorised.name = "Uncategorised"
+//               uncategorised.id = UUID()
+//               uncategorised.dateAdded = newInitDate.initDate
+//
+//               let inBasket = Category(entity: categoryEntity, insertInto: managedContext)
+//               inBasket.name = "In Basket"
+//               inBasket.id = UUID()
+//               inBasket.dateAdded = newInitDate.initDate
             }
          }
          

@@ -36,7 +36,7 @@ struct InBasket: View {
    var body: some View {
       
          Group {
-//            if items.wrappedValue.count > 0 {
+            if items.wrappedValue.count > 0 {
                
                Text(category.wrappedName)
                   .font(.headline)
@@ -54,20 +54,35 @@ struct InBasket: View {
                      .foregroundColor(.black)
                      .cornerRadius(10)
                      .padding(.horizontal)
+                     .onTapGesture {
+                        for item in self.items.wrappedValue {
+                           removeItemFromList(item: item)
+                        }
+                     }
+                  
+                  Text("Restore")
+                  .bold()
+                  .frame(minWidth: 50)
+                  .font(.subheadline)
+                  .padding(8)
+                   .background(Color(.white))
+                  .foregroundColor(.black)
+                  .cornerRadius(10)
+                  .padding(.horizontal)
+                  .onTapGesture {
+                     for item in self.items.wrappedValue {
+                        markOffItemInList(thisItem: item)
+                     }
+                  }
                Spacer()
                }.padding(.horizontal, 10)
                .listRowBackground(Color("standardDarkBlue"))
-               .onTapGesture {
-                  for item in self.items.wrappedValue {
-                     removeItemFromList(item: item)
-                  }
-               }
                
                ForEach(items.wrappedValue, id: \.self) { item in
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
                }.onDelete(perform: removeSwipedItem)
                
-//            }
+            }
          }
    }
    

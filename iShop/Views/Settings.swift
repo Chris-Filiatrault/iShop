@@ -16,7 +16,6 @@ struct Settings: View {
    @State var result: Result<MFMailComposeResult, Error>? = nil
    @State var isShowingMailView = false
    @State var alertNoMail = false
-   
    @State var disableAutocorrect: Bool = false
    
    var body: some View {
@@ -28,9 +27,14 @@ struct Settings: View {
                
                // General
                Section(header: Text("GENERAL")) {
-                  Toggle(isOn: $disableAutocorrect) {
+                  Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
                      Text("Disable autocorrect")
                   }
+                  
+                  Toggle(isOn: $userDefaultsManager.useCategories) {
+                     Text("Use List Categories")
+                  }
+
 
                   Button(action: {
                   MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
@@ -59,8 +63,6 @@ struct Settings: View {
                .navigationBarItems(trailing:
                   Button(action: {
                      self.showSettingsBinding.toggle()
-                     self.globalVariables.keyValStore.set(self.disableAutocorrect, forKey: "disableAutocorrect")
-                     self.globalVariables.keyValStore.synchronize()
                   }) {
                      Text("Done")
                         .font(.headline)
@@ -72,9 +74,6 @@ struct Settings: View {
 
       } // End of VStack
       .environment(\.horizontalSizeClass, .compact)
-         .onAppear {
-            self.disableAutocorrect = self.globalVariables.keyValStore.bool(forKey: "disableAutocorrect")
-      }
    }
 }
 

@@ -23,7 +23,7 @@ struct ItemRow: View {
       HStack {
          
          Button(action: {
-               markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
+               markOffItemInList(thisItem: self.thisItem)
             }) {
             
             ZStack {
@@ -36,7 +36,6 @@ struct ItemRow: View {
                      Text(thisItem.quantity > 1 ?
                         "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
                         "\(thisItem.wrappedName)")
-                        .strikethrough(color: thisItem.markedOff == true ? .white : .clear)
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .multilineTextAlignment(.leading)
                   

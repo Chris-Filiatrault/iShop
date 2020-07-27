@@ -13,7 +13,6 @@ struct AddList: View {
    
    @State var newList: String = ""
    @State var duplicateListAlert = false
-   
    @Binding var showingAddListBinding: Bool
    
    var body: some View {

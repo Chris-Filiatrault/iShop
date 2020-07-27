@@ -49,7 +49,6 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             newItem.quantity = 1
             newItem.origin = listOrigin
             newItem.originName = listOrigin.name
-            print("originName set to: \(newItem.originName)")
             list.addToItems(newItem)
             
             if returnedCategories != [] {
@@ -235,7 +234,7 @@ func decrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
 
 // ===MARK OFF ITEM===
 // Mark off the tick circle in a list as having been added to the users basket
-func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
+func markOffItemInList(thisItem: Item) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -505,6 +504,8 @@ func deleteSwipedList(at offsets: IndexSet) {
    fetchRequest.sortDescriptors = [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ]
+   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+
    
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest)
@@ -735,8 +736,10 @@ func addCategory(categoryName: String, thisItem: Item) {
 
 
 // ===CHANGE CATEGORY===
-// Happens in two parts (changing categoryOrigin + changing itemsInCategoryArray) to avoid mutating state warnings etc
-func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Category) {
+// Originally happened in two parts (changing categoryOrigin + changing itemsInCategoryArray) to avoid mutating state warnings etc
+// But doing so makes the "done" button stop working in ItemDetails, so decided to just go with the mutating state warning and hope it doesn't cause issues.
+// Also triggering changeCategory2 when the user presses "done" in ItemDetails isn't a great way to go, as they may not press it after changing category
+func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
    
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
@@ -756,7 +759,12 @@ func changeCategory1(thisItem: Item, oldCategory: Category, newCategory: Categor
       let items = try managedContext.fetch(fetchRequest) as! [Item]
       for item in items {
          if items != [] {
-            item.categoryOrigin = newCategory
+            item.categoryOrigin = newItemCategory
+         }
+      }
+      for item in oldItemCategory.itemsInCategoryArray {
+         if item.wrappedName == thisItem.wrappedName {
+            newItemCategory.addToItemsInCategory(item)
          }
       }
       do {
@@ -1143,7 +1151,7 @@ func resetMOC() {
 
 
 func startupCategoryStrings() -> [String] {
-   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid"]
+   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid", "Uncategorised", "In Basket"]
 }
 
 
@@ -1160,7 +1168,9 @@ func startupItemStrings() -> [[String]] {
       ["Probiotic", "Multivitamin"], // Supplements
       ["Tylenol", "Ibuprofen"], // Medicine
       ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
-      ["Band-aids", "Antiseptic"] // First aid
+      ["Band-aids", "Antiseptic"], // First aid
+      [], // Uncategorised
+      [] // In Basket
    ]
 }
 

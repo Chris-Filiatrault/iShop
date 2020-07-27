@@ -34,7 +34,7 @@ struct OnboardingView: View {
       UIHostingController(rootView: Subview(
          imageString: "ListView",
          title: "Organise Using Categories",
-         caption: "Manage categories by deleting or making your own."
+         caption: "Create and delete categories."
       )),
       UIHostingController(rootView: Subview(
          imageString: "CatalogueView",
@@ -46,6 +46,11 @@ struct OnboardingView: View {
          title: "Filter The Item History",
          caption: "Start typing to filter the list and quickly find the item you're looking for."
       )),
+      UIHostingController(rootView: Subview(
+         imageString: "iPhoneiPadOnboarding",
+         title: "Use On Multiple Devices",
+         caption: "Items and lists are automatically and securely synced over iCloud. No login or password required."
+      )),
       UIHostingController(rootView: LastSubview())
    ]
    
@@ -54,7 +59,7 @@ struct OnboardingView: View {
    var body: some View {
       
       ZStack {
-         PageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
+         OBPageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
             .edgesIgnoringSafeArea(.all)
          
          VStack {
@@ -142,7 +147,7 @@ struct LastSubview: View {
          GeometryReader { geometry in
             VStack {
                Spacer()
-               Text("Start")
+               Text("Get started")
                   .bold()
 //                  .frame(minWidth: 50)
                   .font(.headline)
@@ -162,7 +167,7 @@ struct LastSubview: View {
 }
 
 
-struct PageViewController: UIViewControllerRepresentable {
+struct OBPageViewController: UIViewControllerRepresentable {
    
    @Binding var currentPageIndex: Int
    
@@ -193,10 +198,10 @@ struct PageViewController: UIViewControllerRepresentable {
    
    class Coordinator: NSObject, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
       
-      var parent: PageViewController
+      var parent: OBPageViewController
       
       
-      init(_ pageViewController: PageViewController) {
+      init(_ pageViewController: OBPageViewController) {
          self.parent = pageViewController
          
          

@@ -10,14 +10,15 @@ import SwiftUI
 import CoreData
 
 struct ItemList: View {
-      
+   @Environment(\.presentationMode) var presentationMode
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
    @State var showRenameList: Bool = false
+   var useCategories = UserDefaults.standard.object(forKey: "syncUseCategories") as? Bool ?? true
    
+   var itemsFetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
-   var inBasketRequest: FetchRequest<Category>
    var thisList: ListOfItems
    let uncategorised = uncategorisedCategory()
    let inBasket = inBasketCategory()
@@ -25,12 +26,19 @@ struct ItemList: View {
    init(listFromHomePage: ListOfItems) {
       
       thisList = listFromHomePage
+      
+      
+      let originPredicate = NSPredicate(format: "origin = %@", thisList)
+      let inListPredicate = NSPredicate(format: "addedToAList == true")
+      let markedOffPredicate = NSPredicate(format: "markedOff == false")
+      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, markedOffPredicate])
+      
+      itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      ], predicate: compoundPredicate)
 
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ], predicate: NSPredicate(format: "name != %@", "Uncategorised"))
-      
-      inBasketRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ], predicate: NSPredicate(format: "name == %@", "In Basket"))
+      ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Basket"])
+      )
    }
    
    var body: some View {
@@ -51,11 +59,11 @@ struct ItemList: View {
             .background(Color(.white))
             .padding(15)
             .padding(.top, 10)
-            .disableAutocorrection(self.globalVariables.keyValStore.bool(forKey: "disableAutocorrect"))
+            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
             
          
-         // ===List of items with categories===
-         if globalVariables.catalogueShown == false {
+//          ===List of items WITH categories===
+         if globalVariables.catalogueShown == false && useCategories == true {
             
             List {
                ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
@@ -65,9 +73,23 @@ struct ItemList: View {
                
                InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
                
-               ForEach(inBasketRequest.wrappedValue, id: \.self) { inBasket in
-                  Text(inBasket.wrappedName)
+            }.padding(.bottom)
+            .sheet(isPresented: self.$showRenameList){
+               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
+                  .environmentObject(self.globalVariables)
+            }
+         }
+            
+         
+         // ===List of items WITHOUT categories===
+         if globalVariables.catalogueShown == false && useCategories == false {
+            
+            List {
+               ForEach(itemsFetchRequest.wrappedValue, id: \.self) { item in
+                  ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
                }
+               
+               InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
                
             }.padding(.bottom)
             .sheet(isPresented: self.$showRenameList){
@@ -76,7 +98,7 @@ struct ItemList: View {
             }
          }
             
-            // ===Catalogue===
+         // ===Catalogue===
          else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
          }

@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct ChooseCategory: View {
-   @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+   @Environment(\.presentationMode) var presentationModeChooseCategory: Binding<PresentationMode>
    
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \Category.name, ascending: true)
@@ -25,16 +25,13 @@ struct ChooseCategory: View {
    var body: some View {
       
       VStack {
-         
          List {
-            
             NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
                HStack {
                Text("Add new")
                   .bold()
                }
             }
-            
             if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
                HStack {
                   Text("Uncategorised")
@@ -43,15 +40,11 @@ struct ChooseCategory: View {
                      .imageScale(.medium)
                }.foregroundColor(.blue)
             }
-            
             ForEach(self.categories, id: \.self) { category in
                Button(action: {
-                  changeCategory1(thisItem: self.thisItem,
-                                  oldCategory: self.thisItem.categoryOrigin!,
-                                  newCategory: category)
                   self.newItemCategory = category
                   self.categoryName = category.wrappedName
-                  self.presentationMode.wrappedValue.dismiss()
+                  self.presentationModeChooseCategory.wrappedValue.dismiss()
                }) {
                   HStack {
                      if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
@@ -66,12 +59,10 @@ struct ChooseCategory: View {
                         Text(category.wrappedName)
                            .foregroundColor(.black)
                      }
-                     
                   }
                }
             }
             .onDelete(perform: deleteSwipedCategory)
-         
          }
       }
       .navigationBarTitle(Text("Category"), displayMode: .inline)
@@ -79,7 +70,6 @@ struct ChooseCategory: View {
       EditButton()
          .padding()
       )
-      
       
    }
    // ===DELETE (swiped) CATEGORY===

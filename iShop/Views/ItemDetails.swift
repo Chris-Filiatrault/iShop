@@ -11,6 +11,7 @@ import CoreData
 
 struct ItemDetails: View {
    
+   @Environment(\.presentationMode) var presentationMode
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
@@ -113,18 +114,16 @@ struct ItemDetails: View {
                .navigationBarTitle("Details", displayMode: .inline)
                .navigationBarItems(trailing:
                   Button(action: {
-                     self.showItemDetails = false
+                     self.showItemDetails.toggle()
+                     print("\(self.showItemDetails)")
                      if self.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
                      }
-                     
-                     /* Changing an item category happens in two parts:
-                      a) onReceive() above changes the categoryOrigin
-                      b) Below, if a change was made to the item category, all items with the same name are removed from the old category's item array and added to the new one */
                      if self.oldItemCategory != self.newItemCategory {
-                        changeCategory2(thisItem: self.thisItem, oldItemCategory: self.oldItemCategory, newItemCategory: self.newItemCategory)
+                        changeCategory(thisItem: self.thisItem,
+                                        oldItemCategory: self.thisItem.categoryOrigin!,
+                                        newItemCategory: self.newItemCategory)
                      }
-                     
                      if self.oldList != self.newList {
                         changeItemList(thisItem: self.thisItem, newList: self.newList)
                      }
