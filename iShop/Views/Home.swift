@@ -13,120 +13,28 @@ import CoreData
 struct Home: View {
    
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-//   @Environment(\.presentationMode) var presentationMode
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
-   @State var showSettings: Bool = false
-   @State var showAddList: Bool = false
    @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
-   @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
-      
-   @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-         NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
-   var listsFromFetchRequest: FetchedResults<ListOfItems>
    
-   @FetchRequest(entity: Category.entity(), sortDescriptors:[],
-                 predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
+   //   @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
+   //         NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+   //   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
+   //   var listsFromFetchRequest: FetchedResults<ListOfItems>
    
-      
+   //   @FetchRequest(entity: Category.entity(), sortDescriptors:[],
+   //                 predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
+   //
+   
    var body: some View {
       VStack {
          if onboardingShown != true {
-               OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+            OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
          }
          else {
-            
-         VStack {
-            // ===List of lists===
-            NavigationView {
-               List {
-                  Text(" ")
-                     .listRowBackground(Color("listBackground"))
-                  
-                  ForEach(listsFromFetchRequest, id: \.self) { list in
-                     NavigationLink(destination: ItemList(listFromHomePage: list)
-                        .environment(\.managedObjectContext, self.context)
-                        .environmentObject(self.globalVariables)
-
-                     ) {
-                        HStack {
-                           Text(list.wrappedName)
-                              .font(.headline)
-                           Spacer()
-                           if numListUntickedItems(list: list) > 0 {
-                              Text("\(numListUntickedItems(list: list))")
-                                 .font(.headline)
-                                 .padding(.trailing, 5)
-                           }
-                        }
-                        
-                     }
-                  }.onDelete(perform: deleteSwipedList)
-               }
-                  
-               .background(Color("listBackground").edgesIgnoringSafeArea(.all))
-               .navigationBarTitle(Text("Lists"), displayMode: .inline)
-                  
-                  
-               .background(NavigationConfigurator { nc in
-                  nc.navigationBar.barTintColor = self.navBarColor
-                  nc.navigationBar.titleTextAttributes = [.foregroundColor : self.navBarFont]
-               })
-
-                  
-                  // ===Nav bar items===
-                  .navigationBarItems(
-                     
-                     // Settings gear button
-                     leading:
-                     HStack {
-//                        Button(action: {
-//                           resetMOC()
-//                        }) {
-//                           Text("Del")
-//                        }
-                        
-                        Button(action: {
-                           self.showSettings = true
-                        }) {
-                           Image(systemName: "gear")
-                              .imageScale(.large)
-                              .padding()
-                              .foregroundColor(Color("navBarFont"))
-                              .offset(x: -5)
-                        }
-                     }
-                     .sheet(isPresented: self.$showSettings){
-                        Settings(showSettingsBinding: self.$showSettings)
-                           .environmentObject(self.globalVariables)
-                     },
-                     
-                     // Add list plus button
-                     trailing:
-                     Button(action: {
-                        self.showAddList = true
-                        
-                     }) {
-                        Image(systemName: "plus")
-                           .imageScale(.large)
-                           .padding()
-                           .foregroundColor(Color("navBarFont"))
-                           .offset(x: 5)
-                     }.sheet(isPresented: $showAddList) {
-                        AddList(showingAddListBinding: self.$showAddList)
-                     }
-               )
-            }
-               // ===Nav bar modifiers===
-               .accentColor(Color("navBarFont"))
-               .navigationViewStyle(StackNavigationViewStyle())
-            
-            
-            
+            ListsView(navBarFont: $navBarFont, navBarColor: $navBarColor)
          }
-                           }
       }
       
    } // End of body
@@ -137,7 +45,7 @@ struct Home: View {
    // ========================================
    
    init() {
-
+      
       
       // To remove all separators in list:
       // UITableView.appearance().separatorStyle = .none
@@ -216,16 +124,6 @@ struct Home: View {
                   }
                   groceryIndex += 1
                }
-               
-//               let uncategorised = Category(entity: categoryEntity, insertInto: managedContext)
-//               uncategorised.name = "Uncategorised"
-//               uncategorised.id = UUID()
-//               uncategorised.dateAdded = newInitDate.initDate
-//
-//               let inBasket = Category(entity: categoryEntity, insertInto: managedContext)
-//               inBasket.name = "In Basket"
-//               inBasket.id = UUID()
-//               inBasket.dateAdded = newInitDate.initDate
             }
          }
          

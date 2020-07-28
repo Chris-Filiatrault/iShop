@@ -29,27 +29,27 @@ struct OnboardingView: View {
       UIHostingController(rootView: Subview(
          imageString: "HomeView",
          title: "Create Multiple Lists",
-         caption: "A number shows how many unchecked items are in each list."
+         caption: "Quickly view how many items are left."
       )),
       UIHostingController(rootView: Subview(
          imageString: "ListView",
          title: "Organise Using Categories",
-         caption: "Create and delete categories."
+         caption: "Choose from default categories, or make your own."
       )),
       UIHostingController(rootView: Subview(
          imageString: "CatalogueView",
          title: "Add From Item History",
-         caption: "All items entered in any list are saved. Simply tap an item to add it to the current list."
+         caption: "Tap an item to add it to the current list."
       )),
-      UIHostingController(rootView: Subview(
-         imageString: "FilteredCatalogueView",
-         title: "Filter The Item History",
-         caption: "Start typing to filter the list and quickly find the item you're looking for."
-      )),
+//      UIHostingController(rootView: Subview(
+//         imageString: "FilteredCatalogueView",
+//         title: "Filter Item History",
+//         caption: "Start typing to filter the list and quickly find the item you're looking for."
+//      )),
       UIHostingController(rootView: Subview(
          imageString: "iPhoneiPadOnboarding",
          title: "Use On Multiple Devices",
-         caption: "Items and lists are automatically and securely synced over iCloud. No login or password required."
+         caption: "Lists automatically and securely sync over iCloud. No login or password required."
       )),
       UIHostingController(rootView: LastSubview())
    ]
@@ -147,7 +147,7 @@ struct LastSubview: View {
          GeometryReader { geometry in
             VStack {
                Spacer()
-               Text("Get started")
+               Text("Get Started")
                   .bold()
 //                  .frame(minWidth: 50)
                   .font(.headline)
