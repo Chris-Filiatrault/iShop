@@ -776,18 +776,21 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
-func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
-   for item in oldItemCategory.itemsInCategoryArray {
-      if item.wrappedName == thisItem.wrappedName {
-         oldItemCategory.removeFromItemsInCategory(item)
-      }
-   }
-   for item in newItemCategory.itemsInCategoryArray {
-      if item.wrappedName == thisItem.wrappedName {
-         newItemCategory.addToItemsInCategory(item)
-      }
-   }
-}
+
+//// ===changeCategory2===
+//// Not being used right now
+//func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
+//   for item in oldItemCategory.itemsInCategoryArray {
+//      if item.wrappedName == thisItem.wrappedName {
+//         oldItemCategory.removeFromItemsInCategory(item)
+//      }
+//   }
+//   for item in newItemCategory.itemsInCategoryArray {
+//      if item.wrappedName == thisItem.wrappedName {
+//         newItemCategory.addToItemsInCategory(item)
+//      }
+//   }
+//}
 
 
 //===CHECK FOR DUPLICATE CATEGORY===
@@ -852,7 +855,7 @@ func uncategorisedCategory() -> Category? {
 
 
 // ===UNCATEGORISED CATEGORY===
-func inBasketCategory() -> Category? {
+func inCartCategory() -> Category? {
    
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
@@ -863,7 +866,7 @@ func inBasketCategory() -> Category? {
       appDelegate.persistentContainer.viewContext
    
    let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
-   fetchRequest.predicate = NSPredicate(format: "name == %@", "In Basket")
+   fetchRequest.predicate = NSPredicate(format: "name == %@", "In Cart")
    
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
@@ -1133,29 +1136,12 @@ func resetMOC() {
 }
 
 
-// ===STARTUP CATEGORY STRINGS===
+// ===STARTUP CATEGORY & ITEM STRINGS===
 // The startup categories and items below need to have the same number of elements in the array
-// String for categories, [String] for items
-
-
-
-
-
-
-
-
-
-
-
-// =========== ADD IN BASKET + UNCATEGORISED HERE==============
-
-
+// (String for categories, [String] for items)
 func startupCategoryStrings() -> [String] {
-   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid", "Uncategorised", "In Basket"]
+   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid", "Uncategorised", "In Cart"]
 }
-
-
-// ===STARTUP ITEM STRINGS===
 func startupItemStrings() -> [[String]] {
    return [
       ["Oranges", "Apples", "Bananas"], // Fruit
@@ -1174,3 +1160,59 @@ func startupItemStrings() -> [[String]] {
    ]
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===SEND LIST VIA TEXT CONTENT===
+
+//(try just using a fetch request!)
+
+
+func listContentString(thisList: ListOfItems) -> String {
+   var result: String = ""
+   var categoryAndItemNames: [String] = []
+   
+   // Add category names
+   for item in thisList.itemArray {
+      if item.addedToAList == true {
+         if !categoryAndItemNames.contains(item.wrappedCategoryOriginName) && item.wrappedCategoryOriginName != "In Cart" {
+            categoryAndItemNames.append(item.wrappedCategoryOriginName.uppercased())
+         }
+      }
+   }
+   categoryAndItemNames.sorted { $0 < $1 }
+   
+   // Add item names
+   for index in 0..<categoryAndItemNames.count {
+      for item in thisList.itemArray {
+         if categoryAndItemNames[index] == item.wrappedCategoryOriginName && item.addedToAList == true {
+            categoryAndItemNames[index] = categoryAndItemNames[index] + "\n" + item.wrappedName
+         }
+      }
+   }
+   
+   for string in categoryAndItemNames {
+      result.append(string + "\n")
+   }
+   
+   return result
+}

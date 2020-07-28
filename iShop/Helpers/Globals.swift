@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 import CoreData
 
 // ADD THIS TO ANY VIEW TO MAKE GLOBAL VARIABLES AVAILABLE

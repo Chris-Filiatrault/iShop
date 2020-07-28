@@ -21,22 +21,24 @@ struct ItemList: View {
    var categoriesFetchRequest: FetchRequest<Category>
    var thisList: ListOfItems
    let uncategorised = uncategorisedCategory()
-   let inBasket = inBasketCategory()
+   let inBasket = inCartCategory()
+   var startUp: StartUp
    
-   init(listFromHomePage: ListOfItems) {
+   init(listFromHomePage: ListOfItems, startUpPassedIn: StartUp) {
       
       thisList = listFromHomePage
-      
-      
+      startUp = startUpPassedIn
       let originPredicate = NSPredicate(format: "origin = %@", thisList)
       let inListPredicate = NSPredicate(format: "addedToAList == true")
       let markedOffPredicate = NSPredicate(format: "markedOff == false")
       let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, markedOffPredicate])
       
-      itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
+         NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: compoundPredicate)
 
-      categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [
+         NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Basket"])
       )
    }
@@ -71,7 +73,7 @@ struct ItemList: View {
                }
                ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!)
                
-               InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
+               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
                
             }.padding(.bottom)
             .sheet(isPresented: self.$showRenameList){
@@ -89,7 +91,7 @@ struct ItemList: View {
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
                }
                
-               InBasket(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
+               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
                
             }.padding(.bottom)
             .sheet(isPresented: self.$showRenameList){
@@ -97,7 +99,7 @@ struct ItemList: View {
                   .environmentObject(self.globalVariables)
             }
          }
-            
+         
          // ===Catalogue===
          else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
@@ -115,62 +117,8 @@ struct ItemList: View {
       // ===Navigation bar===
       .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
       .navigationBarItems(trailing:
-         HStack {
-            if globalVariables.catalogueShown == false {
-               // More options button
-               Button(action: {
-                  self.showMoreOptions.toggle()
-               }) {
-                  Image(systemName: "ellipsis.circle")
-                     .imageScale(.large)
-                     .foregroundColor(Color("navBarFont"))
-                     .padding(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 5))
-               }.padding(.vertical, 10)
-                  .actionSheet(isPresented: self.$showMoreOptions) {
-                     ActionSheet(title: Text("Options"), buttons: [
-                        .destructive(Text("Delete All Items")) {
-                           clearList(thisList: self.thisList)
-                        },
-                        .default(Text("Rename List")) {
-                           self.showRenameList.toggle()
-                        },
-                        .default(Text("Uncheck All Items")) {
-                           uncheckAllItems(thisList: self.thisList)
-                        },
-                     .cancel(Text("Cancel"))])
-               }
-            }
-               
-            // Done button
-            else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count == 0 {
-               Button(action: {
-                  withAnimation {
-                     UIApplication.shared.endEditing()
-                     self.globalVariables.catalogueShown = false
-                  }
-               }) {
-                  Text("Done")
-                     .font(.headline)
-                     .foregroundColor(Color("navBarFont"))
-               }
-            }
-               
-            // Add button
-            else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count > 0 {
-               Button(action: {
-                  UIApplication.shared.endEditing()
-                  if self.globalVariables.itemInTextfield != "" {
-                     addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-                     self.globalVariables.itemInTextfield = ""
-                  }
-                  self.globalVariables.itemInTextfield = ""
-               }) {
-                  Text("Add")
-                     .font(.headline)
-                     .foregroundColor(Color("navBarFont"))
-               }
-            }
-      })
+         NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showRenameList, thisList: thisList, startUp: startUp)
+      )
       
    }// End of body
 }

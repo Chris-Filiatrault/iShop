@@ -39,7 +39,7 @@ struct OnboardingView: View {
       UIHostingController(rootView: Subview(
          imageString: "CatalogueView",
          title: "Add From Item History",
-         caption: "Tap an item to add it to the current list."
+         caption: "Items added to any list are saved in the Item History. Tap an item to add it to the current list."
       )),
 //      UIHostingController(rootView: Subview(
 //         imageString: "FilteredCatalogueView",

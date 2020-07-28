@@ -9,7 +9,7 @@
 import SwiftUI
 import CoreData
 
-struct InBasket: View {
+struct InCart: View {
    
 //   @EnvironmentObject var globalVariables: GlobalVariableClass
    

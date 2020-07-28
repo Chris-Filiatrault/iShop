@@ -14,4 +14,3 @@ class HostingController<Home>: UIHostingController<Home> where Home : View {
     }
 }
 
-
