@@ -11,10 +11,15 @@ import MessageUI
 
 struct NavBarItems: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
+   @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
    @Binding var showMoreOptions: Bool
    @Binding var showRenameList: Bool
+   @State var confirmCopiedAlert: Bool = false
+   @State var confirmDeleteListAlert: Bool = false
    var thisList: ListOfItems
    var startUp: StartUp
+   let uncategorised = uncategorisedCategory()
+   let inCart = inCartCategory()
    
     var body: some View {
         HStack {
@@ -32,18 +37,25 @@ struct NavBarItems: View {
                  // === Action sheet ===
                  .actionSheet(isPresented: self.$showMoreOptions) {
                     ActionSheet(title: Text("Options"), buttons: [
-                       .destructive(Text("Delete All Items")) {
+                     .destructive(Text("Delete List")) {
+                        self.confirmDeleteListAlert.toggle()
+                     },
+                       .default(Text("Delete All Items")) {
                           clearList(thisList: self.thisList)
                        },
                        .default(Text("Rename List")) {
                           self.showRenameList.toggle()
                        },
                        .default(Text("Send Via Text")) {
-                        self.startUp.presentMessageCompose(messageBody: listContentString(thisList: self.thisList))
-                        
+                        self.startUp.presentMessageCompose(messageBody: listItemsAsString(thisList: self.thisList))
                        },
+                       .default(Text("Copy Items")) {
+                        let pasteboard = UIPasteboard.general
+                        pasteboard.string = listItemsAsString(thisList: self.thisList)
+                        self.confirmCopiedAlert = true
+                        },
                     .cancel(Text("Cancel"))])
-                 }
+                  }
               }
                
               // Done button
@@ -76,6 +88,17 @@ struct NavBarItems: View {
                  }
               }
         }
+      .alert(isPresented: $confirmDeleteListAlert) {
+         Alert(title: Text("Delete List?"),
+               message: Text("This can't be undone."),
+               primaryButton: .default(Text("Cancel")),
+                  secondaryButton: .destructive(Text("Delete")) {
+                     deleteList(thisList: self.thisList)
+                     self.presentationMode.wrappedValue.dismiss()
+               }
+         )
+      }
+
     }
 }
 

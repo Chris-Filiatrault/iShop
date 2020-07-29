@@ -372,7 +372,7 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
 
 
 // ===REMOVE TICKED ITEMS FROM LIST===
-// For when users have ticked off items as "In Basket" and press the tick button in the nav bar
+// For when users have ticked off items as "In Cart" and press the tick button in the nav bar
 func removeTickedItemsFromList(listOrigin: ListOfItems) {
    
    guard let appDelegate =
@@ -505,7 +505,7 @@ func deleteSwipedList(at offsets: IndexSet) {
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ]
    fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-
+   
    
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest)
@@ -531,6 +531,25 @@ func deleteSwipedList(at offsets: IndexSet) {
       
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
+
+// ===DELETE LIST===
+func deleteList(thisList: ListOfItems) {
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return
+   }
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   for item in thisList.itemArray {
+      managedContext.delete(item)
+   }
+   managedContext.delete(thisList)
+   
+   do {
+      try managedContext.save()
+   } catch let error as NSError {
+      print("Could not save. \(error), \(error.userInfo)")
    }
 }
 
@@ -648,7 +667,7 @@ func uncheckAllItems(thisList: ListOfItems) {
 // ===SORT LISTS ALPHABETICALLY===
 // Using the list indicies
 func sortListsAlphabetically() {
-
+   
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate
       else {
@@ -656,19 +675,19 @@ func sortListsAlphabetically() {
    }
    let managedContext =
       appDelegate.persistentContainer.viewContext
-
+   
    let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    listFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
-
+   
    do {
       let lists = try managedContext.fetch(listFetchRequest)
-
+      
       var index = 0
       for list in lists {
          list.index = Int64(index)
          index += 1
       }
-
+      
    } catch let error as NSError {
       print("Could not fetch. \(error)")
    }
@@ -871,8 +890,8 @@ func inCartCategory() -> Category? {
    do {
       let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
       if fetchReturn != [] {
-         let inBasket = fetchReturn[0]
-         return inBasket
+         let inCart = fetchReturn[0]
+         return inCart
       }
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
@@ -1089,10 +1108,10 @@ func resetMOC() {
       appDelegate.persistentContainer.viewContext
    
    let itemFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-//   itemFetchRequest.predicate = NSPredicate(format: "originName != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+   //   itemFetchRequest.predicate = NSPredicate(format: "originName != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    let categoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
    let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
-//   listFetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+   //   listFetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    let initDateFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
    
    do {
@@ -1101,7 +1120,7 @@ func resetMOC() {
       
       let listFetchReturn = try managedContext.fetch(listFetchRequest)
       let lists = listFetchReturn as! [ListOfItems]
-
+      
       let categoryFetchReturn = try managedContext.fetch(categoryFetchRequest)
       let categories = categoryFetchReturn as! [Category]
       
@@ -1156,7 +1175,7 @@ func startupItemStrings() -> [[String]] {
       ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
       ["Band-aids", "Antiseptic"], // First aid
       [], // Uncategorised
-      [] // In Basket
+      [] // In Cart
    ]
 }
 
@@ -1187,32 +1206,161 @@ func startupItemStrings() -> [[String]] {
 //(try just using a fetch request!)
 
 
-func listContentString(thisList: ListOfItems) -> String {
-   var result: String = ""
-   var categoryAndItemNames: [String] = []
+//func listContentString(thisList: ListOfItems) -> String {
+//   var result: String = ""
+//   var categoryAndItemNames: [String] = []
+//
+//   // Add category names
+//   for item in thisList.itemArray {
+//      if item.addedToAList == true {
+//         if !categoryAndItemNames.contains(item.wrappedCategoryOriginName) && item.wrappedCategoryOriginName != "In Cart" {
+//            categoryAndItemNames.append(item.wrappedCategoryOriginName.uppercased())
+//         }
+//      }
+//   }
+//   categoryAndItemNames.sorted { $0 < $1 }
+//
+//   // Add item names
+//   for index in 0..<categoryAndItemNames.count {
+//      for item in thisList.itemArray {
+//         if categoryAndItemNames[index] == item.wrappedCategoryOriginName && item.addedToAList == true {
+//            categoryAndItemNames[index] = categoryAndItemNames[index] + "\n" + item.wrappedName
+//         }
+//      }
+//   }
+//
+//   for string in categoryAndItemNames {
+//      result.append(string + "\n")
+//   }
+//
+//   return result
+//}
+
+
+
+func listItemsAsString(thisList: ListOfItems) -> String {
+   var result = ""
+   var categoriesAndItems: [String] = []
    
-   // Add category names
-   for item in thisList.itemArray {
-      if item.addedToAList == true {
-         if !categoryAndItemNames.contains(item.wrappedCategoryOriginName) && item.wrappedCategoryOriginName != "In Cart" {
-            categoryAndItemNames.append(item.wrappedCategoryOriginName.uppercased())
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return ""
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let categoryFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   categoryFetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
+   categoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+   
+   let uncategorisedRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   uncategorisedRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
+   
+   //   let inCartRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   //   inCartRequest.predicate = NSPredicate(format: "name == %@", "In Cart")
+   
+   do {
+      // Get categories
+      let categories = try managedContext.fetch(categoryFetchRequest)
+      let uncategorisedReturn = try managedContext.fetch(uncategorisedRequest)
+      //      let inCartReturn = try managedContext.fetch(inCartRequest)
+      
+      // Determine which categories have items in them
+      // Add category name to categoriesAndItems if it has items
+      if categories != [] {
+         
+         for category in categories {
+            
+            var categoryItemNames: [String] = []
+            var thisCategoryHasItems: Bool {
+               var numItems: Int = 0
+               for item in category.itemsInCategoryArray {
+                  if item.addedToAList == true && thisList.itemArray.contains(item) && item.markedOff == false {
+                     numItems += 1
+                     categoryItemNames.append(item.wrappedName)
+                  }
+               }
+               return numItems > 0
+            }
+            if thisCategoryHasItems {
+               categoriesAndItems.append(category.wrappedName.uppercased())
+               for itemName in categoryItemNames {
+                  categoriesAndItems.append("☐ " + itemName)
+               }
+               categoriesAndItems.append("")
+            }
          }
       }
-   }
-   categoryAndItemNames.sorted { $0 < $1 }
-   
-   // Add item names
-   for index in 0..<categoryAndItemNames.count {
-      for item in thisList.itemArray {
-         if categoryAndItemNames[index] == item.wrappedCategoryOriginName && item.addedToAList == true {
-            categoryAndItemNames[index] = categoryAndItemNames[index] + "\n" + item.wrappedName
+      
+      // Determine if uncategorised or inBasket have categories
+      // If so, add the capitalised wrappedName to categoriesAndItems
+      if uncategorisedReturn != [] {
+         let uncategorised = uncategorisedReturn[0]
+         
+         var uncategorisedItemNames: [String] = []
+         var uncategorisedHasItems: Bool {
+            var numItemsUncategorised: Int = 0
+            for item in uncategorised.itemsInCategoryArray {
+               if item.addedToAList == true && thisList.itemArray.contains(item) && item.markedOff == false {
+                  numItemsUncategorised += 1
+                  uncategorisedItemNames.append(item.wrappedName)
+               }
+            }
+            return numItemsUncategorised > 0
+         }
+         if uncategorisedHasItems {
+            categoriesAndItems.append(uncategorised.wrappedName.uppercased())
+            for itemName in uncategorisedItemNames {
+               categoriesAndItems.append("☐ " + itemName)
+            }
+            categoriesAndItems.append("")
          }
       }
+      
+
+      var inCartItemNames: [String] = []
+      var inCartHasItems: Bool {
+         var numItemsInCart: Int = 0
+         for item in thisList.itemArray {
+            if item.addedToAList == true && item.markedOff == true {
+               numItemsInCart += 1
+               inCartItemNames.append(item.wrappedName)
+            }
+         }
+         return numItemsInCart > 0
+      }
+      if inCartHasItems {
+         categoriesAndItems.append("IN CART")
+         for itemName in inCartItemNames {
+            categoriesAndItems.append("☑ " + itemName)
+         }
+         categoriesAndItems.append("")
+      }
+      
+      
+      
+      
+      
+      // For all the categories with items
+      // Add the items to that index inside the categoriesAndItems array of Strings
+      
+      
+      
+      
+      
+      
+      
+      // Add all capitalised category names + item names to result
+      for categoryItems in categoriesAndItems {
+         result.append(categoryItems + "\n")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
    }
    
-   for string in categoryAndItemNames {
-      result.append(string + "\n")
-   }
+   
+   
    
    return result
 }

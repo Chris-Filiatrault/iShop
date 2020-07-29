@@ -757,3 +757,41 @@
 //               }
 //            )
 //         }
+
+
+//
+//func swipeToDelete(index: IndexSet) {
+//   self.showConfirmDeleteListAlert.toggle()
+//}
+//
+//func getSwipedList(at offsets: IndexSet) -> ListOfItems? {
+//
+//   guard let appDelegate =
+//      UIApplication.shared.delegate as? AppDelegate else {
+//         return nil
+//   }
+//
+//   let managedContext =
+//      appDelegate.persistentContainer.viewContext
+//
+//   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+//   fetchRequest.sortDescriptors = [
+//      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+//   ]
+//   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+//
+//
+//   do {
+//      let fetchReturn = try managedContext.fetch(fetchRequest)
+//      for offset in offsets {
+//         let swipedList = fetchReturn[offset] as! ListOfItems
+//         return swipedList
+//      }
+//
+//
+//   } catch let error as NSError {
+//      print("Could not fetch. \(error), \(error.userInfo)")
+//   }
+//   return nil
+//}
+//

@@ -14,7 +14,7 @@ struct ChooseCategory: View {
    
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \Category.name, ascending: true)
-   ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Basket"])) var categories: FetchedResults<Category>
+   ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
 
    
    var thisItem: Item
@@ -87,7 +87,7 @@ struct ChooseCategory: View {
       fetchRequest.sortDescriptors = [
          NSSortDescriptor(keyPath: \Category.name, ascending: true)
       ]
-      fetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Basket"])
+      fetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       
       let uncategorisedFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
       uncategorisedFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")

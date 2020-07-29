@@ -137,6 +137,8 @@ struct StartUp: View {
    } // End of init function
 }
 
+
+// presentMessageCompose needs to be called from the top of the view hierarchy (StartUp), though the button for calling it is inside NavBarItems. Thus StartUp() passes self into Home, which is passed into ItemList, and then into NavBarItems, which calls presentMessageCompose
 extension StartUp {
 
    class MessageComposerDelegate: NSObject, MFMessageComposeViewControllerDelegate {

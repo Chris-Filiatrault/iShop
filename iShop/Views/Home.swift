@@ -54,7 +54,7 @@ struct Home: View {
                      }
                      
                   }
-               }.onDelete(perform: deleteSwipedList)
+               }
             }
                
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
@@ -112,11 +112,9 @@ struct Home: View {
             // ===Nav bar modifiers===
             .accentColor(Color("navBarFont")) // Back button color
             .navigationViewStyle(StackNavigationViewStyle())
-         
       }
+      
    } // End of body
-   
 }
-
 
 

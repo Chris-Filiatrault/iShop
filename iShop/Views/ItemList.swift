@@ -14,14 +14,14 @@ struct ItemList: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
-   @State var showRenameList: Bool = false
+   @State var showListSettings: Bool = false
    var useCategories = UserDefaults.standard.object(forKey: "syncUseCategories") as? Bool ?? true
    
    var itemsFetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
    var thisList: ListOfItems
    let uncategorised = uncategorisedCategory()
-   let inBasket = inCartCategory()
+   let inCart = inCartCategory()
    var startUp: StartUp
    
    init(listFromHomePage: ListOfItems, startUpPassedIn: StartUp) {
@@ -39,7 +39,7 @@ struct ItemList: View {
 
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [
          NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Basket"])
+      ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       )
    }
    
@@ -73,11 +73,11 @@ struct ItemList: View {
                }
                ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!)
                
-               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
+               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
             }.padding(.bottom)
-            .sheet(isPresented: self.$showRenameList){
-               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
+            .sheet(isPresented: self.$showListSettings){
+               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
                   .environmentObject(self.globalVariables)
             }
          }
@@ -91,11 +91,11 @@ struct ItemList: View {
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
                }
                
-               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inBasket!)
+               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
             }.padding(.bottom)
-            .sheet(isPresented: self.$showRenameList){
-               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
+            .sheet(isPresented: self.$showListSettings){
+               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
                   .environmentObject(self.globalVariables)
             }
          }
@@ -117,7 +117,7 @@ struct ItemList: View {
       // ===Navigation bar===
       .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
       .navigationBarItems(trailing:
-         NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showRenameList, thisList: thisList, startUp: startUp)
+         NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp)
       )
       
    }// End of body
