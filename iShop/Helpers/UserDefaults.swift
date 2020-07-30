@@ -9,7 +9,6 @@
 import SwiftUI
 
 class UserDefaultsManager: ObservableObject {
-   
    // add the following to any view using UserDefaultManager
    // @ObservedObject var userDefaultsManager = UserDefaultsManager()
    

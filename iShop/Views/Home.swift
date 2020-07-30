@@ -10,7 +10,6 @@ import SwiftUI
 import CoreData
 
 struct Home: View {
-   
    @Environment(\.presentationMode) var presentationMode
    @Binding var navBarFont: UIColor
    @Binding var navBarColor: UIColor
@@ -56,7 +55,6 @@ struct Home: View {
                   }
                }
             }
-               
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
                
@@ -113,7 +111,6 @@ struct Home: View {
             .accentColor(Color("navBarFont")) // Back button color
             .navigationViewStyle(StackNavigationViewStyle())
       }
-      
    } // End of body
 }
 

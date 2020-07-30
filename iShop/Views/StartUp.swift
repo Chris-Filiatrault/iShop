@@ -63,7 +63,6 @@ struct StartUp: View {
       if isFirstTimeLaunch() {
          print("Is first time launch.")
          
-         
          guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
          }

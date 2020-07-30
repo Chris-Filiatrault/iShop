@@ -46,7 +46,6 @@ struct ItemList: View {
    var body: some View {
       
       VStack(spacing: 0) {
-         
          // ===Enter item textfield===
          TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
             self.globalVariables.catalogueShown = true
@@ -117,7 +116,7 @@ struct ItemList: View {
       // ===Navigation bar===
       .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
       .navigationBarItems(trailing:
-         NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp)
+         NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
       )
       
    }// End of body

@@ -1033,6 +1033,7 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
 // ===CHECK WHETHER FIRST TIME LAUNCH===
 // Returns true if yes
 func isFirstTimeLaunch() -> Bool {
+   print("Is first time launch")
    if UserDefaults.standard.bool(forKey: "userHasLaunchedPreviously") != true {
       return true
    } else {
