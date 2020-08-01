@@ -147,7 +147,7 @@ struct LastSubview: View {
          GeometryReader { geometry in
             VStack {
                Spacer()
-               Text("Get Started")
+               Text("Start")
                   .bold()
 //                  .frame(minWidth: 50)
                   .font(.headline)

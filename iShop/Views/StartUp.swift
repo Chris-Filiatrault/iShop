@@ -26,16 +26,6 @@ struct StartUp: View {
          else {
             Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
          }
-         
-         
-//         Button(action: {
-//            self.presentMessageCompose()
-//         }) {
-//            Text("Button")
-//         }
-         
-         
-         
       }
       
    } // End of body
@@ -56,13 +46,11 @@ struct StartUp: View {
       // Remove UITableView background, so it can be programmed using SwiftUI
       UITableView.appearance().backgroundColor = .clear
       
-      if userDefaultsManager.useCategories != true && userDefaultsManager.useCategories != false {
-         userDefaultsManager.useCategories = true
-      }
-      
+      // Run first time code
+      // Do so after 3 seconds to (hopefully) let user defaults sync
+      DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
       if isFirstTimeLaunch() {
-         print("Is first time launch.")
-         
+
          guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
          }
@@ -86,14 +74,14 @@ struct StartUp: View {
          let startupCategories = startupCategoryStrings()
          let startupItems = startupItemStrings()
          
-         
          if userHasNoLists() {
-            print("Creating startup list")
+            
+            print("Creating default list")
             // Groceries list
-            let groceriesList = ListOfItems(entity: listEntity, insertInto: managedContext)
-            groceriesList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
-            groceriesList.id = UUID()
-            groceriesList.dateAdded = newInitDate.initDate
+            let defaultList = ListOfItems(entity: listEntity, insertInto: managedContext)
+            defaultList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
+            defaultList.id = UUID()
+            defaultList.dateAdded = newInitDate.initDate
             
             
             if userHasNoCategories() {
@@ -117,8 +105,9 @@ struct StartUp: View {
                      item.addedToAList = false
                      item.markedOff = false
                      item.quantity = 1
-                     item.origin = groceriesList
-                     groceriesList.addToItems(item)
+                     item.origin = defaultList
+                     item.position = 0
+                     defaultList.addToItems(item)
                      newCategory.addToItemsInCategory(item)
                   }
                   groceryIndex += 1
@@ -126,12 +115,15 @@ struct StartUp: View {
             }
          }
          
+         addList(listName: "Groceries")
+         
          
          do {
             try managedContext.save()
          } catch let error as NSError {
             print("Could not save items. \(error), \(error.userInfo)")
          }
+      }
       }
    } // End of init function
 }

@@ -17,6 +17,7 @@
         <attribute name="markedOff" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="originName" optional="YES" attributeType="String"/>
+        <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="categoryOrigin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="itemsInCategory" inverseEntity="Category"/>
         <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ListOfItems" inverseName="items" inverseEntity="ListOfItems"/>
@@ -31,7 +32,7 @@
     <elements>
         <element name="Category" positionX="-36" positionY="72" width="128" height="118"/>
         <element name="InitDate" positionX="-45" positionY="72" width="128" height="28"/>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="Item" positionX="-63" positionY="-18" width="128" height="193"/>
         <element name="ListOfItems" positionX="-54" positionY="45" width="128" height="118"/>
     </elements>
 </model>

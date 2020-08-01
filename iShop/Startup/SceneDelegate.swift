@@ -68,11 +68,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
       
-      UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "numTimesUsed") + 1, forKey: "numTimesUsed")
-      print("Num times used: \(UserDefaults.standard.integer(forKey: "numTimesUsed"))")
-      if UserDefaults.standard.integer(forKey: "numTimesUsed") == 20 {
-         SKStoreReviewController.requestReview()
-      }
+      UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "syncNumTimesUsed") + 1, forKey: "syncNumTimesUsed")
+      print("Num times used: \(UserDefaults.standard.integer(forKey: "syncNumTimesUsed"))")
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

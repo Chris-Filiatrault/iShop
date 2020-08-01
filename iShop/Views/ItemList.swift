@@ -15,8 +15,7 @@ struct ItemList: View {
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
    @State var showListSettings: Bool = false
-   var useCategories = UserDefaults.standard.object(forKey: "syncUseCategories") as? Bool ?? true
-   
+   var useCategories = UserDefaults.standard.bool(forKey: "syncUseCategories")
    var itemsFetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
    var thisList: ListOfItems
@@ -33,9 +32,15 @@ struct ItemList: View {
       let markedOffPredicate = NSPredicate(format: "markedOff == false")
       let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, markedOffPredicate])
       
-      itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
-         NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ], predicate: compoundPredicate)
+      if UserDefaults.standard.string(forKey: "syncSortListBy") == "Alphabetical" {
+         itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
+            NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+            ], predicate: compoundPredicate)
+      } else {
+         itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
+                  NSSortDescriptor(key: "position", ascending: true
+               )], predicate: compoundPredicate)
+      }
 
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [
          NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
@@ -87,8 +92,9 @@ struct ItemList: View {
             
             List {
                ForEach(itemsFetchRequest.wrappedValue, id: \.self) { item in
-                  ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
+                  ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
                }
+               .onMove(perform: moveItem)
                
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
@@ -120,6 +126,90 @@ struct ItemList: View {
       )
       
    }// End of body
+   
+   func moveItem(IndexSet: IndexSet, destination: Int) {
+
+      guard let appDelegate =
+         UIApplication.shared.delegate as? AppDelegate else {
+            return
+      }
+
+      let managedContext =
+         appDelegate.persistentContainer.viewContext
+
+      // Need an origin predicate!
+      let originPredicate = NSPredicate(format: "origin = %@", thisList)
+      let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+      let markedOffPredicate = NSPredicate(format: "markedOff == false")
+      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
+      
+      
+      let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+      fetchRequest.predicate = compoundPredicate
+      fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
+      
+
+      do {
+         let items = try managedContext.fetch(fetchRequest) as! [Item]
+
+         for item in items {
+            print(item.wrappedName)
+         }
+         
+         let firstIndex = IndexSet.min()!
+         let lastIndex = IndexSet.max()!
+
+         let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
+         let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)
+
+         if firstRowToReorder != lastRowToReorder && items != [] {
+
+              var newOrder = firstRowToReorder
+              if newOrder < firstIndex {
+                  // Moving dragged items up, so re-order dragged items first
+
+               // Re-order dragged items
+               for index in IndexSet {
+                      items[index].setValue(newOrder, forKey: "position")
+                      newOrder = newOrder + 1
+                  }
+
+                  // Re-order non-dragged items
+                  for rowToMove in firstRowToReorder..<lastRowToReorder {
+                     if !IndexSet.contains(rowToMove) {
+                          items[rowToMove].setValue(newOrder, forKey: "position")
+                          newOrder = newOrder + 1
+                      }
+                  }
+              } else if items != [] {
+                  // Moving dragged items down, so re-order dragged items last
+
+                  // Re-order non-dragged items
+                  for rowToMove in firstRowToReorder...lastRowToReorder {
+                     if !IndexSet.contains(rowToMove) {
+                          items[rowToMove].setValue(newOrder, forKey: "position")
+                          newOrder = newOrder + 1
+                      }
+                  }
+
+               // Re-order dragged items
+               for index in IndexSet {
+                      items[index].setValue(newOrder, forKey: "position")
+                      newOrder = newOrder + 1
+                  }
+              }
+         }
+
+         do {
+            try managedContext.save()
+         } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+         }
+
+      } catch let error as NSError {
+         print("Could not fetch. \(error), \(error.userInfo)")
+      }
+   }
 }
 
 

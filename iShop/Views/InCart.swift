@@ -71,7 +71,7 @@ struct InCart: View {
                   .padding(.horizontal)
                   .onTapGesture {
                      for item in self.items.wrappedValue {
-                        markOffItemInList(thisItem: item)
+                        restoreItemInList(thisItem: item, thisList: self.thisList)
                      }
                   }
                Spacer()
@@ -79,7 +79,7 @@ struct InCart: View {
                .listRowBackground(Color("standardDarkBlue"))
                
                ForEach(items.wrappedValue, id: \.self) { item in
-                  ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff)
+                  ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
                }.onDelete(perform: removeSwipedItem)
                
             }

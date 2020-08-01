@@ -30,10 +30,18 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    let categoryFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
    
+
+//   let originPredicate = NSPredicate(format: "origin == %@", listOrigin)
+////   let addedToAListPredicate = NSPredicate(format: "addedToAList == %@", true)
+//   let markedOffPredicate = NSPredicate(format: "markedOff == %@", false)
+//   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, markedOffPredicate])
+//
+//   let itemFetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+//   itemFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
+//   itemFetchRequest.predicate = compoundPredicate
    
    do {
       let lists = try managedContext.fetch(listFetchRequest)
-      
       let returnedCategories = try managedContext.fetch(categoryFetchRequest)
       
       // Unique item name --> create a new object of that name for every list
@@ -62,7 +70,14 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             
             // Add a copy of the new item to the list in which it was added
             if list == listOrigin {
+               var numItemsInList = 0
+               for item in list.itemArray {
+                  if item.addedToAList == true && item.markedOff == false {
+                     numItemsInList += 1
+                  }
+               }
                newItem.addedToAList = true
+               newItem.position = Int32(numItemsInList)
             }
          }
       }
@@ -129,12 +144,30 @@ func addItemFromCatalogue(item: Item, listOrigin: ListOfItems) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   item.addedToAList = true
+   let originPredicate = NSPredicate(format: "origin = %@", listOrigin)
+   let inListPredicate = NSPredicate(format: "addedToAList == true")
+   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, markedOffPredicate])
+   
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   fetchRequest.predicate = compoundPredicate
    
    do {
-      try managedContext.save()
-   } catch let error as NSError {
+      
+      let items = try managedContext.fetch(fetchRequest)
+      
+      item.addedToAList = true
+      item.position = Int32(items.count - 1)
+   
+   
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
       print("Could not save items. \(error), \(error.userInfo)")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
 
@@ -151,6 +184,7 @@ func removeItemFromList(item: Item) {
    item.addedToAList = false
    item.markedOff = false
    item.quantity = 1
+   item.position = 0
    
    do {
       try managedContext.save()
@@ -234,7 +268,7 @@ func decrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
 
 // ===MARK OFF ITEM===
 // Mark off the tick circle in a list as having been added to the users basket
-func markOffItemInList(thisItem: Item) {
+func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -242,15 +276,39 @@ func markOffItemInList(thisItem: Item) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   thisItem.markedOff.toggle()
-   GlobalVariableClass().refreshingID = UUID()
+   let originPredicate = NSPredicate(format: "origin = %@", thisList)
+   let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
+   
+   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+    fetchRequest.predicate = compoundPredicate
    
    do {
-      try managedContext.save()
-      print("Checked off successfully")
+      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      
+      for item in items {
+         if item.position > thisItem.position {
+            item.position -= 1
+         }
+      }
+      
+      thisItem.markedOff = true
+      thisItem.position = 0
+      GlobalVariableClass().refreshingID = UUID()
+      
+      do {
+         try managedContext.save()
+         print("Checked off successfully")
+      } catch let error as NSError {
+         print("Could not save checked off status. \(error), \(error.userInfo)")
+      }
+   
+   
    } catch let error as NSError {
-      print("Could not save checked off status. \(error), \(error.userInfo)")
+      print("Could not fetch. \(error), \(error.userInfo)")
    }
+   
 }
 
 
@@ -263,13 +321,30 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   thisItem.markedOff = false
+   let originPredicate = NSPredicate(format: "origin = %@", thisList)
+   let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
+   
+   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+    fetchRequest.predicate = compoundPredicate
    
    do {
-      try managedContext.save()
-      print("Restored successfully")
+      let items = try managedContext.fetch(fetchRequest) as! [Item]
+   
+      thisItem.markedOff = false
+      thisItem.position = Int32(items.count)
+      GlobalVariableClass().refreshingID = UUID()
+      
+      do {
+         try managedContext.save()
+         print("Checked off successfully")
+      } catch let error as NSError {
+         print("Could not save checked off status. \(error), \(error.userInfo)")
+      }
+   
    } catch let error as NSError {
-      print("Could not save checked off status. \(error), \(error.userInfo)")
+      print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
 
@@ -373,31 +448,34 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
 
 // ===REMOVE TICKED ITEMS FROM LIST===
 // For when users have ticked off items as "In Cart" and press the tick button in the nav bar
-func removeTickedItemsFromList(listOrigin: ListOfItems) {
-   
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
-   }
-   
-   let managedContext =
-      appDelegate.persistentContainer.viewContext
-   
-   for item in listOrigin.itemArray {
-      if item.markedOff == true {
-         item.markedOff = false
-         item.addedToAList = false
-         item.quantity = 1
-      }
-   }
-   
-   do {
-      try managedContext.save()
-      print("Checked off successfully")
-   } catch let error as NSError {
-      print("Could not save checked off status. \(error), \(error.userInfo)")
-   }
-}
+//func removeTickedItemsFromList(listOrigin: ListOfItems) {
+//
+//   guard let appDelegate =
+//      UIApplication.shared.delegate as? AppDelegate else {
+//         return
+//   }
+//
+//   let managedContext =
+//      appDelegate.persistentContainer.viewContext
+//
+//   for item in listOrigin.itemArray {
+//      if item.markedOff == true {
+//         item.markedOff = false
+//         item.addedToAList = false
+//         item.quantity = 1
+//      }
+//   }
+//
+//   do {
+//      try managedContext.save()
+//      print("Checked off successfully")
+//   } catch let error as NSError {
+//      print("Could not save checked off status. \(error), \(error.userInfo)")
+//   }
+//}
+
+
+
 
 
 // DELETE (swiped) ITEM
@@ -450,6 +528,7 @@ func addList(listName: String) {
             newItem.quantity = 1
             newItem.origin = newList
             newItem.categoryOrigin = item.categoryOrigin
+            newItem.position = 0
             
             itemsToBeAdded.append(newItem)
          }
@@ -630,6 +709,7 @@ func clearList(thisList: ListOfItems) {
       item.markedOff = false
       item.addedToAList = false
       item.quantity = 1
+      item.position = 0
    }
    
    do {
@@ -642,62 +722,87 @@ func clearList(thisList: ListOfItems) {
 
 
 // ===UNCHECK ALL ITEMS===
-func uncheckAllItems(thisList: ListOfItems) {
-   
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
-   }
-   let managedContext =
-      appDelegate.persistentContainer.viewContext
-   
-   for item in thisList.itemArray {
-      item.markedOff = false
-   }
-   
-   do {
-      try managedContext.save()
-      print("Checked off successfully")
-   } catch let error as NSError {
-      print("Could not save checked off status. \(error), \(error.userInfo)")
-   }
-}
+//func uncheckAllItems(thisList: ListOfItems) {
+//
+//   guard let appDelegate =
+//      UIApplication.shared.delegate as? AppDelegate else {
+//         return
+//   }
+//   let managedContext =
+//      appDelegate.persistentContainer.viewContext
+//
+//   for item in thisList.itemArray {
+//      item.markedOff = false
+//   }
+//
+//   do {
+//      try managedContext.save()
+//      print("Checked off successfully")
+//   } catch let error as NSError {
+//      print("Could not save checked off status. \(error), \(error.userInfo)")
+//   }
+//}
 
 
 // ===SORT LISTS ALPHABETICALLY===
 // Using the list indicies
-func sortListsAlphabetically() {
+//func sortListsAlphabetically() {
+//
+//   guard let appDelegate =
+//      UIApplication.shared.delegate as? AppDelegate
+//      else {
+//         return
+//   }
+//   let managedContext =
+//      appDelegate.persistentContainer.viewContext
+//
+//   let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+//   listFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
+//
+//   do {
+//      let lists = try managedContext.fetch(listFetchRequest)
+//
+//      var index = 0
+//      for list in lists {
+//         list.index = Int64(index)
+//         index += 1
+//      }
+//
+//   } catch let error as NSError {
+//      print("Could not fetch. \(error)")
+//   }
+//   do {
+//      try managedContext.save()
+//   } catch let error as NSError {
+//      print("Could not save list. \(error), \(error.userInfo)")
+//   }
+//}
+
+
+// ===UNCATEGORISED CATEGORY===
+func globalVariablesInitialList() -> ListOfItems? {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate
-      else {
-         return
+      UIApplication.shared.delegate as? AppDelegate else {
+         return nil
    }
+   
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
-   let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
-   listFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
+   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
    
    do {
-      let lists = try managedContext.fetch(listFetchRequest)
-      
-      var index = 0
-      for list in lists {
-         list.index = Int64(index)
-         index += 1
+      let fetchReturn = try managedContext.fetch(fetchRequest) as! [ListOfItems]
+      if fetchReturn != [] {
+         let initialList = fetchReturn[0]
+         return initialList
       }
-      
    } catch let error as NSError {
-      print("Could not fetch. \(error)")
+      print("Could not fetch. \(error), \(error.userInfo)")
    }
-   do {
-      try managedContext.save()
-   } catch let error as NSError {
-      print("Could not save list. \(error), \(error.userInfo)")
-   }
+   return nil
 }
-
 
 // =====================================================
 // ==================== Category =======================
@@ -1004,8 +1109,8 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
       let dates = try context.fetch(fetchRequest) as! [InitDate]
       
       result = dates.count > 1
-      print("Result is: \(result)")
-      print("No. dates is: \(dates.count)")
+//      print("Result is: \(result)")
+//      print("No. dates is: \(dates.count)")
       
       if dates != [] {
          let earliestDate = dates[0].initDate
@@ -1015,11 +1120,9 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
             }
          }
       }
-      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
-   
    
    return result
 }
@@ -1033,14 +1136,16 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
 // ===CHECK WHETHER FIRST TIME LAUNCH===
 // Returns true if yes
 func isFirstTimeLaunch() -> Bool {
-   print("Is first time launch")
-   if UserDefaults.standard.bool(forKey: "userHasLaunchedPreviously") != true {
+   if UserDefaults.standard.bool(forKey: "syncUserHasLaunchedPreviously") != true {
+      print("Is first time launch")
+      UserDefaults.standard.set(true, forKey: "syncUserHasLaunchedPreviously")
       return true
    } else {
-      UserDefaults.standard.set(true, forKey: "userHasLaunchedPreviously")
+      UserDefaults.standard.set(true, forKey: "syncUserHasLaunchedPreviously")
       return false
    }
 }
+
 
 
 // ===USER HAS NO LISTS===
@@ -1180,65 +1285,8 @@ func startupItemStrings() -> [[String]] {
    ]
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ===SEND LIST VIA TEXT CONTENT===
-
-//(try just using a fetch request!)
-
-
-//func listContentString(thisList: ListOfItems) -> String {
-//   var result: String = ""
-//   var categoryAndItemNames: [String] = []
-//
-//   // Add category names
-//   for item in thisList.itemArray {
-//      if item.addedToAList == true {
-//         if !categoryAndItemNames.contains(item.wrappedCategoryOriginName) && item.wrappedCategoryOriginName != "In Cart" {
-//            categoryAndItemNames.append(item.wrappedCategoryOriginName.uppercased())
-//         }
-//      }
-//   }
-//   categoryAndItemNames.sorted { $0 < $1 }
-//
-//   // Add item names
-//   for index in 0..<categoryAndItemNames.count {
-//      for item in thisList.itemArray {
-//         if categoryAndItemNames[index] == item.wrappedCategoryOriginName && item.addedToAList == true {
-//            categoryAndItemNames[index] = categoryAndItemNames[index] + "\n" + item.wrappedName
-//         }
-//      }
-//   }
-//
-//   for string in categoryAndItemNames {
-//      result.append(string + "\n")
-//   }
-//
-//   return result
-//}
-
-
-
+// ===LIST ITEMS AS STRING===
+// For copying/sending via text
 func listItemsAsString(thisList: ListOfItems) -> String {
    var result = ""
    var categoriesAndItems: [String] = []
@@ -1338,19 +1386,6 @@ func listItemsAsString(thisList: ListOfItems) -> String {
          categoriesAndItems.append("")
       }
       
-      
-      
-      
-      
-      // For all the categories with items
-      // Add the items to that index inside the categoriesAndItems array of Strings
-      
-      
-      
-      
-      
-      
-      
       // Add all capitalised category names + item names to result
       for categoryItems in categoriesAndItems {
          result.append(categoryItems + "\n")
@@ -1360,8 +1395,6 @@ func listItemsAsString(thisList: ListOfItems) -> String {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
    
-   
-   
-   
+  
    return result
 }

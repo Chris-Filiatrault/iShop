@@ -54,6 +54,7 @@ extension Item {
    @NSManaged public var origin: ListOfItems?
    @NSManaged public var originName: String?
    @NSManaged public var categoryOrigin: Category?
+   @NSManaged public var position: Int32
    
    // Added these properties to Item, so the String value from name can be easily accessed.
    public var wrappedName: String {

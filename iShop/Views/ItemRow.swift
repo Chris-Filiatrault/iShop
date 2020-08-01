@@ -17,13 +17,20 @@ struct ItemRow: View {
    var thisItem: Item
    @State var showItemDetails: Bool = false
    @State var markedOff: Bool
+   @State var position: Int32
    
    var body: some View {
       
       HStack {
          
          Button(action: {
-               markOffItemInList(thisItem: self.thisItem)
+            if self.thisItem.markedOff == false {
+               markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
+            }
+            else if self.thisItem.markedOff == true {
+               restoreItemInList(thisItem: self.thisItem, thisList: self.thisList)
+            }
+            GlobalVariableClass().refreshingID = UUID()
             }) {
             
             ZStack {
@@ -38,6 +45,8 @@ struct ItemRow: View {
                         "\(thisItem.wrappedName)")
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .multilineTextAlignment(.leading)
+                  
+                  Text("\(position)")
                   
                 Spacer()
                   

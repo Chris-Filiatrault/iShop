@@ -12,6 +12,7 @@ import CoreData
 struct ItemDetails: View {
    
    @Environment(\.presentationMode) var presentationMode
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
@@ -41,7 +42,7 @@ struct ItemDetails: View {
                   
                   // Name
                   TextField("Enter name", text: self.$itemName,
-                     onEditingChanged: { edit in
+                            onEditingChanged: { edit in
                               self.textfieldActive = true
                   }, onCommit: {
                      if self.itemName != "" {
@@ -76,14 +77,16 @@ struct ItemDetails: View {
                      .padding(.leading, 10)
                   }
                   
+                  
                   // Category
-                  NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory, categoryName: self.$categoryName, textfieldActive: self.$textfieldActive)) {
-                     HStack {
-                        Text("Category")
-                        Spacer()
-                        Text("\(self.categoryName)").foregroundColor(.gray)
+                  if self.userDefaultsManager.useCategories == true {
+                     NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory, categoryName: self.$categoryName, textfieldActive: self.$textfieldActive)) {
+                        HStack {
+                           Text("Category")
+                           Spacer()
+                           Text("\(self.categoryName)").foregroundColor(.gray)
+                        }
                      }
-                     
                   }
                   
                   // List
@@ -121,8 +124,8 @@ struct ItemDetails: View {
                      }
                      if self.oldItemCategory != self.newItemCategory {
                         changeCategory(thisItem: self.thisItem,
-                                        oldItemCategory: self.thisItem.categoryOrigin!,
-                                        newItemCategory: self.newItemCategory)
+                                       oldItemCategory: self.thisItem.categoryOrigin!,
+                                       newItemCategory: self.newItemCategory)
                      }
                      if self.oldList != self.newList {
                         changeItemList(thisItem: self.thisItem, newList: self.newList)

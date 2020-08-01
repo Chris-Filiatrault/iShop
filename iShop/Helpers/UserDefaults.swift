@@ -18,8 +18,9 @@ class UserDefaultsManager: ObservableObject {
     }
    
    @Published var useCategories: Bool = UserDefaults.standard.bool(forKey: "syncUseCategories") {
-       didSet { UserDefaults.standard.set(self.useCategories, forKey: "syncUseCategories") }
+      didSet { UserDefaults.standard.set(self.useCategories, forKey: "syncUseCategories") }
    }
 
+   
    
 }

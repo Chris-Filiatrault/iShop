@@ -12,63 +12,83 @@ import CoreData
 struct ChooseCategory: View {
    @Environment(\.presentationMode) var presentationModeChooseCategory: Binding<PresentationMode>
    
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \Category.name, ascending: true)
    ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
-
+   
    
    var thisItem: Item
    @Binding var newItemCategory: Category
    @Binding var categoryName: String
    @Binding var textfieldActive: Bool
+   @State var showSettings: Bool = true
    
    var body: some View {
-      
       VStack {
-         List {
-            NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
-               HStack {
-               Text("Add new")
-                  .bold()
-               }
-            }
-            if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
-               HStack {
-                  Text("Uncategorised")
-                  Spacer()
-                  Image(systemName: "checkmark")
-                     .imageScale(.medium)
-               }.foregroundColor(.blue)
-            }
-            ForEach(self.categories, id: \.self) { category in
-               Button(action: {
-                  self.newItemCategory = category
-                  self.categoryName = category.wrappedName
-                  self.presentationModeChooseCategory.wrappedValue.dismiss()
-               }) {
-                  HStack {
-                     if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
-                        HStack {
-                           Text(category.wrappedName)
-                           Spacer()
-                           Image(systemName: "checkmark")
-                              .imageScale(.medium)
-                        }.foregroundColor(.blue)
-                     }
-                     else {
-                        Text(category.wrappedName)
-                           .foregroundColor(.black)
+         
+//         if userDefaultsManager.useCategories == false {
+//            VStack {
+//               Text("Categories are not being used.\n\nYou can enable categories in the Settings page.")
+//                  .padding(.top)
+//                  .padding(.top)
+//                  .font(.headline)
+//                  .lineLimit(nil)
+//
+////               NavigationLink(destination: Settings(showSettingsBinding: $showSettings)) {
+////                  Text("Settings")
+////               }
+//               Spacer()
+//            }
+//         }
+//         else {
+            VStack {
+               List {
+                  NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
+                     HStack {
+                        Text("Add new")
+                           .bold()
                      }
                   }
+                  if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
+                     HStack {
+                        Text("Uncategorised")
+                        Spacer()
+                        Image(systemName: "checkmark")
+                           .imageScale(.medium)
+                     }.foregroundColor(.blue)
+                  }
+                  ForEach(self.categories, id: \.self) { category in
+                     Button(action: {
+                        self.newItemCategory = category
+                        self.categoryName = category.wrappedName
+                        self.presentationModeChooseCategory.wrappedValue.dismiss()
+                     }) {
+                        HStack {
+                           if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
+                              HStack {
+                                 Text(category.wrappedName)
+                                 Spacer()
+                                 Image(systemName: "checkmark")
+                                    .imageScale(.medium)
+                              }.foregroundColor(.blue)
+                           }
+                           else {
+                              Text(category.wrappedName)
+                                 .foregroundColor(.black)
+                           }
+                        }
+                     }
+                  }
+                  .onDelete(perform: deleteSwipedCategory)
                }
             }
-            .onDelete(perform: deleteSwipedCategory)
-         }
+//         }
       }
       .navigationBarTitle(Text("Category"), displayMode: .inline)
       .navigationBarItems(trailing:
-      EditButton()
-         .padding()
+         EditButton()
+            .padding()
       )
       
    }

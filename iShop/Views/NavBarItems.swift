@@ -24,6 +24,11 @@ struct NavBarItems: View {
    var body: some View {
       HStack {
          if globalVariables.catalogueShown == false {
+            if UserDefaults.standard.string(forKey: "syncSortListBy") == "Manual" {
+            EditButton()
+            }
+            
+            
             // More options button
             Button(action: {
                self.showMoreOptions.toggle()

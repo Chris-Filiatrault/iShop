@@ -11,13 +11,15 @@ import CoreData
 
 struct Home: View {
    @Environment(\.presentationMode) var presentationMode
+   @Environment(\.managedObjectContext) var context
+   @EnvironmentObject var globalVariables: GlobalVariableClass
+   
    @Binding var navBarFont: UIColor
    @Binding var navBarColor: UIColor
    @State var showSettings: Bool = false
    @State var showAddList: Bool = false
-   @Environment(\.managedObjectContext) var context
-   @EnvironmentObject var globalVariables: GlobalVariableClass
    var startUp: StartUp
+   
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
@@ -78,6 +80,7 @@ struct Home: View {
                      
                      Button(action: {
                         self.showSettings = true
+                        print(isFirstTimeLaunch())
                      }) {
                         Image(systemName: "gear")
                            .imageScale(.large)
@@ -89,6 +92,8 @@ struct Home: View {
                   .sheet(isPresented: self.$showSettings){
                      Settings(showSettingsBinding: self.$showSettings)
                         .environmentObject(self.globalVariables)
+                        .environment(\.managedObjectContext, self.context)
+                        
                   },
                   
                   // Add list plus button
