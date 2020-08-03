@@ -24,7 +24,7 @@ struct NavBarItems: View {
    var body: some View {
       HStack {
          if globalVariables.catalogueShown == false {
-            if UserDefaults.standard.string(forKey: "syncSortListBy") == "Manual" {
+            if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
             EditButton()
             }
             
@@ -68,6 +68,9 @@ struct NavBarItems: View {
                      secondaryButton: .destructive(Text("Delete")) {
                         self.presentationModeNav.wrappedValue.dismiss()
                         deleteList(thisList: self.thisList)
+                        if !isFirstTimeLaunch() && userHasNoLists() {
+                           addList(listName: "Groceries")
+                        }
                   }
                )
             }

@@ -21,6 +21,8 @@ struct Home: View {
    var startUp: StartUp
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
+      UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ?
+      NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true) :
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsFromFetchRequest: FetchedResults<ListOfItems>
@@ -46,6 +48,7 @@ struct Home: View {
                      HStack {
                         Text(list.wrappedName)
                            .font(.headline)
+                        Text("\(list.position)")
                         Spacer()
                         if numListUntickedItems(list: list) > 0 {
                            Text("\(numListUntickedItems(list: list))")
@@ -56,6 +59,7 @@ struct Home: View {
                      
                   }
                }
+               .onMove(perform: moveList)
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
@@ -98,6 +102,13 @@ struct Home: View {
                   
                   // Add list plus button
                   trailing:
+                  HStack {
+                     
+                  if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
+                  EditButton()
+                  }
+
+                  
                   Button(action: {
                      self.showAddList = true
                      
@@ -110,6 +121,7 @@ struct Home: View {
                   }.sheet(isPresented: $showAddList) {
                      AddList(showingAddListBinding: self.$showAddList)
                   }
+               }
             )
          }
             // ===Nav bar modifiers===

@@ -20,12 +20,13 @@ struct StartUp: View {
    let messageComposeDelegate = MessageComposerDelegate()
    var body: some View {
       VStack {
-         if onboardingShown != true {
-            OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
-         }
-         else {
-            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
-         }
+         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+//         if onboardingShown != true {
+//            OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+//         }
+//         else {
+//            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+//         }
       }
       
    } // End of body
@@ -48,107 +49,110 @@ struct StartUp: View {
       
       // Run first time code
       // Do so after 3 seconds to (hopefully) let user defaults sync
-      DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      if isFirstTimeLaunch() {
-
-         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-         }
-         
-         let managedContext = appDelegate.persistentContainer.viewContext
-         
-         let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
-            managedContext)!
-         
-         let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
-            managedContext)!
-         
-         let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
-            managedContext)!
-         
-         let initDateEntity = NSEntityDescription.entity(forEntityName: "InitDate", in: managedContext)!
-         
-         let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
-         newInitDate.initDate = Date()
-         
-         let startupCategories = startupCategoryStrings()
-         let startupItems = startupItemStrings()
-         
-         if userHasNoLists() {
-            
-            print("Creating default list")
-            // Groceries list
-            let defaultList = ListOfItems(entity: listEntity, insertInto: managedContext)
-            defaultList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
-            defaultList.id = UUID()
-            defaultList.dateAdded = newInitDate.initDate
-            
-            
-            if userHasNoCategories() {
+      
+         if isFirstTimeLaunch() {
                
-               print("Creating startup items and categories")
-               // Grocery categories & items
-               var groceryIndex: Int = 0
+            UserDefaultsManager().useCategories = true
+            
+            
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+               return
+            }
+            
+            let managedContext = appDelegate.persistentContainer.viewContext
+            
+            let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
+               managedContext)!
+            
+            let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
+               managedContext)!
+            
+            let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
+               managedContext)!
+            
+            let initDateEntity = NSEntityDescription.entity(forEntityName: "InitDate", in: managedContext)!
+            
+            let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
+            newInitDate.initDate = Date()
+            
+            let startupCategories = startupCategoryStrings()
+            let startupItems = startupItemStrings()
+            
+            if userHasNoLists() {
                
-               for categoryName in startupCategories {
-                  let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
-                  newCategory.name = categoryName
-                  newCategory.id = UUID()
-                  newCategory.dateAdded = newInitDate.initDate
+               print("Creating default list")
+               // Groceries list
+               let defaultList = ListOfItems(entity: listEntity, insertInto: managedContext)
+               defaultList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
+               defaultList.id = UUID()
+               defaultList.dateAdded = newInitDate.initDate
+               
+               
+               if userHasNoCategories() {
                   
-                  for itemName in startupItems[groceryIndex] {
+                  print("Creating startup items and categories")
+                  // Grocery categories & items
+                  var groceryIndex: Int = 0
+                  
+                  for categoryName in startupCategories {
+                     let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                     newCategory.name = categoryName
+                     newCategory.id = UUID()
+                     newCategory.dateAdded = newInitDate.initDate
                      
-                     let item = Item(entity: itemEntity, insertInto: managedContext)
-                     item.name = itemName
-                     item.id = UUID()
-                     item.dateAdded = newInitDate.initDate
-                     item.addedToAList = false
-                     item.markedOff = false
-                     item.quantity = 1
-                     item.origin = defaultList
-                     item.position = 0
-                     defaultList.addToItems(item)
-                     newCategory.addToItemsInCategory(item)
+                     for itemName in startupItems[groceryIndex] {
+                        
+                        let item = Item(entity: itemEntity, insertInto: managedContext)
+                        item.name = itemName
+                        item.id = UUID()
+                        item.dateAdded = newInitDate.initDate
+                        item.addedToAList = false
+                        item.markedOff = false
+                        item.quantity = 1
+                        item.origin = defaultList
+                        item.position = 0
+                        defaultList.addToItems(item)
+                        newCategory.addToItemsInCategory(item)
+                     }
+                     groceryIndex += 1
                   }
-                  groceryIndex += 1
                }
             }
+            
+            addList(listName: "Groceries")
+            
+            do {
+               try managedContext.save()
+            } catch let error as NSError {
+               print("Could not save items. \(error), \(error.userInfo)")
+            }
          }
-         
-         addList(listName: "Groceries")
-         
-         
-         do {
-            try managedContext.save()
-         } catch let error as NSError {
-            print("Could not save items. \(error), \(error.userInfo)")
-         }
-      }
-      }
+//      }
+      
    } // End of init function
 }
 
 
 // presentMessageCompose needs to be called from the top of the view hierarchy (StartUp), though the button for calling it is inside NavBarItems. Thus StartUp() passes self into Home, which is passed into ItemList, and then into NavBarItems, which calls presentMessageCompose
 extension StartUp {
-
+   
    class MessageComposerDelegate: NSObject, MFMessageComposeViewControllerDelegate {
-        func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
-            // Customize here
-            controller.dismiss(animated: true)
-        }
-    }
-    // Present a message compose view controller modally in UIKit environment
+      func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+         // Customize here
+         controller.dismiss(animated: true)
+      }
+   }
+   // Present a message compose view controller modally in UIKit environment
    func presentMessageCompose(messageBody: String) {
-        guard MFMessageComposeViewController.canSendText() else {
-            return
-        }
-        let vc = UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController
-        let composeVC = MFMessageComposeViewController()
-        composeVC.messageComposeDelegate = messageComposeDelegate
-         composeVC.body = messageBody
-
-        vc?.present(composeVC, animated: true)
-    }
+      guard MFMessageComposeViewController.canSendText() else {
+         return
+      }
+      let vc = UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController
+      let composeVC = MFMessageComposeViewController()
+      composeVC.messageComposeDelegate = messageComposeDelegate
+      composeVC.body = messageBody
+      
+      vc?.present(composeVC, animated: true)
+   }
 }
 

@@ -15,6 +15,7 @@ extension ListOfItems {
    @NSManaged public var id: UUID?
    @NSManaged public var index: Int64
    @NSManaged public var items: NSSet?
+   @NSManaged public var position: Int32
    
    /*
     NSSet (above) is the old objective C style set, which can't be used with ForEach loops, as we don't know the order of the items. Also core data hasn't restricted this property to just instances of items (could contain various other things as well). So we need to:

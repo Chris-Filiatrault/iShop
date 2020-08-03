@@ -32,19 +32,15 @@ struct ItemList: View {
       let markedOffPredicate = NSPredicate(format: "markedOff == false")
       let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, markedOffPredicate])
       
-      if UserDefaults.standard.string(forKey: "syncSortListBy") == "Alphabetical" {
-         itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
-            NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-            ], predicate: compoundPredicate)
-      } else {
-         itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
-                  NSSortDescriptor(key: "position", ascending: true
-               )], predicate: compoundPredicate)
-      }
-
+      itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
+         UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" ?
+            NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:))) :
+            NSSortDescriptor(key: "position", ascending: true)
+      ], predicate: compoundPredicate)
+      
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [
          NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
+         ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       )
    }
    
@@ -66,9 +62,9 @@ struct ItemList: View {
             .padding(15)
             .padding(.top, 10)
             .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
-            
          
-//          ===List of items WITH categories===
+         
+         //          ===List of items WITH categories===
          if globalVariables.catalogueShown == false && useCategories == true {
             
             List {
@@ -80,12 +76,12 @@ struct ItemList: View {
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
             }.padding(.bottom)
-            .sheet(isPresented: self.$showListSettings){
-               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
-                  .environmentObject(self.globalVariables)
+               .sheet(isPresented: self.$showListSettings){
+                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
+                     .environmentObject(self.globalVariables)
             }
          }
-            
+         
          
          // ===List of items WITHOUT categories===
          if globalVariables.catalogueShown == false && useCategories == false {
@@ -99,13 +95,13 @@ struct ItemList: View {
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
             }.padding(.bottom)
-            .sheet(isPresented: self.$showListSettings){
-               RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
-                  .environmentObject(self.globalVariables)
+               .sheet(isPresented: self.$showListSettings){
+                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
+                     .environmentObject(self.globalVariables)
             }
          }
-         
-         // ===Catalogue===
+            
+            // ===Catalogue===
          else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
          }
@@ -118,25 +114,25 @@ struct ItemList: View {
       .onAppear() {
          self.globalVariables.catalogueShown = false
       }
-      
-      // ===Navigation bar===
-      .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
-      .navigationBarItems(trailing:
-         NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
+         
+         // ===Navigation bar===
+         .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
+         .navigationBarItems(trailing:
+            NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
       )
       
    }// End of body
    
    func moveItem(IndexSet: IndexSet, destination: Int) {
-
+      
       guard let appDelegate =
          UIApplication.shared.delegate as? AppDelegate else {
             return
       }
-
+      
       let managedContext =
          appDelegate.persistentContainer.viewContext
-
+      
       // Need an origin predicate!
       let originPredicate = NSPredicate(format: "origin = %@", thisList)
       let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
@@ -148,64 +144,64 @@ struct ItemList: View {
       fetchRequest.predicate = compoundPredicate
       fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
       
-
+      
       do {
          let items = try managedContext.fetch(fetchRequest) as! [Item]
-
+         
          for item in items {
             print(item.wrappedName)
          }
          
          let firstIndex = IndexSet.min()!
          let lastIndex = IndexSet.max()!
-
+         
          let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
          let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)
-
+         
          if firstRowToReorder != lastRowToReorder && items != [] {
-
-              var newOrder = firstRowToReorder
-              if newOrder < firstIndex {
-                  // Moving dragged items up, so re-order dragged items first
-
+            
+            var newOrder = firstRowToReorder
+            if newOrder < firstIndex {
+               // Moving dragged items up, so re-order dragged items first
+               
                // Re-order dragged items
                for index in IndexSet {
-                      items[index].setValue(newOrder, forKey: "position")
-                      newOrder = newOrder + 1
+                  items[index].setValue(newOrder, forKey: "position")
+                  newOrder = newOrder + 1
+               }
+               
+               // Re-order non-dragged items
+               for rowToMove in firstRowToReorder..<lastRowToReorder {
+                  if !IndexSet.contains(rowToMove) {
+                     items[rowToMove].setValue(newOrder, forKey: "position")
+                     newOrder = newOrder + 1
                   }
-
-                  // Re-order non-dragged items
-                  for rowToMove in firstRowToReorder..<lastRowToReorder {
-                     if !IndexSet.contains(rowToMove) {
-                          items[rowToMove].setValue(newOrder, forKey: "position")
-                          newOrder = newOrder + 1
-                      }
+               }
+            } else if items != [] {
+               // Moving dragged items down, so re-order dragged items last
+               
+               // Re-order non-dragged items
+               for rowToMove in firstRowToReorder...lastRowToReorder {
+                  if !IndexSet.contains(rowToMove) {
+                     items[rowToMove].setValue(newOrder, forKey: "position")
+                     newOrder = newOrder + 1
                   }
-              } else if items != [] {
-                  // Moving dragged items down, so re-order dragged items last
-
-                  // Re-order non-dragged items
-                  for rowToMove in firstRowToReorder...lastRowToReorder {
-                     if !IndexSet.contains(rowToMove) {
-                          items[rowToMove].setValue(newOrder, forKey: "position")
-                          newOrder = newOrder + 1
-                      }
-                  }
-
+               }
+               
                // Re-order dragged items
                for index in IndexSet {
-                      items[index].setValue(newOrder, forKey: "position")
-                      newOrder = newOrder + 1
-                  }
-              }
+                  items[index].setValue(newOrder, forKey: "position")
+                  newOrder = newOrder + 1
+               }
+            }
          }
-
+         
          do {
             try managedContext.save()
          } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
          }
-
+         
       } catch let error as NSError {
          print("Could not fetch. \(error), \(error.userInfo)")
       }

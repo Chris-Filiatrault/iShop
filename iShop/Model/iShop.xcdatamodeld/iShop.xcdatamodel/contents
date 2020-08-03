@@ -27,12 +27,13 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="index" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="origin" inverseEntity="Item"/>
     </entity>
     <elements>
         <element name="Category" positionX="-36" positionY="72" width="128" height="118"/>
         <element name="InitDate" positionX="-45" positionY="72" width="128" height="28"/>
         <element name="Item" positionX="-63" positionY="-18" width="128" height="193"/>
-        <element name="ListOfItems" positionX="-54" positionY="45" width="128" height="118"/>
+        <element name="ListOfItems" positionX="-54" positionY="45" width="128" height="133"/>
     </elements>
 </model>
