@@ -46,7 +46,7 @@ struct ItemRow: View {
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .multilineTextAlignment(.leading)
                   
-//                  Text("\(position)")
+                  Text("\(position)")
                   
                 Spacer()
                   

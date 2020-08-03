@@ -21,11 +21,16 @@ struct Home: View {
    var startUp: StartUp
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-      UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ?
-      NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true) :
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
-   var listsFromFetchRequest: FetchedResults<ListOfItems>
+   var listsAlphabetical: FetchedResults<ListOfItems>
+   
+   @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
+      NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
+   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
+   var listsManual: FetchedResults<ListOfItems>
+
+   
    
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
                  predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
@@ -40,7 +45,8 @@ struct Home: View {
                Text(" ")
                   .listRowBackground(Color("listBackground"))
                
-               ForEach(listsFromFetchRequest, id: \.self) { list in
+               ForEach(UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ?
+               listsManual : listsAlphabetical, id: \.self) { list in
                   NavigationLink(destination: ItemList(listFromHomePage: list, startUpPassedIn: self.startUp)
                      .environment(\.managedObjectContext, self.context)
                      .environmentObject(self.globalVariables)

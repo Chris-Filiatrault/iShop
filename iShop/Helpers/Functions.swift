@@ -475,6 +475,7 @@ func addList(listName: String) {
    let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    
    let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+   listFetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    
    
    do {
@@ -484,7 +485,7 @@ func addList(listName: String) {
       let newList = ListOfItems(entity: listEntity, insertInto: managedContext)
       newList.name = listName
       newList.id = UUID()
-      newList.position = Int32(lists.count - 1)
+      newList.position = Int32(lists.count)
       
       var itemsToBeAdded: [Item] = []
       for item in items {
@@ -523,6 +524,7 @@ func addList(listName: String) {
 }
 
 
+// ===RENAME LIST===
 func renameList(thisList: ListOfItems, newName: String) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -671,20 +673,6 @@ func numListUntickedItems(list: ListOfItems) -> Int {
 }
 
 
-//===GET NUMBER OF UNTICKED ITEMS IN CATEGORY===
-func numCategoryUntickedItems(category: Category) -> Int {
-   
-   var result: Int = 0
-   
-   for item in category.itemsInCategoryArray {
-      if item.markedOff == false && item.addedToAList == true {
-         result += 1
-      }
-   }
-   return result
-}
-
-
 // ===DELETE ALL ITEMS===
 func clearList(thisList: ListOfItems) {
    
@@ -711,6 +699,7 @@ func clearList(thisList: ListOfItems) {
 }
 
 
+// ===MOVE LIST===
 func moveList(IndexSet: IndexSet, destination: Int) {
 
    guard let appDelegate =
@@ -722,6 +711,7 @@ func moveList(IndexSet: IndexSet, destination: Int) {
       appDelegate.persistentContainer.viewContext
    
    let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
    
 
@@ -783,6 +773,39 @@ func moveList(IndexSet: IndexSet, destination: Int) {
    }
 }
 
+
+// ===SORT LIST POSITIONS ALPHABETICALLY===
+func sortListPositionsAlphabetically() {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else {
+         return
+   }
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
+   
+   do {
+      let lists = try managedContext.fetch(fetchRequest)
+      var index: Int = 0
+      for list in lists {
+         list.position = Int32(index)
+         index += 1
+      }
+      
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not save.\(error), \(error.userInfo)")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+}
 
 
 // =====================================================
@@ -882,20 +905,19 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
    }
 }
 
-//// ===changeCategory2===
-//// Not being used right now
-//func changeCategory2(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
-//   for item in oldItemCategory.itemsInCategoryArray {
-//      if item.wrappedName == thisItem.wrappedName {
-//         oldItemCategory.removeFromItemsInCategory(item)
-//      }
-//   }
-//   for item in newItemCategory.itemsInCategoryArray {
-//      if item.wrappedName == thisItem.wrappedName {
-//         newItemCategory.addToItemsInCategory(item)
-//      }
-//   }
-//}
+
+//===GET NUMBER OF UNTICKED ITEMS IN CATEGORY===
+func numCategoryUntickedItems(category: Category) -> Int {
+   
+   var result: Int = 0
+   
+   for item in category.itemsInCategoryArray {
+      if item.markedOff == false && item.addedToAList == true {
+         result += 1
+      }
+   }
+   return result
+}
 
 
 //===CHECK FOR DUPLICATE CATEGORY===
@@ -1126,7 +1148,6 @@ func isFirstTimeLaunch() -> Bool {
       return false
    }
 }
-
 
 
 // ===USER HAS NO LISTS===

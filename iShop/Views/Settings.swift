@@ -13,20 +13,20 @@ struct Settings: View {
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-
+   
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var lists: FetchedResults<ListOfItems>
    
    let sortOptions: [String] = ["Alphabetical", "Manual"]
-
+   
    @State var result: Result<MFMailComposeResult, Error>? = nil
    @State var isShowingMailView = false
    @State var alertNoMail = false
    @State var disableAutocorrect: Bool = false
-   @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Manual"
-   @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Manual"
+   @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Alphabetical"
+   @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Alphabetical"
    
    @Binding var showSettingsBinding: Bool
    
@@ -37,7 +37,7 @@ struct Settings: View {
             
             Form {
                
-               // General
+               // ===GENERAL===
                Section(header: Text("GENERAL")) {
                   
                   // Autocorrect
@@ -47,14 +47,14 @@ struct Settings: View {
                   
                   // Review
                   // UNCOMMENT IN FIRST POST-RELEASE UPDATE
-//                  if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 10 {
-//                     Button(action: {
-//                        //                        UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/id1518384911#?platform=iphone")!)
-//                     }) {
-//                        Text("Review on App Store")
-//                           .foregroundColor(.black)
-//                     }
-//                  }
+                  //                  if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 10 {
+                  //                     Button(action: {
+                  //                        //                        UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/id1518384911#?platform=iphone")!)
+                  //                     }) {
+                  //                        Text("Review on App Store")
+                  //                           .foregroundColor(.black)
+                  //                     }
+                  //                  }
                   
                   // Contact
                   Button(action: {
@@ -76,7 +76,7 @@ struct Settings: View {
                   
                }
                
-               // List options
+               // ===LIST OPTIONS===
                Section(header: Text("LIST OPTIONS")) {
                   
                   // Use categories
@@ -86,31 +86,31 @@ struct Settings: View {
                   
                   // Item Order
                   if userDefaultsManager.useCategories == true {
-                  Picker(selection: self.$sortItemsBy, label: Text("Item Order")) {
-                     HStack {
-                        Text("Alphabetical")
-                        Spacer()
-                        Image(systemName: "checkmark")
-                           .foregroundColor(.blue)
-                           .imageScale(.medium)
-                           .font(.headline)
+                     Picker(selection: self.$sortItemsBy, label: Text("Item Order")) {
+                        HStack {
+                           Text("Alphabetical")
+                           Spacer()
+                           Image(systemName: "checkmark")
+                              .foregroundColor(.blue)
+                              .imageScale(.medium)
+                              .font(.headline)
+                        }
+                        HStack {
+                           Text("To sort items manually, disable") +
+                              Text(" Use Categories ").bold() +
+                              Text("in Settings.")
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .padding(.vertical, 5)
+                        
                      }
-                     HStack {
-                     Text("Items can also be sorted manually when") +
-                        Text(" Use Categories ").bold() +
-                        Text("is disabled in Settings.")
-                     }
-                     .font(.subheadline)
-                     .foregroundColor(.gray)
-                     .padding(.vertical, 5)
-
-                  }
                   } else {
                      Picker(selection: self.$sortItemsBy, label: Text("Item Order")) {
-                           ForEach(self.sortOptions, id: \.self) { option in
-                              Text(option)
+                        ForEach(self.sortOptions, id: \.self) { option in
+                           Text(option)
                         }
-                        Text("To manually sort items, select Manual then press the Edit button in any list.")
+                        Text("To manually sort items, select Manual above, then press the Edit button in any list.")
                            .font(.subheadline)
                            .foregroundColor(.gray)
                            .padding(.vertical, 5)
@@ -120,13 +120,13 @@ struct Settings: View {
                   
                   // List Order
                   Picker(selection: self.$sortListsBy, label: Text("List Order")) {
-                        ForEach(self.sortOptions, id: \.self) { option in
-                           Text(option)
+                     ForEach(self.sortOptions, id: \.self) { option in
+                        Text(option)
                      }
-                     Text("To manually sort lists, select Manual then press the Edit button on the home page.")
-                     .font(.subheadline)
-                     .foregroundColor(.gray)
-                     .padding(.vertical, 5)
+                     Text("To manually sort lists, select Manual above, then press the Edit button on the home page.")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .padding(.vertical, 5)
                   }
                   
                   
@@ -141,6 +141,15 @@ struct Settings: View {
                .navigationBarItems(trailing:
                   Button(action: {
                      self.showSettingsBinding.toggle()
+                     
+                     if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
+                        print("Change order")
+                     }
+                     
+                     if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
+                        print("Change order")
+                        sortListPositionsAlphabetically()
+                     }
                      UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
                      UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
                      
@@ -158,12 +167,3 @@ struct Settings: View {
          .environment(\.horizontalSizeClass, .compact)
    }
 }
-
-
-//// -----Test code-----
-//Button(action: {
-//   // ==========TEST CODE GOES HERE==========
-//}) { Rectangle()
-//   .foregroundColor(.white)
-//   .frame(width: 300, height: 200)
-//}

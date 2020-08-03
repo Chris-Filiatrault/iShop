@@ -15,6 +15,7 @@ struct NavBarItems: View {
    @Binding var showRenameList: Bool
    @State var confirmCopiedAlert: Bool = false
    @State var confirmDeleteListAlert: Bool = false
+   @Environment(\.editMode)  var editMode
    var thisList: ListOfItems
    var startUp: StartUp
    var presentationModeNav: Binding<PresentationMode>
@@ -26,6 +27,7 @@ struct NavBarItems: View {
          if globalVariables.catalogueShown == false {
             if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
             EditButton()
+//               .foregroundColor(editMode?.wrappedValue == .inactive ? Color("navBarFont") : .red)
             }
             
             
