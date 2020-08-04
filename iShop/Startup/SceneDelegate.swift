@@ -38,7 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       let contentView = StartUp()
          .environment(\.managedObjectContext, context)
          .environmentObject(globalVariables)
-
+         .environment(\.editMode, Binding.constant(EditMode.inactive))
       
       
       // Use a UIHostingController as window root view controller.

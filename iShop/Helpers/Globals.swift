@@ -19,6 +19,7 @@ class GlobalVariableClass: ObservableObject {
    @Published var catalogueShown: Bool = false
    @State var restoreItemsFromInBasket: Bool = false
    @State var refreshingID = UUID()
+   @State var onboardingShownFromSettings: Bool = false
 
 }
 

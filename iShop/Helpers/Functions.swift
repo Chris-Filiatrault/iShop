@@ -173,7 +173,7 @@ func addItemFromCatalogue(item: Item, listOrigin: ListOfItems) {
 
 
 // ===REMOVE ITEM FROM LIST===
-func removeItemFromList(item: Item) {
+func removeItemFromList(thisItem: Item, listOrigin: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -181,10 +181,16 @@ func removeItemFromList(item: Item) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   item.addedToAList = false
-   item.markedOff = false
-   item.quantity = 1
-   item.position = 0
+   for item in listOrigin.itemArray {
+      if item.position > thisItem.position {
+         item.position -= 1
+      }
+   }
+   
+   thisItem.addedToAList = false
+   thisItem.markedOff = false
+   thisItem.quantity = 1
+   thisItem.position = 0
    
    do {
       try managedContext.save()
@@ -299,7 +305,6 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
       
       do {
          try managedContext.save()
-         print("Checked off successfully")
       } catch let error as NSError {
          print("Could not save checked off status. \(error), \(error.userInfo)")
       }
@@ -338,7 +343,6 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
       
       do {
          try managedContext.save()
-         print("Checked off successfully")
       } catch let error as NSError {
          print("Could not save checked off status. \(error), \(error.userInfo)")
       }
@@ -541,51 +545,100 @@ func renameList(thisList: ListOfItems, newName: String) {
    }
 }
 
-// ===DELETE (swiped) LIST===
-// Ensure this accounts for item position if I decide to use this function
-//func deleteSwipedList(at offsets: IndexSet) {
-//
-//   guard let appDelegate =
-//      UIApplication.shared.delegate as? AppDelegate else {
-//         return
-//   }
-//
-//   let managedContext =
-//      appDelegate.persistentContainer.viewContext
-//
-//   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
-//   fetchRequest.sortDescriptors = [
-//      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
-//   ]
-//   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-//
-//
-//   do {
-//      let fetchReturn = try managedContext.fetch(fetchRequest)
-//      for offset in offsets {
-//
-//         let returnedObject = fetchReturn[offset]
-//
-//         let listToBeDeleted = returnedObject as! ListOfItems
-//         for item in listToBeDeleted.itemArray {
-//            managedContext.delete(item)
-//         }
-//
-//         managedContext.delete(listToBeDeleted)
-//
-//      }
-//
-//      do {
-//         try managedContext.save()
-//         print("Deleted list successfully")
-//      } catch let error as NSError {
-//         print("Could not delete. \(error), \(error.userInfo)")
-//      }
-//
-//   } catch let error as NSError {
-//      print("Could not fetch. \(error), \(error.userInfo)")
-//   }
-//}
+ // ===DELETE SWIPED LIST (alphabetical fetch request)===
+func deleteSwipedListAlphabetical(indices: IndexSet) {
+
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+
+   let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+   fetchRequest.sortDescriptors = [
+      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+   ]
+   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+   
+   do {
+      
+      let lists = try managedContext.fetch(fetchRequest)
+      for index in indices {
+
+         let listToBeDeleted = lists[index]
+         for list in lists {
+            if list.position > listToBeDeleted.position {
+               list.position -= 1
+            }
+         }
+
+         for item in listToBeDeleted.itemArray {
+            managedContext.delete(item)
+         }
+         
+         managedContext.delete(listToBeDeleted)
+      }
+
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not delete. \(error), \(error.userInfo)")
+      }
+
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
+
+ // ===DELETE SWIPED LIST (by position fetch request)===
+func deleteSwipedListManual(indices: IndexSet) {
+
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+
+   let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+   fetchRequest.sortDescriptors = [
+      NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
+   ]
+   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+
+
+   do {
+      let lists = try managedContext.fetch(fetchRequest)
+      for index in indices {
+
+         let listToBeDeleted = lists[index]
+         for list in lists {
+            if list.position > listToBeDeleted.position {
+               list.position -= 1
+            }
+         }
+
+         for item in listToBeDeleted.itemArray {
+            managedContext.delete(item)
+         }
+
+         managedContext.delete(listToBeDeleted)
+
+      }
+
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not delete. \(error), \(error.userInfo)")
+      }
+
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
 
 // ===DELETE LIST===
 func deleteList(thisList: ListOfItems) {
@@ -692,7 +745,6 @@ func clearList(thisList: ListOfItems) {
    
    do {
       try managedContext.save()
-      print("Checked off successfully")
    } catch let error as NSError {
       print("Could not save checked off status. \(error), \(error.userInfo)")
    }

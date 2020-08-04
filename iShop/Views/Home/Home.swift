@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct Home: View {
-   @Environment(\.presentationMode) var presentationMode
+   @Environment(\.presentationMode) var presentationModeHome
    @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
    
@@ -65,6 +65,7 @@ struct Home: View {
                      
                   }
                }
+               .onDelete(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? deleteSwipedListManual : deleteSwipedListAlphabetical)
                .onMove(perform: moveList)
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
@@ -79,33 +80,18 @@ struct Home: View {
                // ===Nav bar items===
                .navigationBarItems(
                   
-                  // Settings gear button
                   leading:
                   HStack {
+                     // Reset MOC
                      Button(action: {
                         resetMOC()
                      }) {
                         Text("Del")
                      }
                      
-                     Button(action: {
-                        self.showSettings = true
-                        print(isFirstTimeLaunch())
-                     }) {
-                        Image(systemName: "gear")
-                           .imageScale(.large)
-                           .padding()
-                           .foregroundColor(Color("navBarFont"))
-                           .offset(x: -5)
-                     }
-                  }
-                  .sheet(isPresented: self.$showSettings){
-                     Settings(showSettingsBinding: self.$showSettings)
-                        .environmentObject(self.globalVariables)
-                        .environment(\.managedObjectContext, self.context)
-                        
+                     // Settings
+                     SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
                   },
-                  
                   // Add list plus button
                   trailing:
                   HStack {
@@ -114,20 +100,9 @@ struct Home: View {
                   EditButton()
                   }
 
-                  
-                  Button(action: {
-                     self.showAddList = true
-                     
-                  }) {
-                     Image(systemName: "plus")
-                        .imageScale(.large)
-                        .padding()
-                        .foregroundColor(Color("navBarFont"))
-                        .offset(x: 5)
-                  }.sheet(isPresented: $showAddList) {
-                     AddList(showingAddListBinding: self.$showAddList)
+                  AddListButton(showAddList: self.$showAddList)
+
                   }
-               }
             )
          }
             // ===Nav bar modifiers===

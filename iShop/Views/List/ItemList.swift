@@ -12,6 +12,7 @@ import CoreData
 struct ItemList: View {
    @Environment(\.presentationMode) var presentationMode
    @EnvironmentObject var globalVariables: GlobalVariableClass
+   @Environment(\.editMode)  var editMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showMoreOptions: Bool = false
    @State var showListSettings: Bool = false
@@ -51,6 +52,7 @@ struct ItemList: View {
          // ===Enter item textfield===
          TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
             self.globalVariables.catalogueShown = true
+            self.editMode?.wrappedValue = .inactive
          }, onCommit: {
             if self.globalVariables.itemInTextfield != "" {
                addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
@@ -91,6 +93,7 @@ struct ItemList: View {
                ForEach(itemsFetchRequest.wrappedValue, id: \.self) { item in
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
                }
+               .onDelete(perform: removeSwipedItem)
                .onMove(perform: moveItem)
                
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
@@ -119,10 +122,70 @@ struct ItemList: View {
          // ===Navigation bar===
          .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
          .navigationBarItems(trailing:
-            NavBarItems(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
+            NavBarList(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
       )
       
    }// End of body
+   
+   
+   // REMOVE (swiped) ITEM
+   func removeSwipedItem(indicies: IndexSet) {
+      
+      guard let appDelegate =
+         UIApplication.shared.delegate as? AppDelegate else {
+            return
+      }
+      let managedContext =
+         appDelegate.persistentContainer.viewContext
+      
+      let originPredicate = NSPredicate(format: "origin = %@", thisList)
+      let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+      let markedOffPredicate = NSPredicate(format: "markedOff == false")
+      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
+      
+      let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+      fetchRequest.predicate = compoundPredicate
+      
+      if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" {
+         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
+         print("Fetch by position")
+      }
+      else if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
+         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+         print("Fetch by name")
+      }
+      
+      do {
+         let items = try managedContext.fetch(fetchRequest)
+         
+         
+         for index in indicies {
+            
+            let swipedItem = items[index] // find item
+            
+            for item in items {
+               if item.position > swipedItem.position {
+                  item.position -= 1
+               }
+            }
+            
+            swipedItem.addedToAList = false
+            swipedItem.markedOff = false
+            swipedItem.quantity = 1
+            swipedItem.position = 0
+         }
+         
+         do {
+            try managedContext.save()
+         } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+         }
+         
+      } catch let error as NSError {
+         print("Could not fetch. \(error), \(error.userInfo)")
+      }
+   }
+   
    
    // ===MOVE ITEM===
    func moveItem(IndexSet: IndexSet, destination: Int) {
@@ -146,10 +209,6 @@ struct ItemList: View {
       
       do {
          let items = try managedContext.fetch(fetchRequest) as! [Item]
-         
-         for item in items {
-            print(item.wrappedName)
-         }
          
          let firstIndex = IndexSet.min()!
          let lastIndex = IndexSet.max()!
@@ -206,6 +265,7 @@ struct ItemList: View {
       }
    }
    
+   
    // ===SORT ITEM POSITIONS ALPHABETICALLY===
    func sortItemPositionsAlphabetically() {
       
@@ -225,10 +285,10 @@ struct ItemList: View {
       fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
       
       do {
-         let lists = try managedContext.fetch(fetchRequest)
+         let items = try managedContext.fetch(fetchRequest)
          var index: Int = 0
-         for list in lists {
-            list.position = Int32(index)
+         for item in items {
+            item.position = Int32(index)
             index += 1
          }
          
@@ -243,7 +303,7 @@ struct ItemList: View {
       }
       
    }
-
+   
 }
 
 

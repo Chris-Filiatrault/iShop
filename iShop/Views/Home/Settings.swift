@@ -12,14 +12,15 @@ import MessageUI
 struct Settings: View {
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
+   @Environment(\.editMode)  var editMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-   
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var lists: FetchedResults<ListOfItems>
    
    let sortOptions: [String] = ["Alphabetical", "Manual"]
+   var startUp: StartUp
    
    @State var result: Result<MFMailComposeResult, Error>? = nil
    @State var isShowingMailView = false
@@ -27,6 +28,10 @@ struct Settings: View {
    @State var disableAutocorrect: Bool = false
    @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Alphabetical"
    @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Alphabetical"
+   
+   @State var navBarFont: UIColor = UIColor.white
+   @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
+   @State var onboardingShownFromSettings: Bool = false
    
    @Binding var showSettingsBinding: Bool
    
@@ -73,6 +78,17 @@ struct Settings: View {
                   .alert(isPresented: self.$alertNoMail) {
                      Alert(title: Text("Can't send mail on this device."))
                   }
+                  
+                  Button(action: {
+                     self.onboardingShownFromSettings.toggle()
+                  }) {
+                     Text("Show Introduction")
+                        .foregroundColor(.black)
+                  }
+                  .sheet(isPresented: $onboardingShownFromSettings) {
+                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
+                  }
+                  
                   
                }
                
@@ -141,13 +157,14 @@ struct Settings: View {
                .navigationBarItems(trailing:
                   Button(action: {
                      self.showSettingsBinding.toggle()
-                     
                      if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
-                        print("Change order")
+                        for list in self.lists {
+                           ItemList(listFromHomePage: list, startUpPassedIn: self.startUp).sortItemPositionsAlphabetically()
+                           print("Change item order")
+                        }
                      }
                      
                      if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
-                        print("Change order")
                         sortListPositionsAlphabetically()
                      }
                      UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
@@ -157,11 +174,10 @@ struct Settings: View {
                      Text("Done")
                         .font(.headline)
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
+
                })
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))
-         
-         
          
       } // End of VStack
          .environment(\.horizontalSizeClass, .compact)

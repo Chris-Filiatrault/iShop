@@ -15,18 +15,19 @@ struct StartUp: View {
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
-   @State var onboardingShown = UserDefaults.standard.object(forKey: "onboardingShown") as? Bool ?? nil
+   @State var onboardingShown = UserDefaults.standard.bool(forKey: "onboardingShown")
    @EnvironmentObject var globalVariables: GlobalVariableClass
    let messageComposeDelegate = MessageComposerDelegate()
+   
    var body: some View {
       VStack {
-         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
-//         if onboardingShown != true {
-//            OnboardingView(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
-//         }
-//         else {
-//            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
-//         }
+//         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+         if onboardingShown != true {
+            OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+         }
+         else {
+            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+         }
       }
       
    } // End of body
@@ -133,7 +134,7 @@ struct StartUp: View {
 }
 
 
-// presentMessageCompose needs to be called from the top of the view hierarchy (StartUp), though the button for calling it is inside NavBarItems. Thus StartUp() passes self into Home, which is passed into ItemList, and then into NavBarItems, which calls presentMessageCompose
+// presentMessageCompose needs to be called from the top of the view hierarchy (StartUp), though the button for calling it is inside NavBarList. Thus StartUp() passes self into Home, which is passed into ItemList, and then into NavBarList, which calls presentMessageCompose
 extension StartUp {
    
    class MessageComposerDelegate: NSObject, MFMessageComposeViewControllerDelegate {

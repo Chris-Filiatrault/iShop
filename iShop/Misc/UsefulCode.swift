@@ -611,7 +611,6 @@
 //
 //      do {
 //         try managedContext.save()
-//         print("Checked off successfully")
 //      } catch let error as NSError {
 //         print("Could not save checked off status. \(error), \(error.userInfo)")
 //      }

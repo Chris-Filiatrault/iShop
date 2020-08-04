@@ -56,7 +56,7 @@ struct InCart: View {
                      .padding(.horizontal)
                      .onTapGesture {
                         for item in self.items.wrappedValue {
-                           removeItemFromList(item: item)
+                           removeItemFromList(thisItem: item, listOrigin: self.thisList)
                         }
                      }
                   
@@ -96,18 +96,20 @@ struct InCart: View {
       
       let managedContext =
          appDelegate.persistentContainer.viewContext
-      
-      let thisListsAndCategoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-      thisListsAndCategoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-      ]
-      thisListsAndCategoryFetchRequest.predicate = NSPredicate(format: "origin = %@", thisList)
-      thisListsAndCategoryFetchRequest.predicate = NSPredicate(format: "categoryOrigin = %@", category)
-      
+
       for offset in offsets {
          let thisItem = items.wrappedValue[offset]
+         
+         for item in thisList.itemArray {
+            if item.position > thisItem.position {
+               item.position -= 1
+            }
+         }
+         
          thisItem.addedToAList = false
          thisItem.markedOff = false
          thisItem.quantity = 1
+         thisItem.position = 0
       }
       do {
          try managedContext.save()

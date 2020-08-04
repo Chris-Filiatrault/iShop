@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct ItemRow: View {
-      
+   
+   @Environment(\.editMode)  var editMode
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.managedObjectContext) var context
    
@@ -52,6 +53,10 @@ struct ItemRow: View {
                   
                   Button(action: {
                      self.showItemDetails.toggle()
+                     withAnimation {
+                        self.editMode?.wrappedValue = .inactive
+                     }
+                     
                   }) {
                      Image(systemName: "square.and.pencil")
                         .imageScale(.large)

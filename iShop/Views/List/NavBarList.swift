@@ -1,5 +1,5 @@
 //
-//  NavBarItems.swift
+//  NavBarList.swift
 //  iShop
 //
 //  Created by Chris Filiatrault on 28/7/20.
@@ -9,13 +9,13 @@
 import SwiftUI
 import MessageUI
 
-struct NavBarItems: View {
+struct NavBarList: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
+//   @Environment(\.editMode)  var editMode
    @Binding var showMoreOptions: Bool
    @Binding var showRenameList: Bool
    @State var confirmCopiedAlert: Bool = false
    @State var confirmDeleteListAlert: Bool = false
-   @Environment(\.editMode)  var editMode
    var thisList: ListOfItems
    var startUp: StartUp
    var presentationModeNav: Binding<PresentationMode>
@@ -34,6 +34,9 @@ struct NavBarItems: View {
             // More options button
             Button(action: {
                self.showMoreOptions.toggle()
+               withAnimation {
+//                  self.editMode?.wrappedValue = .inactive
+               }
             }) {
                Image(systemName: "ellipsis.circle")
                   .imageScale(.large)

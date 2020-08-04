@@ -98,7 +98,7 @@ struct ItemDetails: View {
                   
                   // Delete (remove from list)
                   Button(action: {
-                     removeItemFromList(item: self.thisItem)
+                     removeItemFromList(thisItem: self.thisItem, listOrigin: self.newList)
                      self.showItemDetails = false
                   }) {
                      Text("Delete")

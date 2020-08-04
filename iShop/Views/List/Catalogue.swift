@@ -37,9 +37,16 @@ struct Catalogue: View {
    
    var body: some View {
       VStack {
+//         GeometryReader { geometry in
+//         Rectangle()
+//            .frame(width: geometry.size.width, height: 2)
+//            .edgesIgnoringSafeArea(.horizontal)
+//            .foregroundColor(.black)
+//         }
+         Divider()
+            
          
          List {
-            //ForEach(fetchRequest.wrappedValue, id: \.self) { catalogueItem in
             ForEach(fetchRequest.wrappedValue, id: \.self) { catalogueItem in
                CatalogueRow(thisList: self.thisList, catalogueItem: catalogueItem)
             }
@@ -71,6 +78,9 @@ struct Catalogue: View {
             
             // get item to be deleted
             let thisItem = fetchRequest.wrappedValue[offset]
+            
+            // Find all lists where this item has been added
+            // For all items in those lists, if the item position is larger than this item, position -= 1
             
             // delete that item and all items with the same name
             for item in items {

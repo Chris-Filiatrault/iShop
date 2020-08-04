@@ -21,7 +21,7 @@ struct CatalogueRow: View {
       Button(action: {
          
          if self.catalogueItem.addedToAList == true {
-            removeItemFromList(item: self.catalogueItem)
+            removeItemFromList(thisItem: self.catalogueItem, listOrigin: self.thisList)
             self.globalVariables.catalogueShown = true
          }
             

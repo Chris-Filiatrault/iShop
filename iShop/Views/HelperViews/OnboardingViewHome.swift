@@ -11,50 +11,16 @@ import Foundation
 import UIKit
 import SwiftUI
 
-struct OnboardingView: View {
+struct OnboardingViewHome: View {
    
    @State var currentPageIndex = 0
-   @Binding var onboardingShown: Bool?
+   @Binding var onboardingShown: Bool
    @Binding var navBarColor: UIColor
    @Binding var navBarFont: UIColor
    
    let standardDarkBlueUIColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    
-   var subviews = [
-      UIHostingController(rootView: Subview(
-         imageString: "darkIconRounded",
-         title:  "Welcome to iShop",
-         caption: ""
-      )),
-      UIHostingController(rootView: Subview(
-         imageString: "HomeView",
-         title: "Create Multiple Lists",
-         caption: "Quickly view how many items are left."
-      )),
-      UIHostingController(rootView: Subview(
-         imageString: "ListView",
-         title: "Organise Using Categories",
-         caption: "Choose from default categories, or make your own."
-      )),
-      UIHostingController(rootView: Subview(
-         imageString: "CatalogueView",
-         title: "Add From Item History",
-         caption: "Items added to any list are saved in the Item History. Tap an item to add it to the current list."
-      )),
-//      UIHostingController(rootView: Subview(
-//         imageString: "FilteredCatalogueView",
-//         title: "Filter Item History",
-//         caption: "Start typing to filter the list and quickly find the item you're looking for."
-//      )),
-      UIHostingController(rootView: Subview(
-         imageString: "iPhoneiPadOnboarding",
-         title: "Use On Multiple Devices",
-         caption: "Lists automatically and securely sync over iCloud. No login or password required."
-      )),
-      UIHostingController(rootView: LastSubview())
-   ]
-   
-   
+   var subviews = createSubviews()
    
    var body: some View {
       
@@ -65,16 +31,18 @@ struct OnboardingView: View {
          VStack {
             Spacer()
             
-            HStack {
-               if currentPageIndex == 0 {
+            if currentPageIndex != subviews.count - 1 {
+               HStack {
                   Text("Continue")
+                     
                      .font(.headline)
-                     .foregroundColor(.gray)
-                  
-                  Image(systemName: "arrow.right")
-                     .imageScale(.large)
-                     .foregroundColor(.gray)
                }
+               .font(.headline)
+               .padding(10)
+               .background(Color("blueButton"))
+               .foregroundColor(.white)
+               .cornerRadius(10)
+               
             }
             PageControl(numberOfPages: subviews.count, currentPageIndex: $currentPageIndex)
                .padding(.leading, 5)
@@ -94,6 +62,54 @@ struct OnboardingView: View {
             }
          }
       }
+      
+   }
+}
+
+struct OnboardingViewSettings: View {
+   
+   @State var currentPageIndex = 0
+   @Binding var onboardingShownFromSettings: Bool
+   
+   var subviews = createSubviews()
+   
+   var body: some View {
+      
+      ZStack {
+         OBPageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
+            .edgesIgnoringSafeArea(.all)
+         VStack {
+            Spacer()
+            
+            
+            if currentPageIndex != subviews.count - 1 {
+               HStack {
+                  Text("Continue")
+                     .font(.headline)
+               }
+               .font(.headline)
+               .padding(10)
+               .background(Color("blueButton"))
+               .foregroundColor(.white)
+               .cornerRadius(10)
+               
+            }
+            PageControl(numberOfPages: subviews.count, currentPageIndex: $currentPageIndex)
+               .padding(.leading, 5)
+               .padding(.bottom)
+         }
+      }
+      .onTapGesture {
+         if self.currentPageIndex + 1 == self.subviews.count {
+            self.onboardingShownFromSettings = false
+//            self.currentPageIndex = 0
+         } else if self.currentPageIndex <= self.subviews.count {
+            withAnimation {
+               self.currentPageIndex += 1
+            }
+         }
+      }
+      
       
    }
 }
@@ -149,9 +165,9 @@ struct LastSubview: View {
                Spacer()
                Text("Start")
                   .bold()
-//                  .frame(minWidth: 50)
                   .font(.headline)
                   .padding(10)
+                  .padding(.horizontal, 5)
                   .background(Color("blueButton"))
                   .foregroundColor(.white)
                   .cornerRadius(10)
@@ -166,6 +182,44 @@ struct LastSubview: View {
    }
 }
 
+func createSubviews() -> [UIViewController] {
+   let subviews = [
+      UIHostingController(rootView: Subview(
+         imageString: "darkIconRounded",
+         title:  "Welcome to iShop",
+         caption: ""
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "HomeView",
+         title: "Create Multiple Lists",
+         caption: "Quickly view how many items are left."
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "ListView",
+         title: "Organise Using Categories",
+         caption: "Choose from default categories, or make your own."
+      )),
+      UIHostingController(rootView: Subview(
+         imageString: "CatalogueView",
+         title: "Add From Item History",
+         caption: "Items added to any list are saved in the Item History. Tap an item to add it to the current list."
+      )),
+      //      UIHostingController(rootView: Subview(
+      //         imageString: "FilteredCatalogueView",
+      //         title: "Filter Item History",
+      //         caption: "Start typing to filter the list and quickly find the item you're looking for."
+      //      )),
+      UIHostingController(rootView: Subview(
+         imageString: "iPhoneiPadOnboarding",
+         title: "Use On Multiple Devices",
+         caption: "Lists automatically and securely sync over iCloud. No login or password required."
+      )),
+      UIHostingController(rootView: LastSubview())
+   ]
+   
+   return subviews
+}
+
 
 struct OBPageViewController: UIViewControllerRepresentable {
    
@@ -177,16 +231,13 @@ struct OBPageViewController: UIViewControllerRepresentable {
       Coordinator(self)
    }
    
-   
    func makeUIViewController(context: Context) -> UIPageViewController {
       let pageViewController = UIPageViewController(
          transitionStyle: .scroll,
          navigationOrientation: .horizontal)
       
-      
       pageViewController.dataSource = context.coordinator
       pageViewController.delegate = context.coordinator
-      
       
       return pageViewController
    }
@@ -200,11 +251,8 @@ struct OBPageViewController: UIViewControllerRepresentable {
       
       var parent: OBPageViewController
       
-      
       init(_ pageViewController: OBPageViewController) {
          self.parent = pageViewController
-         
-         
       }
       
       
