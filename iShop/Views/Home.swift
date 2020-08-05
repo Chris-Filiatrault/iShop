@@ -85,6 +85,7 @@ struct Home: View {
                      // Reset MOC
                      Button(action: {
                         resetMOC()
+                        resetUserDefaults()
                      }) {
                         Text("Del")
                      }

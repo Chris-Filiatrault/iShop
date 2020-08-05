@@ -20,7 +20,13 @@ class UserDefaultsManager: ObservableObject {
    @Published var useCategories: Bool = UserDefaults.standard.bool(forKey: "syncUseCategories") {
       didSet { UserDefaults.standard.set(self.useCategories, forKey: "syncUseCategories") }
    }
-
    
+   @Published var keepScreenOn: Bool = UserDefaults.standard.bool(forKey: "syncKeepScreenOn") {
+      didSet { UserDefaults.standard.set(self.keepScreenOn, forKey: "syncKeepScreenOn") }
+   }
+   
+   @Published var hapticFeedback: Bool = UserDefaults.standard.bool(forKey: "syncHapticFeedback") {
+      didSet { UserDefaults.standard.set(self.hapticFeedback, forKey: "syncHapticFeedback") }
+   }
    
 }

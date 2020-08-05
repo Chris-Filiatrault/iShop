@@ -14,7 +14,7 @@ struct ItemList: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.editMode)  var editMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-   @State var showMoreOptions: Bool = false
+   @State var showListOptions: Bool = false
    @State var showListSettings: Bool = false
    var useCategories = UserDefaults.standard.bool(forKey: "syncUseCategories")
    var itemsFetchRequest: FetchRequest<Item>
@@ -122,7 +122,7 @@ struct ItemList: View {
          // ===Navigation bar===
          .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
          .navigationBarItems(trailing:
-            NavBarList(showMoreOptions: $showMoreOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
+            NavBarList(showListOptions: $showListOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
       )
       
    }// End of body
@@ -157,7 +157,6 @@ struct ItemList: View {
       
       do {
          let items = try managedContext.fetch(fetchRequest)
-         
          
          for index in indicies {
             

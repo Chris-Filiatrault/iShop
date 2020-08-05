@@ -11,10 +11,10 @@ import MessageUI
 
 struct NavBarList: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
-//   @Environment(\.editMode)  var editMode
-   @Binding var showMoreOptions: Bool
+   @Environment(\.editMode)  var editMode
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
+   @Binding var showListOptions: Bool
    @Binding var showRenameList: Bool
-   @State var confirmCopiedAlert: Bool = false
    @State var confirmDeleteListAlert: Bool = false
    var thisList: ListOfItems
    var startUp: StartUp
@@ -27,15 +27,13 @@ struct NavBarList: View {
          if globalVariables.catalogueShown == false {
             if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
             EditButton()
-//               .foregroundColor(editMode?.wrappedValue == .inactive ? Color("navBarFont") : .red)
             }
-            
             
             // More options button
             Button(action: {
-               self.showMoreOptions.toggle()
+               self.showListOptions.toggle()
                withAnimation {
-//                  self.editMode?.wrappedValue = .inactive
+                  self.editMode?.wrappedValue = .inactive
                }
             }) {
                Image(systemName: "ellipsis.circle")
@@ -45,7 +43,7 @@ struct NavBarList: View {
             }.padding(.vertical, 10)
                
                // === Action sheet ===
-               .actionSheet(isPresented: self.$showMoreOptions) {
+               .actionSheet(isPresented: self.$showListOptions) {
                   ActionSheet(title: Text("Options"), buttons: [
                      .destructive(Text("Delete List")) {
                         self.confirmDeleteListAlert.toggle()
@@ -62,7 +60,7 @@ struct NavBarList: View {
                      .default(Text("Copy Items")) {
                         let pasteboard = UIPasteboard.general
                         pasteboard.string = listItemsAsString(thisList: self.thisList)
-                        self.confirmCopiedAlert = true
+                        successHapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
                      },
                      .cancel(Text("Cancel"))])
             }

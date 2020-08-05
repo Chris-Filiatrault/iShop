@@ -43,7 +43,7 @@ struct Catalogue: View {
 //            .edgesIgnoringSafeArea(.horizontal)
 //            .foregroundColor(.black)
 //         }
-         Divider()
+         
             
          
          List {

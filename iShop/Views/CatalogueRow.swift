@@ -11,6 +11,7 @@ import SwiftUI
 struct CatalogueRow: View {
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    var thisList: ListOfItems
    var catalogueItem: Item
@@ -19,19 +20,18 @@ struct CatalogueRow: View {
    var body: some View {
       
       Button(action: {
-         
          if self.catalogueItem.addedToAList == true {
             removeItemFromList(thisItem: self.catalogueItem, listOrigin: self.thisList)
             self.globalVariables.catalogueShown = true
          }
-            
-            
          else if self.catalogueItem.addedToAList == false {
             self.catalogueItem.addedToAList = true
             addItemFromCatalogue(item: self.catalogueItem, listOrigin: self.thisList)
             self.globalVariables.itemInTextfield = ""
             self.globalVariables.catalogueShown = true
          }
+         
+         hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
       }) {
          HStack {
             
@@ -49,7 +49,7 @@ struct CatalogueRow: View {
                      .font(catalogueItem.addedToAList ? .subheadline : .headline)
                }
             }
-            
+            Text("\(catalogueItem.position)")
          }
          .frame(height: 20)
          .font(.headline)

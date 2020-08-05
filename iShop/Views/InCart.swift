@@ -100,12 +100,6 @@ struct InCart: View {
       for offset in offsets {
          let thisItem = items.wrappedValue[offset]
          
-         for item in thisList.itemArray {
-            if item.position > thisItem.position {
-               item.position -= 1
-            }
-         }
-         
          thisItem.addedToAList = false
          thisItem.markedOff = false
          thisItem.quantity = 1

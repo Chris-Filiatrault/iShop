@@ -13,6 +13,7 @@ struct ItemRow: View {
    @Environment(\.editMode)  var editMode
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.managedObjectContext) var context
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    var thisList: ListOfItems
    var thisItem: Item
@@ -25,6 +26,7 @@ struct ItemRow: View {
       HStack {
          
          Button(action: {
+            
             if self.thisItem.markedOff == false {
                markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
             }
@@ -32,6 +34,7 @@ struct ItemRow: View {
                restoreItemInList(thisItem: self.thisItem, thisList: self.thisList)
             }
             GlobalVariableClass().refreshingID = UUID()
+            hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
             }) {
             
             ZStack {

@@ -20,15 +20,16 @@ struct Settings: View {
    var lists: FetchedResults<ListOfItems>
    
    let sortOptions: [String] = ["Alphabetical", "Manual"]
+//   let hapticFeedbackOptions: [String] = ["On", "Off"]
    var startUp: StartUp
    
    @State var result: Result<MFMailComposeResult, Error>? = nil
    @State var isShowingMailView = false
    @State var alertNoMail = false
    @State var disableAutocorrect: Bool = false
+//   @State var hapticFeedbackSelection: String = UserDefaults.standard.string(forKey: "syncHapticFeedback") ?? "On"
    @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Alphabetical"
    @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Alphabetical"
-   
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    @State var onboardingShownFromSettings: Bool = false
@@ -41,56 +42,6 @@ struct Settings: View {
          VStack {
             
             Form {
-               
-               // ===GENERAL===
-               Section(header: Text("GENERAL")) {
-                  
-                  // Autocorrect
-                  Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
-                     Text("Disable Autocorrect")
-                  }
-                  
-                  // Review
-                  // UNCOMMENT IN FIRST POST-RELEASE UPDATE
-                  //                  if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 10 {
-                  //                     Button(action: {
-                  //                        //                        UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/id1518384911#?platform=iphone")!)
-                  //                     }) {
-                  //                        Text("Review on App Store")
-                  //                           .foregroundColor(.black)
-                  //                     }
-                  //                  }
-                  
-                  // Contact
-                  Button(action: {
-                     MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
-                  }) {
-                     HStack {
-                        Text("Send Feedback")
-                           .foregroundColor(.black)
-                        Image(systemName: "envelope")
-                           .foregroundColor(.gray)
-                     }
-                  }
-                  .sheet(isPresented: $isShowingMailView) {
-                     MailView(result: self.$result)
-                  }
-                  .alert(isPresented: self.$alertNoMail) {
-                     Alert(title: Text("Can't send mail on this device."))
-                  }
-                  
-                  Button(action: {
-                     self.onboardingShownFromSettings.toggle()
-                  }) {
-                     Text("Show Introduction")
-                        .foregroundColor(.black)
-                  }
-                  .sheet(isPresented: $onboardingShownFromSettings) {
-                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
-                  }
-                  
-                  
-               }
                
                // ===LIST OPTIONS===
                Section(header: Text("LIST OPTIONS")) {
@@ -112,7 +63,7 @@ struct Settings: View {
                               .font(.headline)
                         }
                         HStack {
-                           Text("To sort items manually, disable") +
+                           Text("Items are sorted alphabetically when using categories. To sort items manually, disable") +
                               Text(" Use Categories ").bold() +
                               Text("in Settings.")
                         }
@@ -133,7 +84,6 @@ struct Settings: View {
                      }
                   }
                   
-                  
                   // List Order
                   Picker(selection: self.$sortListsBy, label: Text("List Order")) {
                      ForEach(self.sortOptions, id: \.self) { option in
@@ -144,8 +94,79 @@ struct Settings: View {
                         .foregroundColor(.gray)
                         .padding(.vertical, 5)
                   }
+               }
+               
+               // ===GENERAL===
+               Section(header: Text("GENERAL")) {
+                  
+                  // Keep screen on
+                  Toggle(isOn: $userDefaultsManager.keepScreenOn) {
+                     Text("Keep Screen On")
+                  }
+                  
+                  // Haptic feedback
+//                  Picker(selection: self.$globalVariables.hapticFeedbackSelection, label: Text("Haptic Feedback")) {
+//                     ForEach(self.hapticFeedbackOptions, id: \.self) { option in
+//                        Text(option)
+//                     }
+//                  }
+                  
+                  Toggle(isOn: $userDefaultsManager.hapticFeedback) {
+                     Text("Haptic Feedback")
+                  }
+                  
+                  // Autocorrect
+                  Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
+                     Text("Disable Autocorrect")
+                  }
+                  
+               }
+               
+               // ===ISHOP===
+               Section(header: Text("ISHOP")) {
+                  
+//                  // Review
+//                  // UNCOMMENT IN FIRST POST-RELEASE UPDATE
+//                  //                  if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 10 {
+//                  Button(action: {
+////                     UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/id1518384911#?platform=iphone")!)
+//                  }) {
+//                     Text("Review on App Store")
+//                        .foregroundColor(.black)
+//                  }
+//                  }
                   
                   
+                  
+                  // Introduction
+                  Button(action: {
+                     self.onboardingShownFromSettings.toggle()
+                  }) {
+                     Text("Show Introduction")
+                        .foregroundColor(.black)
+                  }
+                  .sheet(isPresented: $onboardingShownFromSettings) {
+                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
+                  }
+                  
+                  
+                  // Contact
+                  Button(action: {
+                     MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
+                  }) {
+                     HStack {
+                        Text("Send Feedback")
+                           .foregroundColor(.black)
+                        Image(systemName: "envelope")
+                           .foregroundColor(.gray)
+                     }
+                  }
+                  .sheet(isPresented: $isShowingMailView) {
+                     MailView(result: self.$result)
+                  }
+                  .alert(isPresented: self.$alertNoMail) {
+                     Alert(title: Text("Can't send mail on this device."))
+                  }
                   
                }
                
@@ -163,18 +184,18 @@ struct Settings: View {
                            print("Change item order")
                         }
                      }
-                     
                      if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
                         sortListPositionsAlphabetically()
                      }
                      UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
                      UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
+                     UserDefaults.standard.set(self.userDefaultsManager.hapticFeedback, forKey: "syncHapticFeedback")
                      
                   }) {
                      Text("Done")
                         .font(.headline)
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
-
+                     
                })
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))

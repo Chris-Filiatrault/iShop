@@ -30,15 +30,15 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    let categoryFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
    
-
-//   let originPredicate = NSPredicate(format: "origin == %@", listOrigin)
-////   let addedToAListPredicate = NSPredicate(format: "addedToAList == %@", true)
-//   let markedOffPredicate = NSPredicate(format: "markedOff == %@", false)
-//   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, markedOffPredicate])
-//
-//   let itemFetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
-//   itemFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
-//   itemFetchRequest.predicate = compoundPredicate
+   
+   //   let originPredicate = NSPredicate(format: "origin == %@", listOrigin)
+   ////   let addedToAListPredicate = NSPredicate(format: "addedToAList == %@", true)
+   //   let markedOffPredicate = NSPredicate(format: "markedOff == %@", false)
+   //   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, markedOffPredicate])
+   //
+   //   let itemFetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   //   itemFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
+   //   itemFetchRequest.predicate = compoundPredicate
    
    do {
       let lists = try managedContext.fetch(listFetchRequest)
@@ -158,12 +158,12 @@ func addItemFromCatalogue(item: Item, listOrigin: ListOfItems) {
       
       item.addedToAList = true
       item.position = Int32(items.count - 1)
-   
-   
+      
+      
       do {
          try managedContext.save()
       } catch let error as NSError {
-      print("Could not save items. \(error), \(error.userInfo)")
+         print("Could not save items. \(error), \(error.userInfo)")
       }
       
    } catch let error as NSError {
@@ -181,21 +181,40 @@ func removeItemFromList(thisItem: Item, listOrigin: ListOfItems) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   for item in listOrigin.itemArray {
-      if item.position > thisItem.position {
-         item.position -= 1
-      }
-   }
+   let originPredicate = NSPredicate(format: "origin = %@", listOrigin)
+   let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
    
-   thisItem.addedToAList = false
-   thisItem.markedOff = false
-   thisItem.quantity = 1
-   thisItem.position = 0
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   fetchRequest.predicate = compoundPredicate
    
    do {
-      try managedContext.save()
+      
+      let items = try managedContext.fetch(fetchRequest)
+      
+      if items != [] && thisItem.markedOff == false {
+         for item in items {
+            if item.position > thisItem.position {
+               item.position -= 1
+            }
+         }
+      }
+      
+      thisItem.addedToAList = false
+      thisItem.markedOff = false
+      thisItem.quantity = 1
+      thisItem.position = 0
+      
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not save items. \(error), \(error.userInfo)")
+      }
+      
+      
    } catch let error as NSError {
-      print("Could not save items. \(error), \(error.userInfo)")
+      print("Could not fetch \(error), \(error.userInfo)")
    }
 }
 
@@ -288,7 +307,7 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
    let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
    
    let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-    fetchRequest.predicate = compoundPredicate
+   fetchRequest.predicate = compoundPredicate
    
    do {
       let items = try managedContext.fetch(fetchRequest) as! [Item]
@@ -303,13 +322,14 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
       thisItem.position = 0
       GlobalVariableClass().refreshingID = UUID()
       
+      
       do {
          try managedContext.save()
       } catch let error as NSError {
          print("Could not save checked off status. \(error), \(error.userInfo)")
       }
-   
-   
+      
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -332,11 +352,11 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
    let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
    
    let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-    fetchRequest.predicate = compoundPredicate
+   fetchRequest.predicate = compoundPredicate
    
    do {
       let items = try managedContext.fetch(fetchRequest) as! [Item]
-   
+      
       thisItem.markedOff = false
       thisItem.position = Int32(items.count)
       GlobalVariableClass().refreshingID = UUID()
@@ -346,7 +366,7 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
       } catch let error as NSError {
          print("Could not save checked off status. \(error), \(error.userInfo)")
       }
-   
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -545,17 +565,17 @@ func renameList(thisList: ListOfItems, newName: String) {
    }
 }
 
- // ===DELETE SWIPED LIST (alphabetical fetch request)===
+// ===DELETE SWIPED LIST (alphabetical fetch request)===
 func deleteSwipedListAlphabetical(indices: IndexSet) {
-
+   
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
          return
    }
-
+   
    let managedContext =
       appDelegate.persistentContainer.viewContext
-
+   
    let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    fetchRequest.sortDescriptors = [
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
@@ -566,75 +586,83 @@ func deleteSwipedListAlphabetical(indices: IndexSet) {
       
       let lists = try managedContext.fetch(fetchRequest)
       for index in indices {
-
+         
          let listToBeDeleted = lists[index]
          for list in lists {
             if list.position > listToBeDeleted.position {
                list.position -= 1
             }
          }
-
+         
          for item in listToBeDeleted.itemArray {
             managedContext.delete(item)
          }
          
          managedContext.delete(listToBeDeleted)
+         
+         if userHasNoLists() {
+            addList(listName: "Groceries")
+         }
       }
-
+      
       do {
          try managedContext.save()
       } catch let error as NSError {
          print("Could not delete. \(error), \(error.userInfo)")
       }
-
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
 
- // ===DELETE SWIPED LIST (by position fetch request)===
+// ===DELETE SWIPED LIST (by position fetch request)===
 func deleteSwipedListManual(indices: IndexSet) {
-
+   
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
          return
    }
-
+   
    let managedContext =
       appDelegate.persistentContainer.viewContext
-
+   
    let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    fetchRequest.sortDescriptors = [
       NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
    ]
    fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-
-
+   
+   
    do {
       let lists = try managedContext.fetch(fetchRequest)
       for index in indices {
-
+         
          let listToBeDeleted = lists[index]
          for list in lists {
             if list.position > listToBeDeleted.position {
                list.position -= 1
             }
          }
-
+         
          for item in listToBeDeleted.itemArray {
             managedContext.delete(item)
          }
-
+         
          managedContext.delete(listToBeDeleted)
-
+         
+         if userHasNoLists() {
+            addList(listName: "Groceries")
+         }
+         
       }
-
+      
       do {
          try managedContext.save()
       } catch let error as NSError {
          print("Could not delete. \(error), \(error.userInfo)")
       }
-
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -753,12 +781,12 @@ func clearList(thisList: ListOfItems) {
 
 // ===MOVE LIST===
 func moveList(IndexSet: IndexSet, destination: Int) {
-
+   
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
          return
    }
-
+   
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
@@ -766,60 +794,60 @@ func moveList(IndexSet: IndexSet, destination: Int) {
    fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
    
-
+   
    do {
       let lists = try managedContext.fetch(fetchRequest)
       
       let firstIndex = IndexSet.min()!
       let lastIndex = IndexSet.max()!
-
+      
       let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
       let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)
-
+      
       if firstRowToReorder != lastRowToReorder && lists != [] {
-
-           var newOrder = firstRowToReorder
-           if newOrder < firstIndex {
+         
+         var newOrder = firstRowToReorder
+         if newOrder < firstIndex {
             // Moving dragged items up, so re-order dragged items first
-
+            
             // Re-order dragged items
             for index in IndexSet {
-                   lists[index].setValue(newOrder, forKey: "position")
-                   newOrder = newOrder + 1
+               lists[index].setValue(newOrder, forKey: "position")
+               newOrder = newOrder + 1
+            }
+            
+            // Re-order non-dragged items
+            for rowToMove in firstRowToReorder..<lastRowToReorder {
+               if !IndexSet.contains(rowToMove) {
+                  lists[rowToMove].setValue(newOrder, forKey: "position")
+                  newOrder = newOrder + 1
                }
-
-               // Re-order non-dragged items
-               for rowToMove in firstRowToReorder..<lastRowToReorder {
-                  if !IndexSet.contains(rowToMove) {
-                       lists[rowToMove].setValue(newOrder, forKey: "position")
-                       newOrder = newOrder + 1
-                   }
+            }
+         } else if lists != [] {
+            // Moving dragged items down, so re-order dragged items last
+            
+            // Re-order non-dragged items
+            for rowToMove in firstRowToReorder...lastRowToReorder {
+               if !IndexSet.contains(rowToMove) {
+                  lists[rowToMove].setValue(newOrder, forKey: "position")
+                  newOrder = newOrder + 1
                }
-           } else if lists != [] {
-               // Moving dragged items down, so re-order dragged items last
-
-               // Re-order non-dragged items
-               for rowToMove in firstRowToReorder...lastRowToReorder {
-                  if !IndexSet.contains(rowToMove) {
-                       lists[rowToMove].setValue(newOrder, forKey: "position")
-                       newOrder = newOrder + 1
-                   }
-               }
-
+            }
+            
             // Re-order dragged items
             for index in IndexSet {
-                   lists[index].setValue(newOrder, forKey: "position")
-                   newOrder = newOrder + 1
-               }
-           }
+               lists[index].setValue(newOrder, forKey: "position")
+               newOrder = newOrder + 1
+            }
+         }
       }
-
+      
       do {
          try managedContext.save()
       } catch let error as NSError {
          print("Could not save. \(error), \(error.userInfo)")
       }
-
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -1164,8 +1192,8 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
       let dates = try context.fetch(fetchRequest) as! [InitDate]
       
       result = dates.count > 1
-//      print("Result is: \(result)")
-//      print("No. dates is: \(dates.count)")
+      //      print("Result is: \(result)")
+      //      print("No. dates is: \(dates.count)")
       
       if dates != [] {
          let earliestDate = dates[0].initDate
@@ -1192,7 +1220,6 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
 // Returns true if yes
 func isFirstTimeLaunch() -> Bool {
    if UserDefaults.standard.bool(forKey: "syncUserHasLaunchedPreviously") != true {
-      print("Is first time launch")
       UserDefaults.standard.set(true, forKey: "syncUserHasLaunchedPreviously")
       return true
    } else {
@@ -1257,8 +1284,17 @@ func userHasNoCategories() -> Bool {
 }
 
 
+func resetUserDefaults() {
+   UserDefaults.standard.set(false, forKey: "syncUserHasLaunchedPreviously")
+   UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
+   UserDefaults.standard.set(false, forKey: "onboardingShown")
+}
+
 // ===RESET MANAGED OBJECT CONTEXT===
 func resetMOC() {
+   
+   UserDefaults.standard.set(true, forKey: "syncUserHasLaunchedPreviously")
+   UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
    
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
@@ -1421,7 +1457,7 @@ func listItemsAsString(thisList: ListOfItems) -> String {
          }
       }
       
-
+      
       var inCartItemNames: [String] = []
       var inCartHasItems: Bool {
          var numItemsInCart: Int = 0
@@ -1450,6 +1486,24 @@ func listItemsAsString(thisList: ListOfItems) -> String {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
    
-  
+   
    return result
+}
+
+
+// ===HAPTIC FEEDBACK (single)===
+func hapticFeedback(enabled: Bool) {
+   if enabled {
+      let generator = UIImpactFeedbackGenerator(style: .light)
+      generator.impactOccurred()
+   }
+}
+
+
+// ===HAPTIC FEEDBACK (success)===
+func successHapticFeedback (enabled: Bool) {
+   if enabled {
+      let generator = UINotificationFeedbackGenerator()
+      generator.notificationOccurred(.success)
+   }
 }

@@ -29,12 +29,30 @@ struct OnboardingViewHome: View {
             .edgesIgnoringSafeArea(.all)
          
          VStack {
+            if currentPageIndex != subviews.count - 1 {
+               withAnimation {
+                  HStack {
+                     Spacer()
+                     Button(action: {
+                        UserDefaults.standard.set(true, forKey: "onboardingShown")
+                        self.onboardingShown = true
+                        self.navBarColor = self.standardDarkBlueUIColor
+                        self.navBarFont = UIColor.white
+                     }) {
+                        Text("Skip")
+                           .bold()
+                           .foregroundColor(Color("navBarFont"))
+                           .padding()
+                     }
+                  }
+               }
+            }
+            
             Spacer()
             
-            if currentPageIndex != subviews.count - 1 {
+            if currentPageIndex == 0 {
                HStack {
                   Text("Continue")
-                     
                      .font(.headline)
                }
                .font(.headline)
@@ -79,10 +97,26 @@ struct OnboardingViewSettings: View {
          OBPageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
             .edgesIgnoringSafeArea(.all)
          VStack {
+            if currentPageIndex != subviews.count - 1 {
+               withAnimation {
+                  HStack {
+                     Button(action: {
+                        self.onboardingShownFromSettings = false
+                     }) {
+                        Text("Cancel")
+                           .bold()
+                           .foregroundColor(Color("navBarFont"))
+                           .padding()
+                     }
+                     Spacer()
+                  }
+               }
+            }
+            
             Spacer()
             
             
-            if currentPageIndex != subviews.count - 1 {
+            if currentPageIndex == 0 {
                HStack {
                   Text("Continue")
                      .font(.headline)
@@ -102,7 +136,7 @@ struct OnboardingViewSettings: View {
       .onTapGesture {
          if self.currentPageIndex + 1 == self.subviews.count {
             self.onboardingShownFromSettings = false
-//            self.currentPageIndex = 0
+            //            self.currentPageIndex = 0
          } else if self.currentPageIndex <= self.subviews.count {
             withAnimation {
                self.currentPageIndex += 1
@@ -192,7 +226,7 @@ func createSubviews() -> [UIViewController] {
       UIHostingController(rootView: Subview(
          imageString: "HomeView",
          title: "Create Multiple Lists",
-         caption: "Quickly view how many items are left."
+         caption: "A number displays how many unchecked items are in each list."
       )),
       UIHostingController(rootView: Subview(
          imageString: "ListView",
