@@ -77,11 +77,16 @@ struct Settings: View {
                         ForEach(self.sortOptions, id: \.self) { option in
                            Text(option)
                         }
-                        Text("To manually sort items, select Manual above, then press the Edit button in any list.")
-                           .font(.subheadline)
-                           .foregroundColor(.gray)
-                           .padding(.vertical, 5)
-                     }
+                        HStack {
+                        Text("To manually sort items, select") +
+                           Text(" Manual ").bold() +
+                        Text("above, then press the") +
+                           Text(" Edit ").bold() +
+                        Text("button in any list.")
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .padding(.vertical, 5)                     }
                   }
                   
                   // List Order
@@ -89,10 +94,16 @@ struct Settings: View {
                      ForEach(self.sortOptions, id: \.self) { option in
                         Text(option)
                      }
-                     Text("To manually sort lists, select Manual above, then press the Edit button on the home page.")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.vertical, 5)
+                     HStack {
+                     Text("To manually sort lists, select") +
+                        Text(" Manual ").bold() +
+                     Text("above, then press the") +
+                        Text(" Edit ").bold() +
+                     Text("button on the home page.")
+                     }
+                     .font(.subheadline)
+                     .foregroundColor(.gray)
+                     .padding(.vertical, 5)
                   }
                }
                

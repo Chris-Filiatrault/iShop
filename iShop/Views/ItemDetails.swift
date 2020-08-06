@@ -128,7 +128,7 @@ struct ItemDetails: View {
                                        newItemCategory: self.newItemCategory)
                      }
                      if self.oldList != self.newList {
-                        changeItemList(thisItem: self.thisItem, newList: self.newList)
+                        changeItemList(thisItem: self.thisItem, oldList: self.oldList, newList: self.newList)
                      }
                      
                   }) {

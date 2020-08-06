@@ -30,16 +30,6 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    let categoryFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
    
-   
-   //   let originPredicate = NSPredicate(format: "origin == %@", listOrigin)
-   ////   let addedToAListPredicate = NSPredicate(format: "addedToAList == %@", true)
-   //   let markedOffPredicate = NSPredicate(format: "markedOff == %@", false)
-   //   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, markedOffPredicate])
-   //
-   //   let itemFetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
-   //   itemFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
-   //   itemFetchRequest.predicate = compoundPredicate
-   
    do {
       let lists = try managedContext.fetch(listFetchRequest)
       let returnedCategories = try managedContext.fetch(categoryFetchRequest)
@@ -274,6 +264,7 @@ func incrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
 }
 
 
+// ===DECREMENT QUANTITY===
 func decrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -290,6 +281,7 @@ func decrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
       print("Could not save.")
    }
 }
+
 
 // ===MARK OFF ITEM===
 // Mark off the tick circle in a list as having been added to the users basket
@@ -374,7 +366,7 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
 
 
 // ===CHANGE LIST===
-func changeItemList(thisItem: Item, newList: ListOfItems) {
+func changeItemList(thisItem: Item, oldList: ListOfItems, newList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -382,23 +374,73 @@ func changeItemList(thisItem: Item, newList: ListOfItems) {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   for item in newList.itemArray {
-      if item.wrappedName == thisItem.wrappedName {
-         item.addedToAList = true
-         item.markedOff = thisItem.markedOff
-         item.quantity = thisItem.quantity
-      }
-   }
-   thisItem.addedToAList = false
-   thisItem.markedOff = false
-   thisItem.quantity = 1
+   let oldListPredicate = NSPredicate(format: "origin = %@", oldList)
+   let newListPredicate = NSPredicate(format: "origin = %@", newList)
+   let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   
+   let oldListCompoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [oldListPredicate, addedToAListPredicate, markedOffPredicate])
+   let newListCompoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [newListPredicate, addedToAListPredicate, markedOffPredicate])
+   
+   let fetchRequestOldList:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   fetchRequestOldList.predicate = oldListCompoundPredicate
+   
+   let fetchRequestNewList:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   fetchRequestNewList.predicate = newListCompoundPredicate
    
    do {
-      try managedContext.save()
+      
+      let oldListItems = try managedContext.fetch(fetchRequestOldList)
+      let newListItems = try managedContext.fetch(fetchRequestNewList)
+      
+      // Set up new item
+      for item in newList.itemArray {
+
+         // Find item
+         if item.wrappedName == thisItem.wrappedName {
+   
+            // If item wasn't in new list, assign old item properties.
+            if item.addedToAList == false {
+               item.addedToAList = true
+               item.markedOff = thisItem.markedOff
+               item.quantity = thisItem.quantity
+               item.position = Int32(newListItems.count) // position = last in new list
+            }
+            // If item was already in new list, only change quantity
+            else if item.addedToAList == true {
+               item.quantity = thisItem.quantity
+            }
+         }
+         
+      }
+      
+      // Adjust indices in old list (if the item wasn't marked off)
+      if thisItem.markedOff == false {
+         for item in oldListItems {
+            if item.position > thisItem.position {
+               item.position -= 1
+            }
+         }
+      }
+      
+      // Reset current list item
+      thisItem.addedToAList = false
+      thisItem.markedOff = false
+      thisItem.quantity = 1
+      thisItem.position = 0
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not save. \(error), \(error.userInfo)")
+      }
+      
+   
+
    } catch let error as NSError {
-      print("Could not save. \(error), \(error.userInfo)")
+      print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
+   
 
 
 // ===CHECK FOR DUPLICATE ITEM NAMES IN MANAGED CONTEXT===
@@ -565,6 +607,7 @@ func renameList(thisList: ListOfItems, newName: String) {
    }
 }
 
+
 // ===DELETE SWIPED LIST (alphabetical fetch request)===
 func deleteSwipedListAlphabetical(indices: IndexSet) {
    
@@ -615,6 +658,7 @@ func deleteSwipedListAlphabetical(indices: IndexSet) {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
+
 
 // ===DELETE SWIPED LIST (by position fetch request)===
 func deleteSwipedListManual(indices: IndexSet) {
@@ -667,6 +711,7 @@ func deleteSwipedListManual(indices: IndexSet) {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
+
 
 // ===DELETE LIST===
 func deleteList(thisList: ListOfItems) {
@@ -1284,11 +1329,19 @@ func userHasNoCategories() -> Bool {
 }
 
 
-func resetUserDefaults() {
+// ===RESET USER DEFAULTS===
+func resetDefaults() {
    UserDefaults.standard.set(false, forKey: "syncUserHasLaunchedPreviously")
    UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
    UserDefaults.standard.set(false, forKey: "onboardingShown")
+   UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
+   UserDefaults.standard.set("Alphabetical", forKey: "syncSortListsBy")
+   UserDefaults.standard.set("Alphabetical", forKey: "syncSortItemsBy")
+   UserDefaults.standard.set(true, forKey: "syncUseCategories")
+   UserDefaults.standard.set(nil, forKey: "syncUserHasLaunchedPreviously")
+   
 }
+
 
 // ===RESET MANAGED OBJECT CONTEXT===
 func resetMOC() {
@@ -1375,6 +1428,7 @@ func startupItemStrings() -> [[String]] {
       [] // In Cart
    ]
 }
+
 
 // ===LIST ITEMS AS STRING===
 // For copying/sending via text
