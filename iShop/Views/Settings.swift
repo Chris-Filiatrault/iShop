@@ -116,20 +116,14 @@ struct Settings: View {
                   }
                   
                   // Haptic feedback
-//                  Picker(selection: self.$globalVariables.hapticFeedbackSelection, label: Text("Haptic Feedback")) {
-//                     ForEach(self.hapticFeedbackOptions, id: \.self) { option in
-//                        Text(option)
-//                     }
-//                  }
-                  
                   Toggle(isOn: $userDefaultsManager.hapticFeedback) {
                      Text("Haptic Feedback")
                   }
                   
                   // Autocorrect
-                  Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
-                     Text("Disable Autocorrect")
-                  }
+//                  Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
+//                     Text("Disable Autocorrect")
+//                  }
                   
                }
                

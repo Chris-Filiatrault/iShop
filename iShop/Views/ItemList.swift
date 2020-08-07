@@ -71,7 +71,7 @@ struct ItemList: View {
          if globalVariables.catalogueShown == false && useCategories == true {
             
             List {
-               ForEach(categoriesFetchRequest.wrappedValue, id: \.self) { category in
+               ForEach(categoriesFetchRequest.wrappedValue) { category in
                   ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
                }
                ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!)
@@ -90,7 +90,7 @@ struct ItemList: View {
          if globalVariables.catalogueShown == false && useCategories == false {
             
             List {
-               ForEach(itemsFetchRequest.wrappedValue, id: \.self) { item in
+               ForEach(itemsFetchRequest.wrappedValue) { item in
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
                }
                .onDelete(perform: removeSwipedItem)

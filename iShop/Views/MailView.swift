@@ -47,9 +47,11 @@ struct MailView: UIViewControllerRepresentable {
    
    
    func makeUIViewController(context: UIViewControllerRepresentableContext<MailView>) -> MFMailComposeViewController {
-       let vc = MFMailComposeViewController()
+      let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+      let osVersion = UIDevice.current.systemVersion
+      let vc = MFMailComposeViewController()
        vc.setToRecipients(["ishop-groceries@outlook.com"])
-//       vc.setMessageBody("<p><br><br>Version 1.0</p>", isHTML: true)
+       vc.setMessageBody("<p><br><br>Version: \(appVersion ?? "")<br>iOS: \(osVersion)</p>", isHTML: true)
        vc.setSubject("iShop")
        vc.mailComposeDelegate = context.coordinator
        return vc

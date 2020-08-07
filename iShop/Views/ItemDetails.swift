@@ -91,7 +91,7 @@ struct ItemDetails: View {
                   
                   // List
                   Picker(selection: self.$newList, label: Text("List")) {
-                     ForEach(self.lists, id: \.self) { list in
+                     ForEach(self.lists) { list in
                         Text(list.wrappedName)
                      }
                   }
@@ -100,6 +100,7 @@ struct ItemDetails: View {
                   Button(action: {
                      removeItemFromList(thisItem: self.thisItem, listOrigin: self.newList)
                      self.showItemDetails = false
+                     self.presentationMode.wrappedValue.dismiss()
                   }) {
                      Text("Delete")
                         .foregroundColor(.red)
@@ -118,6 +119,7 @@ struct ItemDetails: View {
                .navigationBarItems(trailing:
                   Button(action: {
                      self.showItemDetails.toggle()
+                     self.presentationMode.wrappedValue.dismiss()
                      print("\(self.showItemDetails)")
                      if self.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
@@ -137,6 +139,7 @@ struct ItemDetails: View {
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
                })
          }
-      }.environment(\.horizontalSizeClass, .compact)
+      }
+      .environment(\.horizontalSizeClass, .compact)
    }
 }

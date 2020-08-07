@@ -21,7 +21,7 @@ struct StartUp: View {
    
    var body: some View {
       VStack {
-//         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+         //         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
          if onboardingShown != true {
             OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
          }
@@ -58,80 +58,87 @@ struct StartUp: View {
             
             UserDefaultsManager().useCategories = true
             UserDefaultsManager().keepScreenOn = true
-//            UserDefaultsManager().hapticFeedback = true
+            UserDefaultsManager().hapticFeedback = true
             
             
-             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-                return
-             }
-             
-             let managedContext = appDelegate.persistentContainer.viewContext
-             
-             let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
-                managedContext)!
-             let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
-                managedContext)!
-             let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
-                managedContext)!
-             let initDateEntity = NSEntityDescription.entity(forEntityName: "InitDate", in: managedContext)!
-             
-             let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
-             newInitDate.initDate = Date()
-             
-             let startupCategoryNames = startupCategoryStrings()
-             let startupItemNames = startupItemStrings()
-             
-             if userHasNoLists() {
-                
-                print("Creating default list")
-                // Groceries list
-                let defaultList = ListOfItems(entity: listEntity, insertInto: managedContext)
-                defaultList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
-                defaultList.id = UUID()
-                defaultList.dateAdded = newInitDate.initDate
-                
-                
-                if userHasNoCategories() {
-                   
-                   print("Creating startup items and categories")
-                   // Grocery categories & items
-                   var groceryIndex: Int = 0
-                   
-                   for categoryName in startupCategoryNames {
-                      let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
-                      newCategory.name = categoryName
-                      newCategory.id = UUID()
-                      newCategory.dateAdded = newInitDate.initDate
-                      
-                      for itemName in startupItemNames[groceryIndex] {
-                         
-                         let item = Item(entity: itemEntity, insertInto: managedContext)
-                         item.name = itemName
-                         item.id = UUID()
-                         item.dateAdded = newInitDate.initDate
-                         item.addedToAList = false
-                         item.markedOff = false
-                         item.quantity = 1
-                         item.origin = defaultList
-                         item.position = 0
-                         defaultList.addToItems(item)
-                         newCategory.addToItemsInCategory(item)
-                      }
-                      groceryIndex += 1
-                   }
-                }
-             }
-             
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+               return
+            }
+            
+            let managedContext = appDelegate.persistentContainer.viewContext
+            
+            let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in:
+               managedContext)!
+            let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in:
+               managedContext)!
+            let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in:
+               managedContext)!
+            let initDateEntity = NSEntityDescription.entity(forEntityName: "InitDate", in: managedContext)!
+            
+            let newInitDate = InitDate(entity: initDateEntity, insertInto: managedContext)
+            newInitDate.initDate = Date()
+            
+            let startupCategoryNames = startupCategoryStrings()
+            let startupItemNames = startupItemStrings()
+            
+            if userHasNoLists() {
+               
+               print("Creating default list")
+               // Groceries list
+               let defaultList = ListOfItems(entity: listEntity, insertInto: managedContext)
+               defaultList.name = "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"
+               defaultList.id = UUID()
+               defaultList.dateAdded = newInitDate.initDate
+               
+               
+               if userHasNoCategories() {
+                  
+                  print("Creating startup items and categories")
+                  // Grocery categories & items
+                  var groceryIndex: Int = 0
+                  var categoryIndex: Int32 = 0
+                  
+                  for categoryName in startupCategoryNames {
+                     let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
+                     newCategory.name = categoryName
+                     newCategory.id = UUID()
+                     newCategory.dateAdded = newInitDate.initDate
+                     if !["In Cart", "Uncategorised"].contains(categoryName) {
+                     newCategory.position = categoryIndex
+                     categoryIndex += 1
+                     } else {
+                        newCategory.position = 0
+                     }
+                     
+                     for itemName in startupItemNames[groceryIndex] {
+                        
+                        let item = Item(entity: itemEntity, insertInto: managedContext)
+                        item.name = itemName
+                        item.id = UUID()
+                        item.dateAdded = newInitDate.initDate
+                        item.addedToAList = false
+                        item.markedOff = false
+                        item.quantity = 1
+                        item.origin = defaultList
+                        item.position = 0
+                        defaultList.addToItems(item)
+                        newCategory.addToItemsInCategory(item)
+                     }
+                     groceryIndex += 1
+                  }
+               }
+            }
+            
             print("Creating Groceries list")
-             addList(listName: "Groceries")
-             
-             do {
-                try managedContext.save()
-             } catch let error as NSError {
-                print("Could not save items. \(error), \(error.userInfo)")
-             }
-             
-          }
+            addList(listName: "Groceries")
+            
+            do {
+               try managedContext.save()
+            } catch let error as NSError {
+               print("Could not save items. \(error), \(error.userInfo)")
+            }
+            
+         }
       }
       
    } // End of init function
@@ -156,7 +163,6 @@ extension StartUp {
       let composeVC = MFMessageComposeViewController()
       composeVC.messageComposeDelegate = messageComposeDelegate
       composeVC.body = messageBody
-      
       vc?.present(composeVC, animated: true)
    }
 }

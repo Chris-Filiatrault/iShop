@@ -10,12 +10,17 @@ import SwiftUI
 import CoreData
 
 struct ChooseCategory: View {
-   @Environment(\.presentationMode) var presentationModeChooseCategory: Binding<PresentationMode>
-   
+   @Environment(\.presentationMode) var presentationMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
+  
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
       NSSortDescriptor(keyPath: \Category.name, ascending: true)
-   ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
+   ],predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
+   
+   @FetchRequest(entity: Category.entity(), sortDescriptors: [
+      NSSortDescriptor(keyPath: \Category.name, ascending: true)
+   ]) var allCategories: FetchedResults<Category>
+
    
    
    var thisItem: Item
@@ -23,6 +28,7 @@ struct ChooseCategory: View {
    @Binding var categoryName: String
    @Binding var textfieldActive: Bool
    @State var showSettings: Bool = true
+   
    
    var body: some View {
       VStack {
@@ -50,24 +56,27 @@ struct ChooseCategory: View {
                            .bold()
                      }
                   }
-                  if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
-                     HStack {
-                        Text("Uncategorised")
-                        Spacer()
-                        Image(systemName: "checkmark")
-                           .imageScale(.medium)
-                     }.foregroundColor(.blue)
-                  }
-                  ForEach(self.categories, id: \.self) { category in
+//                  if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
+//                     HStack {
+//                        Text("Uncategorised")
+//                        Spacer()
+//                        Image(systemName: "checkmark")
+//                           .imageScale(.medium)
+//                     }.foregroundColor(.blue)
+//                  } else {
+//                     Text("")
+//                  }
+                  ForEach(self.allCategories) { category in
                      Button(action: {
                         self.newItemCategory = category
                         self.categoryName = category.wrappedName
-                        self.presentationModeChooseCategory.wrappedValue.dismiss()
+                        self.presentationMode.wrappedValue.dismiss()
                      }) {
                         HStack {
                            if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
                               HStack {
                                  Text(category.wrappedName)
+                                 Text("\(category.position)")
                                  Spacer()
                                  Image(systemName: "checkmark")
                                     .imageScale(.medium)
@@ -76,6 +85,7 @@ struct ChooseCategory: View {
                            else {
                               Text(category.wrappedName)
                                  .foregroundColor(.black)
+                              Text("\(category.position)")
                            }
                         }
                      }
@@ -103,25 +113,31 @@ struct ChooseCategory: View {
       let managedContext =
          appDelegate.persistentContainer.viewContext
       
-      let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+      let fetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
       fetchRequest.sortDescriptors = [
          NSSortDescriptor(keyPath: \Category.name, ascending: true)
       ]
-      fetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
+//      fetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       
-      let uncategorisedFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+      let uncategorisedFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
       uncategorisedFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
       
       
       do {
-         let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
-         let uncategorisedFetchReturn = try managedContext.fetch(uncategorisedFetchRequest) as! [Category]
+         let categories = try managedContext.fetch(fetchRequest)
+         let uncategorisedFetchReturn = try managedContext.fetch(uncategorisedFetchRequest)
          
          if uncategorisedFetchReturn != [] {
             let uncategorised = uncategorisedFetchReturn[0]
             
             for index in indices {
-               let categoryToBeDeleted = fetchReturn[index]
+               let categoryToBeDeleted = categories[index]
+               
+               for category in categories {
+                  if category.position > categoryToBeDeleted.position {
+                     category.position -= 1
+                  }
+               }
                for item in categoryToBeDeleted.itemsInCategoryArray {
                   item.categoryOrigin = uncategorised
                }

@@ -7,33 +7,6 @@
 //
 //
 
-// NEW
-//import Foundation
-//import CoreData
-//
-//
-//extension Item {
-//
-//    @nonobjc public class func fetchRequest() -> NSFetchRequest<Item> {
-//        return NSFetchRequest<Item>(entityName: "Item")
-//    }
-//
-//    @NSManaged public var addedToAList: Bool
-//    @NSManaged public var dateAdded: Date?
-//    @NSManaged public var markedOff: Bool
-//    @NSManaged public var name: String?
-//    @NSManaged public var quantity: Int32
-//    @NSManaged public var id: UUID?
-//    @NSManaged public var origin: ListOfItems?
-//    @NSManaged public var originName: String?
-//    @NSManaged public var categoryOrigin: Category?
-//
-//}
-
-
-
-
-// OLD
 import SwiftUI
 import Foundation
 import CoreData
@@ -52,7 +25,6 @@ extension Item {
    @NSManaged public var quantity: Int32
    @NSManaged public var id: UUID?
    @NSManaged public var origin: ListOfItems?
-   @NSManaged public var originName: String?
    @NSManaged public var categoryOrigin: Category?
    @NSManaged public var position: Int32
    
@@ -82,14 +54,4 @@ extension Item {
    }
    
 }
-   
-   
-// Appears that I don't need to unwrap markedOff and quantity as was done for name above, as the properties aren't optionals.
-//   public var wrappedMarkedOff: Bool {
-//      markedOff ?? false
-//   }
-//
-//   public var wrappedQuantity: Double {
-//      quantity ?? 0
-//   }
-   
+

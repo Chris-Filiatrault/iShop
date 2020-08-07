@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 @objc(ListOfItems)
-public class ListOfItems: NSManagedObject {
+public class ListOfItems: NSManagedObject, Identifiable {
 
 }
 

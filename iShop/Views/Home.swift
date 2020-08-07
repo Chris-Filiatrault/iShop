@@ -46,7 +46,7 @@ struct Home: View {
                   .listRowBackground(Color("listBackground"))
                
                ForEach(UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ?
-               listsManual : listsAlphabetical, id: \.self) { list in
+               listsManual : listsAlphabetical) { list in
                   NavigationLink(destination: ItemList(listFromHomePage: list, startUpPassedIn: self.startUp)
                      .environment(\.managedObjectContext, self.context)
                      .environmentObject(self.globalVariables)

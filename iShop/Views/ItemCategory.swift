@@ -62,7 +62,7 @@ struct ItemCategory: View {
                   .offset(y: 7)
             }
             
-            ForEach(items.wrappedValue, id: \.self) { item in
+            ForEach(items.wrappedValue) { item in
                ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
             }.onDelete(perform: removeSwipedItem)
          }

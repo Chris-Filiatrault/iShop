@@ -47,7 +47,7 @@ struct Catalogue: View {
             
          
          List {
-            ForEach(fetchRequest.wrappedValue, id: \.self) { catalogueItem in
+            ForEach(fetchRequest.wrappedValue) { catalogueItem in
                CatalogueRow(thisList: self.thisList, catalogueItem: catalogueItem)
             }
             .onDelete(perform: deleteSwipedCatalogueItem)

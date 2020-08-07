@@ -46,7 +46,6 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             newItem.markedOff = false
             newItem.quantity = 1
             newItem.origin = listOrigin
-            newItem.originName = listOrigin.name
             list.addToItems(newItem)
             
             if returnedCategories != [] {
@@ -115,7 +114,6 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
-   
    
    do {
       try managedContext.save()
@@ -939,8 +937,6 @@ func sortListPositionsAlphabetically() {
 
 
 // ===ADD CATEGORY===
-// Initialise category
-// Add the current item to it
 func addCategory(categoryName: String, thisItem: Item) {
    
    guard let appDelegate =
@@ -954,19 +950,22 @@ func addCategory(categoryName: String, thisItem: Item) {
    
    let categoryEntity = NSEntityDescription.entity(forEntityName: "Category", in: managedContext)!
    
-   let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
-   newCategory.name = categoryName
-   newCategory.id = UUID()
-   newCategory.dateAdded = Date()
-   newCategory.defaultCategory = false
+   let categoriesFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   categoriesFetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
    
-   let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    itemFetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
    
    do {
+      let items = try managedContext.fetch(itemFetchRequest)
+      let categories = try managedContext.fetch(categoriesFetchRequest)
       
-      let itemFetchReturn = try managedContext.fetch(itemFetchRequest)
-      let items = itemFetchReturn as! [Item]
+      let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
+      newCategory.name = categoryName
+      newCategory.id = UUID()
+      newCategory.dateAdded = Date()
+      newCategory.defaultCategory = false
+      newCategory.position = Int32(categories.count)
       
       if items != [] {
          for item in items {
@@ -1358,10 +1357,8 @@ func resetMOC() {
       appDelegate.persistentContainer.viewContext
    
    let itemFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
-   //   itemFetchRequest.predicate = NSPredicate(format: "originName != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    let categoryFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
    let listFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
-   //   listFetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    let initDateFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
    
    do {

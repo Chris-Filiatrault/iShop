@@ -78,7 +78,7 @@ struct InCart: View {
                }.padding(.horizontal, 10)
                .listRowBackground(Color("standardDarkBlue"))
                
-               ForEach(items.wrappedValue, id: \.self) { item in
+               ForEach(items.wrappedValue) { item in
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
                }.onDelete(perform: removeSwipedItem)
                
