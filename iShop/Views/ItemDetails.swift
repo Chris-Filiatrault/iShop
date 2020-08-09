@@ -95,9 +95,8 @@ struct ItemDetails: View {
                   
                   // List
                   Picker(selection: self.$newList, label: Text("List")) {
-                     ForEach(self.lists) { list in
+                     ForEach(self.lists, id: \.self) { list in
                         Text(list.wrappedName)
-                           
                      }
                   }
                   
