@@ -438,7 +438,6 @@ func changeItemList(thisItem: Item, oldList: ListOfItems, newList: ListOfItems) 
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
-   
 
 
 // ===CHECK FOR DUPLICATE ITEM NAMES IN MANAGED CONTEXT===
@@ -939,9 +938,7 @@ func sortListPositionsAlphabetically() {
 // ===ADD CATEGORY===
 func addCategory(categoryName: String, thisItem: Item) {
    
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate
-      else {
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
          return
    }
    
@@ -953,11 +950,7 @@ func addCategory(categoryName: String, thisItem: Item) {
    let categoriesFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoriesFetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
    
-   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
-   itemFetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
-   
    do {
-      let items = try managedContext.fetch(itemFetchRequest)
       let categories = try managedContext.fetch(categoriesFetchRequest)
       
       let newCategory = Category(entity: categoryEntity, insertInto: managedContext)
@@ -967,20 +960,11 @@ func addCategory(categoryName: String, thisItem: Item) {
       newCategory.defaultCategory = false
       newCategory.position = Int32(categories.count)
       
-      if items != [] {
-         for item in items {
-            item.categoryOrigin = newCategory
-            newCategory.addToItemsInCategory(item)
-         }
-      }
-      
    } catch let error as NSError {
       print("Could not fetch. \(error)")
    }
    do {
       try managedContext.save()
-      print("Saved category successfully -- \(categoryName)")
-      
    } catch let error as NSError {
       print("Could not save list. \(error), \(error.userInfo)")
    }
@@ -991,22 +975,40 @@ func addCategory(categoryName: String, thisItem: Item) {
 // Originally happened in two parts (changing categoryOrigin + changing itemsInCategoryArray) to avoid mutating state warnings etc
 // But doing so makes the "done" button stop working in ItemDetails, so decided to just go with the mutating state warning and hope it doesn't cause issues.
 // Also triggering changeCategory2 when the user presses "done" in ItemDetails isn't a great way to go, as they may not press it after changing category
+
+
+
+
+
+// ===CHANGE CATEGORY===
+// Changes both the category array + category origin, upon the ItemDetails sheet disappearing (to avoid issues with the Done button in the sheet not working).
 func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
-   
+
    guard let appDelegate =
       UIApplication.shared.delegate as? AppDelegate else {
          return
    }
-   
+
    let managedContext =
       appDelegate.persistentContainer.viewContext
-   
+
    let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.sortDescriptors = [
       NSSortDescriptor(keyPath: \Item.name, ascending: true)
    ]
    fetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
    
+   for item in oldItemCategory.itemsInCategoryArray {
+      if item.wrappedName == thisItem.wrappedName {
+         oldItemCategory.removeFromItemsInCategory(item)
+      }
+   }
+   for item in newItemCategory.itemsInCategoryArray {
+      if item.wrappedName == thisItem.wrappedName {
+         newItemCategory.addToItemsInCategory(item)
+      }
+   }
+
    do {
       let items = try managedContext.fetch(fetchRequest) as! [Item]
       for item in items {
@@ -1014,20 +1016,44 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
             item.categoryOrigin = newItemCategory
          }
       }
-      for item in oldItemCategory.itemsInCategoryArray {
-         if item.wrappedName == thisItem.wrappedName {
-            newItemCategory.addToItemsInCategory(item)
-         }
-      }
+      
       do {
          try managedContext.save()
       } catch let error as NSError {
-         print("Could not delete. \(error), \(error.userInfo)")
+         print("Could not save. \(error), \(error.userInfo)")
       }
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
+
+//// ===CHANGE CATEGORY ARRAY===
+//func changeCategoryArray(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
+//
+//   guard let appDelegate =
+//      UIApplication.shared.delegate as? AppDelegate else {
+//         return
+//   }
+//
+//   let managedContext =
+//      appDelegate.persistentContainer.viewContext
+//
+//   for item in oldItemCategory.itemsInCategoryArray {
+//      if item.wrappedName == thisItem.wrappedName {
+//         oldItemCategory.removeFromItemsInCategory(item)
+//      }
+//   }
+//   for item in newItemCategory.itemsInCategoryArray {
+//      if item.wrappedName == thisItem.wrappedName {
+//         newItemCategory.addToItemsInCategory(item)
+//      }
+//   }
+//   do {
+//      try managedContext.save()
+//   } catch let error as NSError {
+//      print("Could not save. \(error), \(error.userInfo)")
+//   }
+//}
 
 
 //===GET NUMBER OF UNTICKED ITEMS IN CATEGORY===

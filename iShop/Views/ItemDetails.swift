@@ -31,7 +31,6 @@ struct ItemDetails: View {
    @State var textfieldActive: Bool = false
    var thisList: ListOfItems
    
-   
    var body: some View {
       
       NavigationView {
@@ -80,12 +79,17 @@ struct ItemDetails: View {
                   
                   // Category
                   if self.userDefaultsManager.useCategories == true {
-                     NavigationLink(destination: ChooseCategory(thisItem: self.thisItem, newItemCategory: self.$newItemCategory, categoryName: self.$categoryName, textfieldActive: self.$textfieldActive)) {
-                        HStack {
-                           Text("Category")
-                           Spacer()
-                           Text("\(self.categoryName)").foregroundColor(.gray)
-                        }
+                     NavigationLink(destination: ChooseCategory(
+                        thisItem: self.thisItem,
+                        oldItemCategory: self.$oldItemCategory,
+                        newItemCategory: self.$newItemCategory,
+                        categoryName: self.$categoryName,
+                        textfieldActive: self.$textfieldActive)) {
+                           HStack {
+                              Text("Category")
+                              Spacer()
+                              Text("\(self.categoryName)").foregroundColor(.gray)
+                           }
                      }
                   }
                   
@@ -93,6 +97,7 @@ struct ItemDetails: View {
                   Picker(selection: self.$newList, label: Text("List")) {
                      ForEach(self.lists) { list in
                         Text(list.wrappedName)
+                           
                      }
                   }
                   
@@ -100,7 +105,7 @@ struct ItemDetails: View {
                   Button(action: {
                      removeItemFromList(thisItem: self.thisItem, listOrigin: self.newList)
                      self.showItemDetails = false
-                     self.presentationMode.wrappedValue.dismiss()
+//                     self.presentationMode.wrappedValue.dismiss()
                   }) {
                      Text("Delete")
                         .foregroundColor(.red)
@@ -119,17 +124,13 @@ struct ItemDetails: View {
                .navigationBarItems(trailing:
                   Button(action: {
                      self.showItemDetails.toggle()
-                     self.presentationMode.wrappedValue.dismiss()
+//                     self.presentationMode.wrappedValue.dismiss()
                      print("\(self.showItemDetails)")
                      if self.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
                      }
-                     if self.oldItemCategory != self.newItemCategory {
-                        changeCategory(thisItem: self.thisItem,
-                                       oldItemCategory: self.thisItem.categoryOrigin!,
-                                       newItemCategory: self.newItemCategory)
-                     }
                      if self.oldList != self.newList {
+                        print("change list")
                         changeItemList(thisItem: self.thisItem, oldList: self.oldList, newList: self.newList)
                      }
                      
@@ -141,5 +142,12 @@ struct ItemDetails: View {
          }
       }
       .environment(\.horizontalSizeClass, .compact)
+      .onDisappear {
+         if self.oldItemCategory != self.newItemCategory {
+            changeCategory(thisItem: self.thisItem,
+                                oldItemCategory: self.oldItemCategory,
+                                newItemCategory: self.newItemCategory)
+         }
+      }
    }
 }

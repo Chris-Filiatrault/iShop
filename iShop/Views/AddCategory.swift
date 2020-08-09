@@ -89,7 +89,6 @@ struct AddCategory: View {
                .padding(.leading, 20)
                
             }
-            
             Spacer()
          }
          .padding()

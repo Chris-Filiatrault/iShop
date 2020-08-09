@@ -170,7 +170,7 @@ struct Settings: View {
                      MailView(result: self.$result)
                   }
                   .alert(isPresented: self.$alertNoMail) {
-                     Alert(title: Text("Can't send mail on this device."))
+                     Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
                   }
                   
                }

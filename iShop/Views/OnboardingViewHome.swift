@@ -53,14 +53,15 @@ struct OnboardingViewHome: View {
             if currentPageIndex == 0 {
                HStack {
                   Text("Continue")
-                     .font(.headline)
+                     .font(.headline)                  
+                  Image(systemName: "arrow.right")
+                     .imageScale(.medium)
                }
-               .font(.headline)
                .padding(10)
                .background(Color("blueButton"))
                .foregroundColor(.white)
                .cornerRadius(10)
-               
+
             }
             PageControl(numberOfPages: subviews.count, currentPageIndex: $currentPageIndex)
                .padding(.leading, 5)
@@ -120,8 +121,10 @@ struct OnboardingViewSettings: View {
                HStack {
                   Text("Continue")
                      .font(.headline)
+                  
+                  Image(systemName: "arrow.right")
+                     .imageScale(.medium)
                }
-               .font(.headline)
                .padding(10)
                .background(Color("blueButton"))
                .foregroundColor(.white)
