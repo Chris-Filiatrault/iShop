@@ -120,6 +120,8 @@ struct StartUp: View {
                         item.markedOff = false
                         item.quantity = 1
                         item.origin = defaultList
+                        item.categoryOrigin = newCategory
+                        item.categoryOriginName = newCategory.wrappedName
                         item.position = 0
                         defaultList.addToItems(item)
                         newCategory.addToItemsInCategory(item)

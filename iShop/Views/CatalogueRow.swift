@@ -49,7 +49,7 @@ struct CatalogueRow: View {
                      .font(catalogueItem.addedToAList ? .subheadline : .headline)
                }
             }
-            Text("\(catalogueItem.position)")
+//            Text("\(catalogueItem.position)")
          }
          .frame(height: 20)
          .font(.headline)

@@ -21,7 +21,6 @@ extension Category {
     @NSManaged public var id: UUID?
     @NSManaged public var dateAdded: Date?
     @NSManaged public var itemsInCategory: NSSet?
-    @NSManaged public var defaultCategory: Bool
     @NSManaged public var position: Int32
    
    

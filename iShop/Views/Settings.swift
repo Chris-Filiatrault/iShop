@@ -28,7 +28,7 @@ struct Settings: View {
    @State var alertNoMail = false
    @State var disableAutocorrect: Bool = false
 //   @State var hapticFeedbackSelection: String = UserDefaults.standard.string(forKey: "syncHapticFeedback") ?? "On"
-   @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Alphabetical"
+   @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Manual"
    @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Alphabetical"
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)

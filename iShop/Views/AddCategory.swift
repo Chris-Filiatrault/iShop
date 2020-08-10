@@ -27,7 +27,7 @@ struct AddCategory: View {
                       onCommit: {
                         if self.createdCategoryName != "" && categoryNameIsUnique(name: self.createdCategoryName) {
                            addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
-                           self.categoryName = self.createdCategoryName
+//                           self.categoryName = self.createdCategoryName
                            self.createdCategoryName = ""
                            self.presentationModeChooseCategory.wrappedValue.dismiss()
                         }
@@ -66,7 +66,7 @@ struct AddCategory: View {
                Button(action: {
                   if self.createdCategoryName != "" && categoryNameIsUnique(name: self.createdCategoryName) {
                      addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
-                     self.categoryName = self.createdCategoryName
+//                     self.categoryName = self.createdCategoryName
                      self.createdCategoryName = ""
                      self.presentationModeChooseCategory.wrappedValue.dismiss()
                   }

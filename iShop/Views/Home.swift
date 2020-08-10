@@ -30,8 +30,6 @@ struct Home: View {
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsManual: FetchedResults<ListOfItems>
 
-   
-   
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
                  predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
    
@@ -54,7 +52,7 @@ struct Home: View {
                      HStack {
                         Text(list.wrappedName)
                            .font(.headline)
-                        Text("\(list.position)")
+//                        Text("\(list.position)")
                         Spacer()
                         if numListUntickedItems(list: list) > 0 {
                            Text("\(numListUntickedItems(list: list))")

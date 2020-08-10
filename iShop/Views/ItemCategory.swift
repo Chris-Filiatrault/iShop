@@ -39,11 +39,12 @@ struct ItemCategory: View {
       thisList = listFromHomePage
       thisCategory = categoryFromItemList
       
+      let categoryOriginNamePredicate = NSPredicate(format: "categoryOriginName = %@", thisCategory.wrappedName)
       let originPredicate = NSPredicate(format: "origin = %@", thisList)
       let inListPredicate = NSPredicate(format: "addedToAList == true")
-      let categoryPredicate = NSPredicate(format: "categoryOrigin = %@", thisCategory)
+//      let categoryPredicate = NSPredicate(format: "categoryOrigin = %@", thisCategory)
       let markedOffPredicate = NSPredicate(format: "markedOff == false")
-      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, categoryPredicate, markedOffPredicate])
+      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate, categoryOriginNamePredicate, markedOffPredicate])
       
       items = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
       ], predicate: compoundPredicate)

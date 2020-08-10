@@ -46,6 +46,7 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             newItem.markedOff = false
             newItem.quantity = 1
             newItem.origin = listOrigin
+            newItem.categoryOriginName = "Uncategorised"
             list.addToItems(newItem)
             
             if returnedCategories != [] {
@@ -54,6 +55,7 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
                
                // add to uncategorised category
                uncategorised.addToItemsInCategory(newItem)
+               newItem.categoryOrigin = uncategorised
                print("Added item to \(uncategorised.wrappedName) category in \(list.wrappedName)")
             }
             
@@ -563,6 +565,7 @@ func addList(listName: String) {
             newItem.quantity = 1
             newItem.origin = newList
             newItem.categoryOrigin = item.categoryOrigin
+            newItem.categoryOriginName = item.categoryOriginName
             newItem.position = 0
             
             itemsToBeAdded.append(newItem)
@@ -930,6 +933,89 @@ func sortListPositionsAlphabetically() {
 }
 
 
+// ===MERGE STARTUP GROCERIES LISTS===
+//
+// Needed?
+//
+//func mergeGroceriesLists(context: NSManagedObjectContext) {
+//
+//   let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+//   listFetchRequest.predicate = NSPredicate(format: "name == %@", "Groceries")
+//
+//   do {
+//      // Get lists named "Groceries"
+//      let lists = try context.fetch(listFetchRequest)
+//
+//      // If there's 0 or 1 lists (no duplicates), end function
+//      if lists.count <= 1 { return }
+//
+//      else if lists.count > 1 {
+//
+//         // Get the first list
+//
+//         // Go through all other lists
+//
+//         // If an item was added to a list elsewhere, add it in the first list
+//         // Use same quantity
+//
+//         var listsNamedGroceries: [ListOfItems]
+//
+//
+//      }
+//
+//
+////      if dates != [] {
+////         let earliestDate = dates[0].initDate
+////
+////         // Get all categories made on the earliest date + all other categories
+////         var originalCategories: [Category] = []
+////         var otherCategories: [Category] = []
+////         var remainingCategoryNames: [String] = []
+////         for category in categories {
+////            if category.dateAdded == earliestDate {
+////               originalCategories.append(category)
+////               remainingCategoryNames.append(category.wrappedName)
+////            } else {
+////               otherCategories.append(category)
+////            }
+////         }
+////
+////         // For all other categories:
+////
+////         // If no original category with that name exists (deleted by user), delete any newly created categories with that name
+////         for otherCategory in otherCategories {
+////            if !remainingCategoryNames.contains(otherCategory.wrappedName) {
+////               context.delete(otherCategory)
+////            }
+////            else {
+////               // move all items from the newly created category with the same name into the original category
+////               for originalCategory in originalCategories {
+////                  if originalCategory.wrappedName == otherCategory.wrappedName {
+////                     for item in otherCategory.itemsInCategoryArray {
+////                        originalCategory.addToItemsInCategory(item)
+////                        item.categoryOrigin = originalCategory
+////                        item.categoryOriginName = originalCategory.wrappedName
+////                     }
+////                  }
+////               }
+////               // then delete the new duplicate category
+////               context.delete(otherCategory)
+////            }
+////         }
+////      }
+//
+//      do {
+//         try context.save()
+//      } catch let error as NSError {
+//         print("Could not save. \(error), \(error.userInfo)")
+//      }
+//
+//   } catch let error as NSError {
+//      print("Could not fetch. \(error), \(error.userInfo)")
+//   }
+//}
+
+
 // =====================================================
 // ==================== Category =======================
 // =====================================================
@@ -957,7 +1043,6 @@ func addCategory(categoryName: String, thisItem: Item) {
       newCategory.name = categoryName
       newCategory.id = UUID()
       newCategory.dateAdded = Date()
-      newCategory.defaultCategory = false
       newCategory.position = Int32(categories.count)
       
    } catch let error as NSError {
@@ -1014,6 +1099,7 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
       for item in items {
          if items != [] {
             item.categoryOrigin = newItemCategory
+            item.categoryOriginName = newItemCategory.wrappedName
          }
       }
       
@@ -1158,7 +1244,7 @@ func inCartCategory() -> Category? {
 }
 
 
-//===MERGE STARTUP CATEGORIES TOGETHER===
+//===MERGE STARTUP CATEGORIES===
 // For when a user starts using the app on another device and startup items/lists/categories are duplicated
 func mergeStartupCategories(context: NSManagedObjectContext) {
    
@@ -1203,6 +1289,7 @@ func mergeStartupCategories(context: NSManagedObjectContext) {
                      for item in otherCategory.itemsInCategoryArray {
                         originalCategory.addToItemsInCategory(item)
                         item.categoryOrigin = originalCategory
+                        item.categoryOriginName = originalCategory.wrappedName
                      }
                   }
                }
@@ -1262,8 +1349,6 @@ func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
       let dates = try context.fetch(fetchRequest) as! [InitDate]
       
       result = dates.count > 1
-      //      print("Result is: \(result)")
-      //      print("No. dates is: \(dates.count)")
       
       if dates != [] {
          let earliestDate = dates[0].initDate

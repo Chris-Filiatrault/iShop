@@ -53,7 +53,7 @@ struct ChooseCategory: View {
                            .bold()
                      }
                   }
-                  if thisItem.categoryOrigin?.wrappedName == "Uncategorised" {
+                  if thisItem.categoryOriginName == "Uncategorised" {
                      HStack {
                         Text("Uncategorised")
                         Spacer()
@@ -68,19 +68,20 @@ struct ChooseCategory: View {
                         self.presentationMode.wrappedValue.dismiss()
                      }) {
                         HStack {
-                           if category.wrappedName == self.thisItem.categoryOrigin!.wrappedName {
+                           if category.wrappedName == self.thisItem.categoryOriginName {
                               HStack {
                                  Text(category.wrappedName)
-//                                 Text("\(category.position)")
+                                 Text("\(category.position)")
                                  Spacer()
                                  Image(systemName: "checkmark")
                                     .imageScale(.medium)
-                              }.foregroundColor(.blue)
+                              }
+                              .foregroundColor(.blue)
                            }
                            else {
                               Text(category.wrappedName)
                                  .foregroundColor(.black)
-//                              Text("\(category.position)")
+                              Text("\(category.position)")
                            }
                         }
                      }
@@ -89,7 +90,7 @@ struct ChooseCategory: View {
                }
             }
             .alert(isPresented: $deleteItemCategoryAlert) {
-               Alert(title: Text(""), message: Text("Can't delete a category containing the current item. To delete \(self.deletedCategory), first move \(thisItem.wrappedName) to a different category."), dismissButton: .default(Text("OK")))
+               Alert(title: Text(""), message: Text("To delete \(self.deletedCategory), first move \(thisItem.wrappedName) to a different category."), dismissButton: .default(Text("OK")))
          }
 //         }
       }
@@ -142,10 +143,11 @@ struct ChooseCategory: View {
                }
                for item in categoryToBeDeleted.itemsInCategoryArray {
                   item.categoryOrigin = uncategorised
+                  item.categoryOriginName = "Uncategorised"
                }
                managedContext.delete(categoryToBeDeleted)
             }
-            self.categoryName = "Uncategorised"
+//            self.categoryName = "Uncategorised"
          }
          
          do {
