@@ -14,9 +14,22 @@ struct AddListButton: View {
    @Environment(\.editMode)  var editMode
    @Binding var showAddList: Bool
    
+   let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+   let osVersion = UIDevice.current.systemVersion
+   
    var body: some View {
       
       Button(action: {
+         
+         if UIDevice.current.userInterfaceIdiom == .pad {
+            let OS = "iPadOS"
+            print(OS + ": " + UIDevice.current.systemVersion)
+         }
+         else {
+            let OS = "iOS"
+            print(OS + ": " + UIDevice.current.systemVersion)
+         }
+         
          self.showAddList = true
          withAnimation {
          self.editMode?.wrappedValue = .inactive

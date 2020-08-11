@@ -1521,11 +1521,11 @@ func startupCategoryStrings() -> [String] {
 }
 func startupItemStrings() -> [[String]] {
    return [
-      ["Oranges", "Apples", "Bananas"], // Fruit
-      ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
-      ["Milk", "Cheese", "Eggs"], // Dairy
-      ["Coffee", "Bread", "Tea", "Soda", "Cereal", "Beer",  ], // Pantry
-      ["Chicken", "Bacon"], // Meat
+      ["Oranges", "Apples", "Bananas", "Strawberries", "Grapes"], // Fruit
+      ["Carrots", "Cucumber", "Onion", "Potato", "Tomato"], // Vegetables
+      ["Milk", "Cheese", "Eggs", "Butter"], // Dairy
+      ["Coffee", "Bread", "Tea", "Cereal", "Pasta"], // Pantry
+      ["Chicken", "Bacon", "Beef"], // Meat
       ["Chocolate", "Chips"], // Snacks
       ["Sunscreen", "Moisturiser"], // Skin care
       ["Probiotic", "Multivitamin"], // Supplements
@@ -1540,7 +1540,7 @@ func startupItemStrings() -> [[String]] {
 
 // ===LIST ITEMS AS STRING===
 // For copying/sending via text
-func listItemsAsString(thisList: ListOfItems) -> String {
+func listItemsWithCategoriesAsString(thisList: ListOfItems) -> String {
    var result = ""
    var categoriesAndItems: [String] = []
    
@@ -1557,9 +1557,6 @@ func listItemsAsString(thisList: ListOfItems) -> String {
    
    let uncategorisedRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    uncategorisedRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
-   
-   //   let inCartRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
-   //   inCartRequest.predicate = NSPredicate(format: "name == %@", "In Cart")
    
    do {
       // Get categories

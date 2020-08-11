@@ -71,7 +71,7 @@ struct ChooseCategory: View {
                            if category.wrappedName == self.thisItem.categoryOriginName {
                               HStack {
                                  Text(category.wrappedName)
-                                 Text("\(category.position)")
+//                                 Text("\(category.position)")
                                  Spacer()
                                  Image(systemName: "checkmark")
                                     .imageScale(.medium)
@@ -81,7 +81,7 @@ struct ChooseCategory: View {
                            else {
                               Text(category.wrappedName)
                                  .foregroundColor(.black)
-                              Text("\(category.position)")
+//                              Text("\(category.position)")
                            }
                         }
                      }
@@ -152,7 +152,6 @@ struct ChooseCategory: View {
          
          do {
             try managedContext.save()
-            print("Deleted category successfully")
          } catch let error as NSError {
             print("Could not delete. \(error), \(error.userInfo)")
          }

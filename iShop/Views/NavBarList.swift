@@ -55,11 +55,11 @@ struct NavBarList: View {
                         self.showRenameList.toggle()
                      },
                      .default(Text("Send Via Text")) {
-                        self.startUp.presentMessageCompose(messageBody: listItemsAsString(thisList: self.thisList))
+                        self.startUp.presentMessageCompose(messageBody: listItemsWithCategoriesAsString(thisList: self.thisList))
                      },
                      .default(Text("Copy Items")) {
                         let pasteboard = UIPasteboard.general
-                        pasteboard.string = listItemsAsString(thisList: self.thisList)
+                        pasteboard.string = listItemsWithCategoriesAsString(thisList: self.thisList)
                         successHapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
                      },
                      .cancel(Text("Cancel"))])

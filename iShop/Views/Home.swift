@@ -80,7 +80,8 @@ struct Home: View {
                   
                   leading:
                   HStack {
-                     // Reset MOC
+                     
+//                      Reset MOC
                      Button(action: {
                         resetMOC()
                         resetDefaults()

@@ -52,7 +52,6 @@ struct AddList: View {
                      .bold()
                      .cornerRadius(20)
                      .font(.subheadline)
-                     .foregroundColor(.black)
                      .frame(minWidth: 50)
                }.contentShape(Rectangle())
                
@@ -86,7 +85,6 @@ struct AddList: View {
          }
          .padding()
          .modifier(AdaptsToSoftwareKeyboard())
-         
          .navigationBarTitle("Add List", displayMode: .large)
          
       } // End of VStack

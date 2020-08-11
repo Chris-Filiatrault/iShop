@@ -182,8 +182,8 @@ struct Subview: View {
                   .padding(.vertical, 5)
                
             }
-            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6,
-                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6)
+            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5,
+                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5)
          }
       }
       
