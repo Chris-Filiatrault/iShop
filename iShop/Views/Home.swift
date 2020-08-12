@@ -81,13 +81,8 @@ struct Home: View {
                   leading:
                   HStack {
                      
-//                      Reset MOC
-                     Button(action: {
-                        resetMOC()
-                        resetDefaults()
-                     }) {
-                        Text("Del")
-                     }
+                     // Reset MOC
+//                     resetButton()
                      
                      // Settings
                      SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
@@ -113,3 +108,5 @@ struct Home: View {
 }
 
 
+
+// 1120 x 1420

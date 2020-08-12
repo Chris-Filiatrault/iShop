@@ -1446,7 +1446,7 @@ func resetDefaults() {
    UserDefaults.standard.set(false, forKey: "onboardingShown")
    UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
    UserDefaults.standard.set("Alphabetical", forKey: "syncSortListsBy")
-   UserDefaults.standard.set("Alphabetical", forKey: "syncSortItemsBy")
+   UserDefaults.standard.set("Manual", forKey: "syncSortItemsBy")
    UserDefaults.standard.set(true, forKey: "syncUseCategories")
    UserDefaults.standard.set(nil, forKey: "syncUserHasLaunchedPreviously")
    
@@ -1645,6 +1645,49 @@ func listItemsWithCategoriesAsString(thisList: ListOfItems) -> String {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
    
+   return result
+}
+
+
+func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
+   
+   var result = ""
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return ""
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let originPredicate = NSPredicate(format: "origin = %@", thisList)
+   let inListPredicate = NSPredicate(format: "addedToAList == true")
+//   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
+   
+   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   itemFetchRequest.predicate = compoundPredicate
+   itemFetchRequest.sortDescriptors = [NSSortDescriptor(key: "position", ascending: true)]
+   
+   do {
+      let items = try managedContext.fetch(itemFetchRequest)
+      
+      var uncheckedItems: String = ""
+      var inCartItems: String = ""
+      for item in items {
+         if item.markedOff == false {
+         uncheckedItems.append("☐ " + item.wrappedName + "\n")
+         }
+         else if item.markedOff == true {
+            inCartItems.append("☑ " + item.wrappedName + "\n")
+         }
+      }
+      
+      result.append(uncheckedItems + "\n" + inCartItems)
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
    
    return result
 }
@@ -1664,5 +1707,16 @@ func successHapticFeedback (enabled: Bool) {
    if enabled {
       let generator = UINotificationFeedbackGenerator()
       generator.notificationOccurred(.success)
+   }
+}
+
+
+func resetButton() -> some View {
+
+   return Button(action: {
+      resetMOC()
+      resetDefaults()
+   }) {
+      Text("Del")
    }
 }

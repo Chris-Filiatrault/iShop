@@ -248,7 +248,7 @@ func createSubviews() -> [UIViewController] {
       //      )),
       UIHostingController(rootView: Subview(
          imageString: "iPhoneiPadOnboarding",
-         title: "Use On Multiple Devices",
+         title: "iCloud Sync",
          caption: "Lists automatically and securely sync over iCloud. No login or password required."
       )),
       UIHostingController(rootView: LastSubview())
