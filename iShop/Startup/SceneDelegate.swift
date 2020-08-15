@@ -40,6 +40,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          .environmentObject(globalVariables)
          .environment(\.editMode, Binding.constant(EditMode.inactive))
       
+//      let contentView = ContentView4()
+
+      
       
       // Use a UIHostingController as window root view controller.
       // Modified window.rootViewController = UIHostingController(rootView: contentView)

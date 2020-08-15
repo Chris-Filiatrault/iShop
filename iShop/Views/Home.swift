@@ -33,7 +33,7 @@ struct Home: View {
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
                  predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
    
-   @State var showActionSheet: Bool = false
+    
    
    var body: some View {
       VStack {
@@ -96,15 +96,6 @@ struct Home: View {
                      
                      // Settings
                      SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
-                     
-                     Button(action: {
-                        self.showActionSheet.toggle()
-                     }) {
-                        Text("Show")
-                     }
-                  .actionSheet(isPresented: $showActionSheet) {
-                      ActionSheet(title: Text("What do you want to do?"), message: Text("There's only one choice..."), buttons: [.default(Text("Dismiss Action Sheet"))])
-                  }
                   },
                   // Add list plus button
                   trailing:

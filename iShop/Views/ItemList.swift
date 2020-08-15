@@ -10,6 +10,9 @@ import SwiftUI
 import CoreData
 
 struct ItemList: View {
+   
+   @State var showActionSheet: Bool = false
+   
    @Environment(\.presentationMode) var presentationMode
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.editMode)  var editMode
@@ -121,11 +124,17 @@ struct ItemList: View {
          
          // ===Navigation bar===
          .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
-         .navigationBarItems(trailing:
+         
+         .navigationBarItems(
+            trailing:
             NavBarList(showListOptions: $showListOptions, showRenameList: $showRenameList, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
       )
       
    }// End of body
+   
+   
+   
+   
    
    
    // REMOVE (swiped) ITEM
