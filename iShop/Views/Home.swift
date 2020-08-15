@@ -29,10 +29,11 @@ struct Home: View {
       NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsManual: FetchedResults<ListOfItems>
-
+   
    @FetchRequest(entity: Category.entity(), sortDescriptors:[],
                  predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
    
+   @State var showActionSheet: Bool = false
    
    var body: some View {
       VStack {
@@ -40,35 +41,44 @@ struct Home: View {
          // ===List of lists===
          NavigationView {
             List {
-               Text(" ")
-                  .listRowBackground(Color("listBackground"))
+               
+               VStack {
+                  if listsManual.count == 0 && listsAlphabetical.count == 0 {
+                     VStack {
+                        Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long 🙂\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings.\n")
+                     }
+                  } else {
+                     Text(" ")
+                  }
+               }.listRowBackground(Color("listBackground"))
                
                ForEach(UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ?
-               listsManual : listsAlphabetical) { list in
-                  NavigationLink(destination: ItemList(listFromHomePage: list, startUpPassedIn: self.startUp)
-                     .environment(\.managedObjectContext, self.context)
-                     .environmentObject(self.globalVariables)
-                  ) {
-                     HStack {
-                        Text(list.wrappedName)
-                           .font(.headline)
-//                        Text("\(list.position)")
-                        Spacer()
-                        if numListUntickedItems(list: list) > 0 {
-                           Text("\(numListUntickedItems(list: list))")
+                  listsManual : listsAlphabetical) { list in
+                     NavigationLink(destination: ItemList(listFromHomePage: list, startUpPassedIn: self.startUp)
+                        .environment(\.managedObjectContext, self.context)
+                        .environmentObject(self.globalVariables)
+                     ) {
+                        HStack {
+                           Text(list.wrappedName)
                               .font(.headline)
-                              .padding(.trailing, 5)
+                           Text("\(list.position)")
+                           //                        Text("\(list.position)")
+                           Spacer()
+                           if numListUntickedItems(list: list) > 0 {
+                              Text("\(numListUntickedItems(list: list))")
+                                 .font(.headline)
+                                 .padding(.trailing, 5)
+                           }
                         }
+                        
                      }
-                     
-                  }
                }
                .onDelete(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? deleteSwipedListManual : deleteSwipedListAlphabetical)
                .onMove(perform: moveList)
+               
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
-               
                
             .background(NavigationConfigurator { nc in
                nc.navigationBar.barTintColor = self.navBarColor
@@ -86,17 +96,26 @@ struct Home: View {
                      
                      // Settings
                      SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
+                     
+                     Button(action: {
+                        self.showActionSheet.toggle()
+                     }) {
+                        Text("Show")
+                     }
+                  .actionSheet(isPresented: $showActionSheet) {
+                      ActionSheet(title: Text("What do you want to do?"), message: Text("There's only one choice..."), buttons: [.default(Text("Dismiss Action Sheet"))])
+                  }
                   },
                   // Add list plus button
                   trailing:
                   HStack {
                      
-                  if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
-                  EditButton()
-                  }
-
-                  AddListButton(showAddList: self.$showAddList)
-
+                     if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
+                        EditButton()
+                     }
+                     if listsManual.count != 0 && listsAlphabetical.count != 0 {
+                        AddListButton(showAddList: self.$showAddList)
+                     }
                   }
             )
          }
@@ -109,4 +128,4 @@ struct Home: View {
 
 
 
-// 1120 x 1420
+

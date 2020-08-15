@@ -15,7 +15,7 @@ struct ItemList: View {
    @Environment(\.editMode)  var editMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showListOptions: Bool = false
-   @State var showListSettings: Bool = false
+   @State var showRenameList: Bool = false
    var useCategories = UserDefaults.standard.bool(forKey: "syncUseCategories")
    var itemsFetchRequest: FetchRequest<Item>
    var categoriesFetchRequest: FetchRequest<Category>
@@ -79,8 +79,8 @@ struct ItemList: View {
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
             }.padding(.bottom)
-               .sheet(isPresented: self.$showListSettings){
-                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
+               .sheet(isPresented: self.$showRenameList){
+                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
                      .environmentObject(self.globalVariables)
             }
          }
@@ -99,8 +99,8 @@ struct ItemList: View {
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
                
             }.padding(.bottom)
-               .sheet(isPresented: self.$showListSettings){
-                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showListSettings)
+               .sheet(isPresented: self.$showRenameList){
+                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
                      .environmentObject(self.globalVariables)
             }
          }
@@ -122,7 +122,7 @@ struct ItemList: View {
          // ===Navigation bar===
          .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
          .navigationBarItems(trailing:
-            NavBarList(showListOptions: $showListOptions, showRenameList: $showListSettings, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
+            NavBarList(showListOptions: $showListOptions, showRenameList: $showRenameList, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
       )
       
    }// End of body

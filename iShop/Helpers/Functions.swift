@@ -1720,3 +1720,39 @@ func resetButton() -> some View {
       Text("Del")
    }
 }
+
+//
+//func listActionSheet(showListOptions: Binding<Bool>, confirmDeleteListAlert: Binding<Bool>, thisList: ListOfItems, showRenameList: Binding<Bool>, startUp: StartUp, useCategories: Bool) -> ActionSheet {
+//   
+//   let actionSheet =
+//   ActionSheet(title: Text("Options"), buttons: [
+//   .destructive(Text("Delete List")) {
+//      confirmDeleteListAlert.toggle()
+//   },
+//   .default(Text("Delete All Items")) {
+//      clearList(thisList: thisList)
+//   },
+//   .default(Text("Rename List")) {
+//      showRenameList.toggle()
+//   },
+//   .default(Text("Send Via Text")) {
+//      startUp.presentMessageCompose(
+//         messageBody:
+//         useCategories ?
+//         listItemsWithCategoriesAsString(thisList: thisList) :
+//         listItemsWithoutCategoriesAsString(thisList: thisList)
+//      )
+//   },
+//   .default(Text("Copy Items")) {
+//      let pasteboard = UIPasteboard.general
+//      pasteboard.string =
+//         userDefaultsManager.useCategories == true ?
+//         listItemsWithCategoriesAsString(thisList: thisList) :
+//         listItemsWithoutCategoriesAsString(thisList: thisList)
+//
+//      successHapticFeedback(enabled: userDefaultsManager.hapticFeedback)
+//   },
+//   .cancel(Text("Cancel"))])
+//   
+//   return actionSheet
+//}

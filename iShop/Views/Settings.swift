@@ -160,7 +160,7 @@ struct Settings: View {
                      MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
                   }) {
                      HStack {
-                        Text("Send Feedback")
+                        Text("Contact")
                            .foregroundColor(.black)
                         Image(systemName: "envelope")
                            .foregroundColor(.gray)

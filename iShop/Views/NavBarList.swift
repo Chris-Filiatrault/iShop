@@ -23,6 +23,7 @@ struct NavBarList: View {
    let inCart = inCartCategory()
    
    var body: some View {
+      
       HStack {
          if globalVariables.catalogueShown == false {
             if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
@@ -41,7 +42,7 @@ struct NavBarList: View {
                   .foregroundColor(Color("navBarFont"))
                   .padding(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 5))
             }.padding(.vertical, 10)
-               
+          
                // === Action sheet ===
                .actionSheet(isPresented: self.$showListOptions) {
                   ActionSheet(title: Text("Options"), buttons: [
@@ -86,6 +87,7 @@ struct NavBarList: View {
                   }
                )
             }
+            
          }
             
             // Done button
