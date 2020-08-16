@@ -10,6 +10,8 @@ import SwiftUI
 import CoreData
 
 struct Catalogue: View {
+   @EnvironmentObject var globalVariables: GlobalVariableClass
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    var thisList: ListOfItems
    var fetchRequest: FetchRequest<Item>
@@ -37,15 +39,8 @@ struct Catalogue: View {
    
    var body: some View {
       VStack {
-//         GeometryReader { geometry in
-//         Rectangle()
-//            .frame(width: geometry.size.width, height: 2)
-//            .edgesIgnoringSafeArea(.horizontal)
-//            .foregroundColor(.black)
-//         }
          
-            
-         
+         // List of filtered items
          List {
             ForEach(fetchRequest.wrappedValue) { catalogueItem in
                CatalogueRow(thisList: self.thisList, catalogueItem: catalogueItem)
@@ -54,6 +49,40 @@ struct Catalogue: View {
             .listRowBackground(Color(.white))
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))
+         
+         
+         // Add button
+         VStack {
+            if fetchRequest.wrappedValue.count == 0 {
+               Button(action: {
+//                  UIApplication.shared.endEditing()
+                  if self.globalVariables.itemInTextfield != "" {
+                     addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+                     self.globalVariables.itemInTextfield = ""
+                     hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                  }
+                  self.globalVariables.itemInTextfield = ""
+               }) {
+
+//                  Image(systemName: "plus.circle.fill")
+//                     .imageScale(.large)
+//                     .foregroundColor(Color("tickedOffItemBox"))
+//                     .padding(20)
+
+                  Text("Add")
+                     .bold()
+                     .frame(minWidth: 50)
+                     .font(.subheadline)
+                     .padding(8)
+                     .background(Color("blueButton"))
+                     .foregroundColor(Color(.white))
+                     .cornerRadius(10)
+                     .transition(.scale)
+                     .padding(.horizontal, 40)
+                     .padding(.vertical, 10)
+               }
+               }
+            }
       }
    }
    

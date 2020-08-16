@@ -30,6 +30,8 @@ struct ChooseCategory: View {
    var body: some View {
       VStack {
          
+         
+         
 //         if userDefaultsManager.useCategories == false {
 //            VStack {
 //               Text("Categories are not being used.\n\nYou can enable categories in the Settings page.")
@@ -89,9 +91,9 @@ struct ChooseCategory: View {
                   .onDelete(perform: deleteSwipedCategory)
                }
             }
-            .alert(isPresented: $deleteItemCategoryAlert) {
-               Alert(title: Text(""), message: Text("To delete \(self.deletedCategory), first move \(thisItem.wrappedName) to a different category."), dismissButton: .default(Text("OK")))
-         }
+//            .alert(isPresented: $deleteItemCategoryAlert) {
+//               Alert(title: Text(""), message: Text("To delete \(self.deletedCategory), first move \(thisItem.wrappedName) to a different category."), dismissButton: .default(Text("OK")))
+//         }
 //         }
       }
       .navigationBarTitle(Text("Category"), displayMode: .inline)
@@ -129,11 +131,15 @@ struct ChooseCategory: View {
             let uncategorised = uncategorisedFetchReturn[0]
             
             for index in indices {
+               
                let categoryToBeDeleted = categories[index]
+               
                if categoryToBeDeleted == self.oldItemCategory {
-                  self.deletedCategory = categoryToBeDeleted.wrappedName
-                  self.deleteItemCategoryAlert.toggle()
-                  return
+                  self.oldItemCategory = uncategorised
+                  self.newItemCategory = uncategorised
+//                  self.deletedCategory = categoryToBeDeleted.wrappedName
+//                  self.deleteItemCategoryAlert.toggle()
+//                  return
                }
                
                for category in categories {
@@ -145,6 +151,7 @@ struct ChooseCategory: View {
                   item.categoryOrigin = uncategorised
                   item.categoryOriginName = "Uncategorised"
                }
+               
                managedContext.delete(categoryToBeDeleted)
             }
 //            self.categoryName = "Uncategorised"

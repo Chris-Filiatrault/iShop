@@ -39,7 +39,7 @@ struct ItemCategory: View {
       thisList = listFromHomePage
       thisCategory = categoryFromItemList
       
-      let categoryOriginNamePredicate = NSPredicate(format: "categoryOriginName == %@", thisCategory.wrappedName)
+      let categoryOriginNamePredicate = NSPredicate(format: "categoryOriginName = %@", thisCategory.wrappedName)
       let originPredicate = NSPredicate(format: "origin = %@", thisList)
       let inListPredicate = NSPredicate(format: "addedToAList == true")
 //      let categoryPredicate = NSPredicate(format: "categoryOriginName = %@", thisCategory.wrappedName)

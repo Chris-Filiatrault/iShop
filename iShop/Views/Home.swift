@@ -61,8 +61,7 @@ struct Home: View {
                         HStack {
                            Text(list.wrappedName)
                               .font(.headline)
-                           Text("\(list.position)")
-                           //                        Text("\(list.position)")
+//                           Text("\(list.position)")
                            Spacer()
                            if numListUntickedItems(list: list) > 0 {
                               Text("\(numListUntickedItems(list: list))")
@@ -92,7 +91,7 @@ struct Home: View {
                   HStack {
                      
                      // Reset MOC
-//                     resetButton()
+                     resetButton()
                      
                      // Settings
                      SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)

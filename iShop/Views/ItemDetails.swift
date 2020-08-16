@@ -18,6 +18,7 @@ struct ItemDetails: View {
       NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var lists: FetchedResults<ListOfItems>
    
+   
    var thisItem: Item
    @Binding var showItemDetails: Bool
    @State var itemName: String

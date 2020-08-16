@@ -52,23 +52,28 @@ struct ItemList: View {
    var body: some View {
       
       VStack(spacing: 0) {
-         // ===Enter item textfield===
-         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
-            self.globalVariables.catalogueShown = true
-            self.editMode?.wrappedValue = .inactive
-         }, onCommit: {
-            if self.globalVariables.itemInTextfield != "" {
-               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-               self.globalVariables.itemInTextfield = ""
-            }
-            self.globalVariables.itemInTextfield = ""
-         })
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .background(Color(.white))
-            .padding(15)
-            .padding(.top, 10)
-            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
+                  
          
+            
+            // ===Enter item textfield===
+            TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+               self.globalVariables.catalogueShown = true
+               self.editMode?.wrappedValue = .inactive
+            }, onCommit: {
+               if self.globalVariables.itemInTextfield != "" {
+                  addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+                  self.globalVariables.itemInTextfield = ""
+               }
+               self.globalVariables.itemInTextfield = ""
+            })
+               .textFieldStyle(RoundedBorderTextFieldStyle())
+               .background(Color(.white))
+               .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
+               .modifier(ClearButton())
+               .padding(.top, 10)
+               .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
+                  globalVariables.itemInTextfield == "" ? 15 : 0
+               ))
          
          // ===List of items WITH categories===
          if globalVariables.catalogueShown == false && useCategories == true {
@@ -316,3 +321,27 @@ struct ItemList: View {
 
 
 
+
+
+struct ClearButton: ViewModifier {
+
+   @EnvironmentObject var globalVariables: GlobalVariableClass
+
+   public func body(content: Content) -> some View {
+      HStack() {
+         content
+         if !globalVariables.itemInTextfield.isEmpty {
+            Spacer()
+            Button(action: {
+               self.globalVariables.itemInTextfield = ""
+            }) {
+               Image(systemName: "multiply.circle")
+                  .imageScale(.large)
+                  .foregroundColor(Color(.gray))
+                  .padding(5)
+            }
+            .padding(.trailing, 10)
+         }
+      }
+   }
+}

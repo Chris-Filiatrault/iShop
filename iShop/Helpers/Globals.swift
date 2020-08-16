@@ -20,6 +20,7 @@ class GlobalVariableClass: ObservableObject {
    @State var restoreItemsFromInBasket: Bool = false
    @State var refreshingID = UUID()
    @State var onboardingShownFromSettings: Bool = false
+   @State var showItemDetails: Bool = false
 //   @Published var hapticFeedbackSelection: Bool = UserDefaults.standard.string(forKey: "syncHapticFeedback") ?? "On" == "On"
       
 

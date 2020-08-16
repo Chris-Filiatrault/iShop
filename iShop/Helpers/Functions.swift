@@ -1517,21 +1517,24 @@ func resetMOC() {
 // The startup categories and items below need to have the same number of elements in the array
 // (String for categories, [String] for items)
 func startupCategoryStrings() -> [String] {
-   return ["Fruit", "Vegetables", "Dairy", "Pantry", "Meat", "Snacks", "Skin Care", "Supplements", "Medicine", "Dental", "First aid", "Uncategorised", "In Cart"]
+   return ["Fruit", "Vegetables", "Dairy", "Bakery", "Grains & Pasta", "Breakfast", "Drinks", "Meat", "Canned Food", "Seasonings & Condiments", "Household", "Snacks", "Frozen", "Health & Beauty", "Uncategorised", "In Cart"]
 }
 func startupItemStrings() -> [[String]] {
    return [
       ["Oranges", "Apples", "Bananas", "Strawberries", "Grapes"], // Fruit
-      ["Carrots", "Cucumber", "Onion", "Potato", "Tomato"], // Vegetables
+      ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
       ["Milk", "Cheese", "Eggs", "Butter"], // Dairy
-      ["Coffee", "Bread", "Tea", "Cereal", "Pasta"], // Pantry
+      ["Bread"], // Bakery
+      ["Pasta", "Rice"], // Grains & Pasta
+      ["Cereal"], // Breakfast
+      ["Coffee", "Tea"], // Drinks
       ["Chicken", "Bacon", "Beef"], // Meat
+      ["Canned Tuna"], // Canned Food
+      ["Salt", "Black Pepper", "Mustard"],
+      ["Multipurpose Spray"], // Household
       ["Chocolate", "Chips"], // Snacks
-      ["Sunscreen", "Moisturiser"], // Skin care
-      ["Probiotic", "Multivitamin"], // Supplements
-      ["Tylenol", "Ibuprofen"], // Medicine
-      ["Toothpaste", "Toothbrush", "Mouth guard"], // Dental
-      ["Band-aids", "Antiseptic"], // First aid
+      ["Ice Cream"], // Frozen
+      ["Sunscreen", "Moisturiser",  "Multivitamin", "Ibuprofen", "Toothpaste", "Toothbrush", "Band-aids"], // Health & Beauty
       [], // Uncategorised
       [] // In Cart
    ]

@@ -107,7 +107,7 @@ struct NavBarList: View {
             // Add button
          else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count > 0 {
             Button(action: {
-               UIApplication.shared.endEditing()
+//               UIApplication.shared.endEditing()
                if self.globalVariables.itemInTextfield != "" {
                   addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
                   self.globalVariables.itemInTextfield = ""
