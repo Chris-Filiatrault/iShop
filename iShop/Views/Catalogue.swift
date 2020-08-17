@@ -84,6 +84,7 @@ struct Catalogue: View {
             }
 
       }
+         
       .alert(isPresented: $showDeleteItemInfoAlert) {
          Alert(title: Text("Information"),
                message:

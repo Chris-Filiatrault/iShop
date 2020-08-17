@@ -972,6 +972,161 @@ func sortListPositionsAlphabetically() {
 }
 
 
+// ===LIST ITEMS AS STRING (with categories)===
+func listItemsWithCategoriesAsString(thisList: ListOfItems) -> String {
+   var result = ""
+   var categoriesAndItems: [String] = []
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return ""
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let categoryFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   categoryFetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
+   categoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+   
+   let uncategorisedRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   uncategorisedRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
+   
+   do {
+      // Get categories
+      let categories = try managedContext.fetch(categoryFetchRequest)
+      let uncategorisedReturn = try managedContext.fetch(uncategorisedRequest)
+      //      let inCartReturn = try managedContext.fetch(inCartRequest)
+      
+      // Determine which categories have items in them
+      // Add category name to categoriesAndItems if it has items
+      if categories != [] {
+         
+         for category in categories {
+            
+            var categoryItemNames: [String] = []
+            var thisCategoryHasItems: Bool {
+               var numItems: Int = 0
+               for item in category.itemsInCategoryArray {
+                  if item.addedToAList == true && thisList.itemArray.contains(item) && item.markedOff == false {
+                     numItems += 1
+                     categoryItemNames.append(item.wrappedName)
+                  }
+               }
+               return numItems > 0
+            }
+            if thisCategoryHasItems {
+               categoriesAndItems.append(category.wrappedName.uppercased())
+               for itemName in categoryItemNames {
+                  categoriesAndItems.append("☐ " + itemName)
+               }
+               categoriesAndItems.append("")
+            }
+         }
+      }
+      
+      // Determine if uncategorised or inBasket have categories
+      // If so, add the capitalised wrappedName to categoriesAndItems
+      if uncategorisedReturn != [] {
+         let uncategorised = uncategorisedReturn[0]
+         
+         var uncategorisedItemNames: [String] = []
+         var uncategorisedHasItems: Bool {
+            var numItemsUncategorised: Int = 0
+            for item in uncategorised.itemsInCategoryArray {
+               if item.addedToAList == true && thisList.itemArray.contains(item) && item.markedOff == false {
+                  numItemsUncategorised += 1
+                  uncategorisedItemNames.append(item.wrappedName)
+               }
+            }
+            return numItemsUncategorised > 0
+         }
+         if uncategorisedHasItems {
+            categoriesAndItems.append(uncategorised.wrappedName.uppercased())
+            for itemName in uncategorisedItemNames {
+               categoriesAndItems.append("☐ " + itemName)
+            }
+            categoriesAndItems.append("")
+         }
+      }
+      
+      
+      var inCartItemNames: [String] = []
+      var inCartHasItems: Bool {
+         var numItemsInCart: Int = 0
+         for item in thisList.itemArray {
+            if item.addedToAList == true && item.markedOff == true {
+               numItemsInCart += 1
+               inCartItemNames.append(item.wrappedName)
+            }
+         }
+         return numItemsInCart > 0
+      }
+      if inCartHasItems {
+         categoriesAndItems.append("IN CART")
+         for itemName in inCartItemNames {
+            categoriesAndItems.append("☑ " + itemName)
+         }
+         categoriesAndItems.append("")
+      }
+      
+      // Add all capitalised category names + item names to result
+      for categoryItems in categoriesAndItems {
+         result.append(categoryItems + "\n")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+   return result
+}
+
+
+// ===LIST ITEMS AS STRING (without categories)===
+func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
+   
+   var result = ""
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return ""
+   }
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let originPredicate = NSPredicate(format: "origin = %@", thisList)
+   let inListPredicate = NSPredicate(format: "addedToAList == true")
+//   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
+   
+   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   itemFetchRequest.predicate = compoundPredicate
+   itemFetchRequest.sortDescriptors = [NSSortDescriptor(key: "position", ascending: true)]
+   
+   do {
+      let items = try managedContext.fetch(itemFetchRequest)
+      
+      var uncheckedItems: String = ""
+      var inCartItems: String = ""
+      for item in items {
+         if item.markedOff == false {
+         uncheckedItems.append("☐ " + item.wrappedName + "\n")
+         }
+         else if item.markedOff == true {
+            inCartItems.append("☑ " + item.wrappedName + "\n")
+         }
+      }
+      
+      result.append(uncheckedItems + "\n" + inCartItems)
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+   return result
+}
+
+
 // ===MERGE STARTUP GROCERIES LISTS===
 //
 // Needed?
@@ -1423,7 +1578,7 @@ func isFirstTimeLaunch() -> Bool {
 }
 
 
-// ===USER HAS NO LISTS===
+// ===CHECK IF USER HAS NO LISTS===
 func userHasNoLists() -> Bool {
    
    var result: Bool = false
@@ -1451,7 +1606,7 @@ func userHasNoLists() -> Bool {
 }
 
 
-// ===USER HAS NO CATEGORIES===
+// ===CHECK IF USER HAS NO CATEGORIES===
 func userHasNoCategories() -> Bool {
    
    var result: Bool = false
@@ -1477,6 +1632,62 @@ func userHasNoCategories() -> Bool {
    return result
 }
 
+
+// ===STARTUP CATEGORY & ITEM STRINGS===
+// The startup categories and items below need to have the same number of elements in the array
+// (String for categories, [String] for items)
+func startupCategoryStrings() -> [String] {
+   return ["Fruit", "Vegetables", "Dairy", "Bakery", "Grains & Pasta", "Breakfast", "Drinks", "Meat", "Canned Food", "Seasonings & Condiments", "Household", "Snacks", "Frozen", "Health & Beauty", "Uncategorised", "In Cart"]
+}
+func startupItemStrings() -> [[String]] {
+   return [
+      ["Oranges", "Apples", "Bananas", "Strawberries", "Grapes"], // Fruit
+      ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
+      ["Milk", "Cheese", "Eggs", "Butter"], // Dairy
+      ["Bread"], // Bakery
+      ["Pasta", "Rice"], // Grains & Pasta
+      ["Cereal"], // Breakfast
+      ["Coffee", "Tea"], // Drinks
+      ["Chicken", "Bacon", "Beef"], // Meat
+      ["Canned Tuna"], // Canned Food
+      ["Salt", "Black Pepper", "Mustard"],
+      ["Multipurpose Spray"], // Household
+      ["Chocolate", "Chips"], // Snacks
+      ["Ice Cream"], // Frozen
+      ["Sunscreen", "Moisturiser",  "Multivitamin", "Ibuprofen", "Toothpaste", "Toothbrush", "Band-aids"], // Health & Beauty
+      [], // Uncategorised
+      [] // In Cart
+   ]
+}
+
+
+// ===HAPTIC FEEDBACK (single)===
+func hapticFeedback(enabled: Bool) {
+   if enabled {
+      let generator = UIImpactFeedbackGenerator(style: .light)
+      generator.impactOccurred()
+   }
+}
+
+
+// ===HAPTIC FEEDBACK (success)===
+func successHapticFeedback (enabled: Bool) {
+   if enabled {
+      let generator = UINotificationFeedbackGenerator()
+      generator.notificationOccurred(.success)
+   }
+}
+
+
+
+
+
+
+// =====================================================
+// ================== Development ======================
+// =====================================================
+
+// Functions that should always be deleted/commented out before shipping to production
 
 // ===RESET USER DEFAULTS===
 func resetDefaults() {
@@ -1552,207 +1763,8 @@ func resetMOC() {
 }
 
 
-// ===STARTUP CATEGORY & ITEM STRINGS===
-// The startup categories and items below need to have the same number of elements in the array
-// (String for categories, [String] for items)
-func startupCategoryStrings() -> [String] {
-   return ["Fruit", "Vegetables", "Dairy", "Bakery", "Grains & Pasta", "Breakfast", "Drinks", "Meat", "Canned Food", "Seasonings & Condiments", "Household", "Snacks", "Frozen", "Health & Beauty", "Uncategorised", "In Cart"]
-}
-func startupItemStrings() -> [[String]] {
-   return [
-      ["Oranges", "Apples", "Bananas", "Strawberries", "Grapes"], // Fruit
-      ["Carrots", "Cucumber", "Onion", "Potato"], // Vegetables
-      ["Milk", "Cheese", "Eggs", "Butter"], // Dairy
-      ["Bread"], // Bakery
-      ["Pasta", "Rice"], // Grains & Pasta
-      ["Cereal"], // Breakfast
-      ["Coffee", "Tea"], // Drinks
-      ["Chicken", "Bacon", "Beef"], // Meat
-      ["Canned Tuna"], // Canned Food
-      ["Salt", "Black Pepper", "Mustard"],
-      ["Multipurpose Spray"], // Household
-      ["Chocolate", "Chips"], // Snacks
-      ["Ice Cream"], // Frozen
-      ["Sunscreen", "Moisturiser",  "Multivitamin", "Ibuprofen", "Toothpaste", "Toothbrush", "Band-aids"], // Health & Beauty
-      [], // Uncategorised
-      [] // In Cart
-   ]
-}
-
-
-// ===LIST ITEMS AS STRING===
-// For copying/sending via text
-func listItemsWithCategoriesAsString(thisList: ListOfItems) -> String {
-   var result = ""
-   var categoriesAndItems: [String] = []
-   
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return ""
-   }
-   let managedContext =
-      appDelegate.persistentContainer.viewContext
-   
-   let categoryFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
-   categoryFetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
-   categoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
-   
-   let uncategorisedRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
-   uncategorisedRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
-   
-   do {
-      // Get categories
-      let categories = try managedContext.fetch(categoryFetchRequest)
-      let uncategorisedReturn = try managedContext.fetch(uncategorisedRequest)
-      //      let inCartReturn = try managedContext.fetch(inCartRequest)
-      
-      // Determine which categories have items in them
-      // Add category name to categoriesAndItems if it has items
-      if categories != [] {
-         
-         for category in categories {
-            
-            var categoryItemNames: [String] = []
-            var thisCategoryHasItems: Bool {
-               var numItems: Int = 0
-               for item in category.itemsInCategoryArray {
-                  if item.addedToAList == true && thisList.itemArray.contains(item) && item.markedOff == false {
-                     numItems += 1
-                     categoryItemNames.append(item.wrappedName)
-                  }
-               }
-               return numItems > 0
-            }
-            if thisCategoryHasItems {
-               categoriesAndItems.append(category.wrappedName.uppercased())
-               for itemName in categoryItemNames {
-                  categoriesAndItems.append("☐ " + itemName)
-               }
-               categoriesAndItems.append("")
-            }
-         }
-      }
-      
-      // Determine if uncategorised or inBasket have categories
-      // If so, add the capitalised wrappedName to categoriesAndItems
-      if uncategorisedReturn != [] {
-         let uncategorised = uncategorisedReturn[0]
-         
-         var uncategorisedItemNames: [String] = []
-         var uncategorisedHasItems: Bool {
-            var numItemsUncategorised: Int = 0
-            for item in uncategorised.itemsInCategoryArray {
-               if item.addedToAList == true && thisList.itemArray.contains(item) && item.markedOff == false {
-                  numItemsUncategorised += 1
-                  uncategorisedItemNames.append(item.wrappedName)
-               }
-            }
-            return numItemsUncategorised > 0
-         }
-         if uncategorisedHasItems {
-            categoriesAndItems.append(uncategorised.wrappedName.uppercased())
-            for itemName in uncategorisedItemNames {
-               categoriesAndItems.append("☐ " + itemName)
-            }
-            categoriesAndItems.append("")
-         }
-      }
-      
-      
-      var inCartItemNames: [String] = []
-      var inCartHasItems: Bool {
-         var numItemsInCart: Int = 0
-         for item in thisList.itemArray {
-            if item.addedToAList == true && item.markedOff == true {
-               numItemsInCart += 1
-               inCartItemNames.append(item.wrappedName)
-            }
-         }
-         return numItemsInCart > 0
-      }
-      if inCartHasItems {
-         categoriesAndItems.append("IN CART")
-         for itemName in inCartItemNames {
-            categoriesAndItems.append("☑ " + itemName)
-         }
-         categoriesAndItems.append("")
-      }
-      
-      // Add all capitalised category names + item names to result
-      for categoryItems in categoriesAndItems {
-         result.append(categoryItems + "\n")
-      }
-      
-   } catch let error as NSError {
-      print("Could not fetch. \(error), \(error.userInfo)")
-   }
-   
-   return result
-}
-
-
-func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
-   
-   var result = ""
-   
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return ""
-   }
-   let managedContext =
-      appDelegate.persistentContainer.viewContext
-   
-   let originPredicate = NSPredicate(format: "origin = %@", thisList)
-   let inListPredicate = NSPredicate(format: "addedToAList == true")
-//   let markedOffPredicate = NSPredicate(format: "markedOff == false")
-   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
-   
-   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
-   itemFetchRequest.predicate = compoundPredicate
-   itemFetchRequest.sortDescriptors = [NSSortDescriptor(key: "position", ascending: true)]
-   
-   do {
-      let items = try managedContext.fetch(itemFetchRequest)
-      
-      var uncheckedItems: String = ""
-      var inCartItems: String = ""
-      for item in items {
-         if item.markedOff == false {
-         uncheckedItems.append("☐ " + item.wrappedName + "\n")
-         }
-         else if item.markedOff == true {
-            inCartItems.append("☑ " + item.wrappedName + "\n")
-         }
-      }
-      
-      result.append(uncheckedItems + "\n" + inCartItems)
-      
-   } catch let error as NSError {
-      print("Could not fetch. \(error), \(error.userInfo)")
-   }
-   
-   return result
-}
-
-
-// ===HAPTIC FEEDBACK (single)===
-func hapticFeedback(enabled: Bool) {
-   if enabled {
-      let generator = UIImpactFeedbackGenerator(style: .light)
-      generator.impactOccurred()
-   }
-}
-
-
-// ===HAPTIC FEEDBACK (success)===
-func successHapticFeedback (enabled: Bool) {
-   if enabled {
-      let generator = UINotificationFeedbackGenerator()
-      generator.notificationOccurred(.success)
-   }
-}
-
-
+// Reset Button
+// runs resetMOC() and resetDefaults()
 func resetButton() -> some View {
 
    return Button(action: {
@@ -1763,38 +1775,4 @@ func resetButton() -> some View {
    }
 }
 
-//
-//func listActionSheet(showListOptions: Binding<Bool>, confirmDeleteListAlert: Binding<Bool>, thisList: ListOfItems, showRenameList: Binding<Bool>, startUp: StartUp, useCategories: Bool) -> ActionSheet {
-//   
-//   let actionSheet =
-//   ActionSheet(title: Text("Options"), buttons: [
-//   .destructive(Text("Delete List")) {
-//      confirmDeleteListAlert.toggle()
-//   },
-//   .default(Text("Delete All Items")) {
-//      clearList(thisList: thisList)
-//   },
-//   .default(Text("Rename List")) {
-//      showRenameList.toggle()
-//   },
-//   .default(Text("Send Via Text")) {
-//      startUp.presentMessageCompose(
-//         messageBody:
-//         useCategories ?
-//         listItemsWithCategoriesAsString(thisList: thisList) :
-//         listItemsWithoutCategoriesAsString(thisList: thisList)
-//      )
-//   },
-//   .default(Text("Copy Items")) {
-//      let pasteboard = UIPasteboard.general
-//      pasteboard.string =
-//         userDefaultsManager.useCategories == true ?
-//         listItemsWithCategoriesAsString(thisList: thisList) :
-//         listItemsWithoutCategoriesAsString(thisList: thisList)
-//
-//      successHapticFeedback(enabled: userDefaultsManager.hapticFeedback)
-//   },
-//   .cancel(Text("Cancel"))])
-//   
-//   return actionSheet
-//}
+
