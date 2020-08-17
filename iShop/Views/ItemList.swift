@@ -11,7 +11,7 @@ import CoreData
 
 struct ItemList: View {
    
-   @State var showActionSheet: Bool = false
+   @GestureState private var dragOffset = CGSize.zero
    
    @Environment(\.presentationMode) var presentationMode
    @EnvironmentObject var globalVariables: GlobalVariableClass
@@ -52,29 +52,29 @@ struct ItemList: View {
    var body: some View {
       
       VStack(spacing: 0) {
-                  
          
-            
-            // ===Enter item textfield===
-            TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
-               self.globalVariables.catalogueShown = true
-               self.editMode?.wrappedValue = .inactive
-            }, onCommit: {
-               if self.globalVariables.itemInTextfield != "" {
-                  addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-                  self.globalVariables.itemInTextfield = ""
-               }
+         // ===Enter item textfield===
+         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+            self.globalVariables.catalogueShown = true
+            self.editMode?.wrappedValue = .inactive
+         }, onCommit: {
+            if self.globalVariables.itemInTextfield != "" {
+               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
                self.globalVariables.itemInTextfield = ""
-            })
-               .textFieldStyle(RoundedBorderTextFieldStyle())
-               .background(Color(.white))
-               .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
-               .modifier(ClearButton())
-               .padding(.top, 10)
-               .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
-                  globalVariables.itemInTextfield == "" ? 15 : 0
-               ))
+            }
+            self.globalVariables.itemInTextfield = ""
+         })
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .background(Color(.white))
+            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
+            .modifier(ClearButton())
+            .padding(.top, 10)
+            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
+               globalVariables.itemInTextfield == "" ? 15 : 0
+            ))
          
+         
+         VStack {
          // ===List of items WITH categories===
          if globalVariables.catalogueShown == false && useCategories == true {
             
@@ -92,7 +92,6 @@ struct ItemList: View {
                      .environmentObject(self.globalVariables)
             }
          }
-         
          
          // ===List of items WITHOUT categories===
          if globalVariables.catalogueShown == false && useCategories == false {
@@ -112,9 +111,16 @@ struct ItemList: View {
                      .environmentObject(self.globalVariables)
             }
          }
+         }
+         .gesture(DragGesture(minimumDistance: 60).updating($dragOffset, body: {
+            (value, state, transaction) in
+             if(value.startLocation.x < 20 && value.translation.width > 60) {
+                 self.presentationMode.wrappedValue.dismiss()
+             }
+         }))
             
             // ===Catalogue===
-         else if globalVariables.catalogueShown == true {
+         if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
          }
       }
@@ -129,17 +135,15 @@ struct ItemList: View {
          
          // ===Navigation bar===
          .navigationBarTitle(globalVariables.catalogueShown ? "Item History" : thisList.wrappedName)
-         
+         .navigationBarBackButtonHidden(true)
          .navigationBarItems(
+            leading:
+            NavBarLeading(presentationMode: self.presentationMode, thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList),
             trailing:
-            NavBarList(showListOptions: $showListOptions, showRenameList: $showRenameList, thisList: thisList, startUp: startUp, presentationModeNav: self.presentationMode)
+            NavBarTrailing(thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList)
       )
       
    }// End of body
-   
-   
-   
-   
    
    
    // REMOVE (swiped) ITEM
@@ -278,70 +282,5 @@ struct ItemList: View {
       }
    }
    
-   
-   // ===SORT ITEM POSITIONS ALPHABETICALLY===
-   func sortItemPositionsAlphabetically() {
-      
-      guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-         else {
-            return
-      }
-      let managedContext = appDelegate.persistentContainer.viewContext
-      
-      let originPredicate = NSPredicate(format: "origin = %@", thisList)
-      let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
-      let markedOffPredicate = NSPredicate(format: "markedOff == false")
-      let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
-      
-      let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
-      fetchRequest.predicate = compoundPredicate
-      fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
-      
-      do {
-         let items = try managedContext.fetch(fetchRequest)
-         var index: Int = 0
-         for item in items {
-            item.position = Int32(index)
-            index += 1
-         }
-         
-         do {
-            try managedContext.save()
-         } catch let error as NSError {
-            print("Could not save.\(error), \(error.userInfo)")
-         }
-         
-      } catch let error as NSError {
-         print("Could not fetch. \(error), \(error.userInfo)")
-      }
-      
-   }
-   
 }
 
-
-
-
-
-struct ClearButton: ViewModifier {
-
-   @EnvironmentObject var globalVariables: GlobalVariableClass
-
-   public func body(content: Content) -> some View {
-      HStack() {
-         content
-         if !globalVariables.itemInTextfield.isEmpty {
-            Spacer()
-            Button(action: {
-               self.globalVariables.itemInTextfield = ""
-            }) {
-               Image(systemName: "multiply.circle")
-                  .imageScale(.large)
-                  .foregroundColor(Color(.gray))
-                  .padding(5)
-            }
-            .padding(.trailing, 10)
-         }
-      }
-   }
-}

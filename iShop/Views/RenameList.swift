@@ -46,7 +46,6 @@ struct RenameList: View {
                      .bold()
                      .cornerRadius(20)
                      .font(.subheadline)
-                     .foregroundColor(.black)
                      .frame(minWidth: 50)
                }.contentShape(Rectangle())
                

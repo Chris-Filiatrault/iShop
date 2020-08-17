@@ -181,17 +181,25 @@ struct Settings: View {
                // === Nav bar ===
                .navigationBarTitle("Settings", displayMode: .inline)
                .navigationBarItems(trailing:
+                  
+                  // Done button
                   Button(action: {
                      self.showSettingsBinding.toggle()
+                     
+                     // If going from alphabetically ordered items to manually ordered, update indices (so the items don't move)
                      if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
                         for list in self.lists {
-                           ItemList(listFromHomePage: list, startUpPassedIn: self.startUp).sortItemPositionsAlphabetically()
+                           sortItemPositionsAlphabetically(thisList: list)
                            print("Change item order")
                         }
                      }
+                     
+                     // If going from alphabetically ordered lists to manually ordered, update indices (so the lists don't move)
                      if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
                         sortListPositionsAlphabetically()
                      }
+                     
+                     // Update user defaults
                      UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
                      UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
                      UserDefaults.standard.set(self.userDefaultsManager.hapticFeedback, forKey: "syncHapticFeedback")

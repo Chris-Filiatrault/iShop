@@ -511,6 +511,45 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
 }
 
 
+// ===SORT ITEM POSITIONS ALPHABETICALLY===
+func sortItemPositionsAlphabetically(thisList: ListOfItems) {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else {
+         return
+   }
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   let originPredicate = NSPredicate(format: "origin = %@", thisList)
+   let addedToAListPredicate = NSPredicate(format: "addedToAList == true")
+   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
+   
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   fetchRequest.predicate = compoundPredicate
+   fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+   
+   do {
+      let items = try managedContext.fetch(fetchRequest)
+      var index: Int = 0
+      for item in items {
+         item.position = Int32(index)
+         index += 1
+      }
+      
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not save.\(error), \(error.userInfo)")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+}
+
+
 // DELETE (swiped) ITEM
 // Use to remove from a specific list
 // The code below needs to be in the same struct in order to access "thisList"

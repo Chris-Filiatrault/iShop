@@ -16,8 +16,7 @@ struct Catalogue: View {
    var thisList: ListOfItems
    var fetchRequest: FetchRequest<Item>
    var filterVar: String
-   @State var showDeleteItemAlert: Bool = false
-   @State var deleteItem: Bool = false
+   @State var showDeleteItemInfoAlert: Bool = false
    
    init(passedInList: ListOfItems, filter: String) {
       
@@ -83,9 +82,35 @@ struct Catalogue: View {
                }
                }
             }
+
       }
-   }
-   
+      .alert(isPresented: $showDeleteItemInfoAlert) {
+         Alert(title: Text("Information"),
+               message:
+            UserDefaults.standard.integer(forKey: "syncNumTimesUsed") == 1 ?
+               Text("Tap an item to add it to the current list, or type in a new item.") :
+            Text("Delete items from the Item History by swiping left."),
+               dismissButton: .default(Text("OK")))
+      }
+      .onAppear {
+         
+         // If first use, present info alert advising user they can tap to add items
+         if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") == 1 &&
+            UserDefaults.standard.bool(forKey: "syncTapToAddAlertShown") != true {
+            self.showDeleteItemInfoAlert.toggle()
+            UserDefaults.standard.set(true, forKey: "syncTapToAddAlertShown")
+         }
+         
+         // If app has been used > 5 times, present info alert advising user they can swipe left to delete items
+         if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 5 &&
+            UserDefaults.standard.bool(forKey: "syncSwipeToDeleteAlertShown") != true {
+         self.showDeleteItemInfoAlert.toggle()
+            UserDefaults.standard.set(true, forKey: "syncSwipeToDeleteAlertShown")
+         }
+      }
+      
+         
+   } // End of body
    
    
    // DELETE (swiped) CATALOGUE ITEM

@@ -163,7 +163,7 @@ struct ContentView4: View {
 
 struct MenuView : View {
     
-    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @GestureState private var dragOffset = CGSize.zero
     
     var body : some View {
@@ -172,16 +172,24 @@ struct MenuView : View {
                 .foregroundColor(Color.white)
                 
                 .navigationBarBackButtonHidden(true)
-                .navigationBarItems(leading: Button(action : {
-                    self.mode.wrappedValue.dismiss()
-                }){
+               
+               
+                .navigationBarItems(
+                  
+                  leading: Button(action : {
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
                   HStack {
                     Image(systemName: "chevron.left")
-                     .imageScale(.medium)
+                     .imageScale(.large)
                      Text("Lists")
+                        .font(.subheadline)
                   }
-                  .foregroundColor(Color.white)
-                })
+                  .foregroundColor(Color("navBarFont"))
+                }
+            )
+               
+               // NEEDED?
                 .frame(maxWidth: .infinity, maxHeight : .infinity)
                 .background(Color.blue)
                 
@@ -191,7 +199,7 @@ struct MenuView : View {
         .gesture(DragGesture().updating($dragOffset, body: { (value, state, transaction) in
         
             if(value.startLocation.x < 20 && value.translation.width > 100) {
-                self.mode.wrappedValue.dismiss()
+                self.presentationMode.wrappedValue.dismiss()
             }
             
         }))
