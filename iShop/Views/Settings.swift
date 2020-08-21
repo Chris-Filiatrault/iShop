@@ -129,20 +129,7 @@ struct Settings: View {
                
                // ===ISHOP===
                Section(header: Text("ISHOP")) {
-                  
-//                  // Review
-//                  // UNCOMMENT IN FIRST POST-RELEASE UPDATE
-//                  //                  if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 10 {
-//                  Button(action: {
-////                     UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/id1518384911#?platform=iphone")!)
-//                  }) {
-//                     Text("Review on App Store")
-//                        .foregroundColor(.black)
-//                  }
-//                  }
-                  
-                  
-                  
+                                    
                   // Introduction
                   Button(action: {
                      self.onboardingShownFromSettings.toggle()
@@ -160,7 +147,7 @@ struct Settings: View {
                      MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
                   }) {
                      HStack {
-                        Text("Send Feedback")
+                        Text("Contact")
                            .foregroundColor(.black)
                         Image(systemName: "envelope")
                            .foregroundColor(.gray)

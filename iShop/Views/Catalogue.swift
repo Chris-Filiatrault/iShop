@@ -125,10 +125,10 @@ struct Catalogue: View {
       let managedContext =
          appDelegate.persistentContainer.viewContext
       
-      let allItemsFetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+      let allItemsFetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
       
       do {
-         let items = try managedContext.fetch(allItemsFetchRequest) as! [Item]
+         let items = try managedContext.fetch(allItemsFetchRequest)
          for offset in offsets {
             
             // get item to be deleted

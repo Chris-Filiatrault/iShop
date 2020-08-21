@@ -82,17 +82,15 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
          let namePredicate = NSPredicate(format: "name = %@", itemName.wrappedValue)
          let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, namePredicate])
          
-         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+         let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
          fetchRequest.predicate = compoundPredicate
          
          do {
-            let fetchReturn = try managedContext.fetch(fetchRequest)
-            
-            let items = fetchReturn as! [Item]
+            let items = try managedContext.fetch(fetchRequest)
             
             if items != [] {
                
-               let itemToModify = fetchReturn[0] as! Item
+               let itemToModify = items[0]
                
                if itemToModify.addedToAList == true {
                   itemToModify.quantity += 1
@@ -220,10 +218,10 @@ func renameItem(currentName: String, newName: String) {
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    
    do {
-      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      let items = try managedContext.fetch(fetchRequest)
       
       if items != [] {
          for item in items {
@@ -298,11 +296,11 @@ func markOffItemInList(thisItem: Item, thisList: ListOfItems) {
    let markedOffPredicate = NSPredicate(format: "markedOff == false")
    let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
    
-   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.predicate = compoundPredicate
    
    do {
-      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      let items = try managedContext.fetch(fetchRequest)
       
       for item in items {
          if item.position > thisItem.position {
@@ -343,11 +341,11 @@ func restoreItemInList(thisItem: Item, thisList: ListOfItems) {
    let markedOffPredicate = NSPredicate(format: "markedOff == false")
    let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
    
-   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.predicate = compoundPredicate
    
    do {
-      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      let items = try managedContext.fetch(fetchRequest)
       
       thisItem.markedOff = false
       thisItem.position = Int32(items.count)
@@ -454,10 +452,10 @@ func itemNameIsUnique(name: String) -> Bool {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    
    do {
-      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      let items = try managedContext.fetch(fetchRequest)
       var itemNames: [String] = []
       for item in items {
          itemNames.append(item.wrappedName)
@@ -488,14 +486,14 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.predicate = NSPredicate(format: "origin = %@", thisList)
    
    do {
-      let itemsFromFetchRequest = try managedContext.fetch(fetchRequest) as! [Item]
+      let items = try managedContext.fetch(fetchRequest)
       var itemNames: [String] = []
-      for itemObject in itemsFromFetchRequest {
-         itemNames.append(itemObject.wrappedName)
+      for item in items {
+         itemNames.append(item.wrappedName)
       }
       for itemName in itemNames {
          if name == itemName {
@@ -802,10 +800,10 @@ func listNameIsUnique(name: String) -> Bool {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+   let fetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    
    do {
-      let listsFromFetchRequest = try managedContext.fetch(fetchRequest) as! [ListOfItems]
+      let listsFromFetchRequest = try managedContext.fetch(fetchRequest)
       var listOfNames: [String] = []
       for list in listsFromFetchRequest {
          listOfNames.append(list.wrappedName)
@@ -882,8 +880,8 @@ func moveList(IndexSet: IndexSet, destination: Int) {
    do {
       let lists = try managedContext.fetch(fetchRequest)
       
-      let firstIndex = IndexSet.min()!
-      let lastIndex = IndexSet.max()!
+      let firstIndex = IndexSet.min() ?? 0
+      let lastIndex = IndexSet.max() ?? 0
       
       let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
       let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)
@@ -1271,7 +1269,7 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
    let managedContext =
       appDelegate.persistentContainer.viewContext
 
-   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+   let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.sortDescriptors = [
       NSSortDescriptor(keyPath: \Item.name, ascending: true)
    ]
@@ -1289,7 +1287,7 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
    }
 
    do {
-      let items = try managedContext.fetch(fetchRequest) as! [Item]
+      let items = try managedContext.fetch(fetchRequest)
       for item in items {
          if items != [] {
             item.categoryOrigin = newItemCategory
@@ -1362,10 +1360,10 @@ func categoryNameIsUnique(name: String) -> Bool {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let fetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    
    do {
-      let categoriesFromFetchRequest = try managedContext.fetch(fetchRequest) as! [Category]
+      let categoriesFromFetchRequest = try managedContext.fetch(fetchRequest)
       var listOfCategoryNames: [String] = []
       for category in categoriesFromFetchRequest {
          listOfCategoryNames.append(category.wrappedName)
@@ -1395,11 +1393,11 @@ func uncategorisedCategory() -> Category? {
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
-   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let fetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    fetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
    
    do {
-      let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
+      let fetchReturn = try managedContext.fetch(fetchRequest)
       if fetchReturn != [] {
          let uncategorised = fetchReturn[0]
          return uncategorised
@@ -1422,11 +1420,11 @@ func inCartCategory() -> Category? {
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
-   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let fetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    fetchRequest.predicate = NSPredicate(format: "name == %@", "In Cart")
    
    do {
-      let fetchReturn = try managedContext.fetch(fetchRequest) as! [Category]
+      let fetchReturn = try managedContext.fetch(fetchRequest)
       if fetchReturn != [] {
          let inCart = fetchReturn[0]
          return inCart
@@ -1442,15 +1440,15 @@ func inCartCategory() -> Category? {
 // For when a user starts using the app on another device and startup items/lists/categories are duplicated
 func mergeStartupCategories(context: NSManagedObjectContext) {
    
-   let categoryFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let categoryFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "name IN %@", startupCategoryStrings())
    
-   let initDateFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
+   let initDateFetchRequest: NSFetchRequest<InitDate> = NSFetchRequest.init(entityName: "InitDate")
    initDateFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
    
    do {
-      let dates = try context.fetch(initDateFetchRequest) as! [InitDate]
-      let categories = try context.fetch(categoryFetchRequest) as! [Category]
+      let dates = try context.fetch(initDateFetchRequest)
+      let categories = try context.fetch(categoryFetchRequest)
       
       // Get the earliest date
       if dates != [] {
@@ -1536,11 +1534,11 @@ func createNewInitDate() {
 func initCodeWasRunOnAnotherDevice(context: NSManagedObjectContext) -> Bool {
    var result: Bool = false
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "InitDate")
+   let fetchRequest: NSFetchRequest<InitDate> = NSFetchRequest.init(entityName: "InitDate")
    fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
    
    do {
-      let dates = try context.fetch(fetchRequest) as! [InitDate]
+      let dates = try context.fetch(fetchRequest)
       
       result = dates.count > 1
       
@@ -1590,11 +1588,11 @@ func userHasNoLists() -> Bool {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
+   let fetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    
    do {
-      let listsFromFetchRequest = try managedContext.fetch(fetchRequest) as! [ListOfItems]
+      let listsFromFetchRequest = try managedContext.fetch(fetchRequest)
       
       result = listsFromFetchRequest.count == 0
       
@@ -1618,10 +1616,10 @@ func userHasNoCategories() -> Bool {
    
    let managedContext = appDelegate.persistentContainer.viewContext
    
-   let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Category")
+   let fetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    
    do {
-      let categoriesFromFetchRequest = try managedContext.fetch(fetchRequest) as! [Category]
+      let categoriesFromFetchRequest = try managedContext.fetch(fetchRequest)
       
       result = categoriesFromFetchRequest.count == 0
       
@@ -1679,8 +1677,29 @@ func successHapticFeedback (enabled: Bool) {
 }
 
 
-
-
+func errorMessage(debuggingErrorMessage: String) -> some View {
+   let userDefaultsManager = UserDefaultsManager()
+   
+   return
+      VStack {
+      
+         Text("\nAn error occurred.\n\n").font(.headline)
+            
+         Text("Please contact the developer via the Settings and quote the error message:\n") +
+         
+         Text("\"" + debuggingErrorMessage + "\"" + "\n\n").italic()
+         
+         Button(action: {
+               let pasteboard = UIPasteboard.general
+               pasteboard.string = debuggingErrorMessage
+               successHapticFeedback(enabled: userDefaultsManager.hapticFeedback)
+         }) {
+            Text("Copy error message")
+            .bold()
+         }
+      
+   }.padding()
+}
 
 
 // =====================================================

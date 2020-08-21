@@ -82,9 +82,15 @@ struct ItemList: View {
                ForEach(categoriesFetchRequest.wrappedValue) { category in
                   ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: category)
                }
-               ItemCategory(listFromHomePage: self.thisList, categoryFromItemList: uncategorised!)
                
-               InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
+               // Can't use if let ... here to unwrap uncategorised, so do a quick check to see if it's nil. Same for inCart. If it is nil, then the category won't be shown (bad, but better than a crash).
+               if uncategorised != nil {
+                  ItemCategory(listFromHomePage: thisList, categoryFromItemList: uncategorised!)
+               }
+               
+               if inCart != nil {
+               InCart(listFromHomePage: thisList, categoryFromItemList: inCart!)
+               }
                
             }.padding(.bottom)
                .sheet(isPresented: self.$showRenameList){
@@ -103,7 +109,9 @@ struct ItemList: View {
                .onDelete(perform: removeSwipedItem)
                .onMove(perform: moveItem)
                
+               if inCart != nil {
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)
+               }
                
             }.padding(.bottom)
                .sheet(isPresented: self.$showRenameList){
@@ -112,12 +120,12 @@ struct ItemList: View {
             }
          }
          }
-         .gesture(DragGesture(minimumDistance: 60).updating($dragOffset, body: {
-            (value, state, transaction) in
-             if(value.startLocation.x < 20 && value.translation.width > 60) {
-                 self.presentationMode.wrappedValue.dismiss()
-             }
-         }))
+//         .gesture(DragGesture(minimumDistance: 60).updating($dragOffset, body: {
+//            (value, state, transaction) in
+//             if(value.startLocation.x < 20 && value.translation.width > 60) {
+//                 self.presentationMode.wrappedValue.dismiss()
+//             }
+//         }))
             
             // ===Catalogue===
          if globalVariables.catalogueShown == true {
@@ -140,7 +148,12 @@ struct ItemList: View {
             leading:
             NavBarLeading(presentationMode: self.presentationMode, thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList),
             trailing:
+            HStack {
+            if globalVariables.catalogueShown == false && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
+               EditButton()
+            }
             NavBarTrailing(thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList)
+            }
       )
       
    }// End of body
@@ -220,15 +233,15 @@ struct ItemList: View {
       let markedOffPredicate = NSPredicate(format: "markedOff == false")
       let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, addedToAListPredicate, markedOffPredicate])
       
-      let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Item")
+      let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
       fetchRequest.predicate = compoundPredicate
       fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
       
       do {
-         let items = try managedContext.fetch(fetchRequest) as! [Item]
+         let items = try managedContext.fetch(fetchRequest)
          
-         let firstIndex = IndexSet.min()!
-         let lastIndex = IndexSet.max()!
+         let firstIndex = IndexSet.min() ?? 0
+         let lastIndex = IndexSet.max() ?? 0
          
          let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
          let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)

@@ -65,6 +65,8 @@ struct ItemRow: View {
                         .padding(7)
                   }
                   .sheet(isPresented: self.$showItemDetails) {
+                     VStack {
+                        if self.thisItem.categoryOrigin != nil {
                      ItemDetails(thisItem: self.thisItem,
                                  showItemDetails: self.$showItemDetails,
                                  itemName: self.thisItem.wrappedName,
@@ -75,6 +77,10 @@ struct ItemRow: View {
                                  newList: self.thisItem.origin!,
                                  categoryName: self.thisItem.categoryOrigin!.wrappedName,
                                  thisList: self.thisList)
+                     } else {
+                        errorMessage(debuggingErrorMessage: "origin and/or categoryOrigin not found when passing thisItem into ItemDetails()")
+                        }
+                     }
                         .environment(\.managedObjectContext, self.context)
                   }
                }

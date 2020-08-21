@@ -11,7 +11,6 @@ import SwiftUI
 
 
 // For adding the cross circle next to the textfield
-// Doing it this way just avoids some extra code in ItemList
 struct ClearButton: ViewModifier {
 
    @EnvironmentObject var globalVariables: GlobalVariableClass
@@ -33,4 +32,18 @@ struct ClearButton: ViewModifier {
          }
       }
    }
+}
+
+
+struct MainBlueButton: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+         .padding(.horizontal, 15)
+         .frame(minWidth: 50)
+         .padding(10)
+         .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
+         .foregroundColor(.white)
+         .cornerRadius(40)
+
+    }
 }

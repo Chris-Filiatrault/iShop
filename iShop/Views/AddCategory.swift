@@ -27,7 +27,7 @@ struct AddCategory: View {
                       onCommit: {
                         if self.createdCategoryName != "" && categoryNameIsUnique(name: self.createdCategoryName) {
                            addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
-//                           self.categoryName = self.createdCategoryName
+                           //                           self.categoryName = self.createdCategoryName
                            self.createdCategoryName = ""
                            self.presentationModeChooseCategory.wrappedValue.dismiss()
                         }
@@ -56,16 +56,13 @@ struct AddCategory: View {
                }) {
                   Text("Cancel")
                      .bold()
-                     .cornerRadius(20)
-                     .font(.subheadline)
-                     .frame(minWidth: 50)
-               }.contentShape(Rectangle())
+               }.padding(.trailing, 5)
                
                // Add button
                Button(action: {
                   if self.createdCategoryName != "" && categoryNameIsUnique(name: self.createdCategoryName) {
                      addCategory(categoryName: self.createdCategoryName, thisItem: self.thisItem)
-//                     self.categoryName = self.createdCategoryName
+                     //                     self.categoryName = self.createdCategoryName
                      self.createdCategoryName = ""
                      self.presentationModeChooseCategory.wrappedValue.dismiss()
                   }
@@ -75,27 +72,18 @@ struct AddCategory: View {
                }) {
                   Text("Add")
                      .bold()
-                     .frame(minWidth: 50)
-                     .font(.subheadline)
-                     .padding(10)
-                     .background(Color("blueButton"))
-                     .foregroundColor(.white)
-                     .cornerRadius(10)
-                     .transition(.scale)
-                     .edgesIgnoringSafeArea(.horizontal)
+                     .modifier(MainBlueButton())
                }
-               .contentShape(Rectangle())
-               .padding(.leading, 20)
+               .padding(.leading, 5)
                
             }
             Spacer()
          }
          .padding()
          .modifier(AdaptsToSoftwareKeyboard())
-         
-            .navigationBarTitle("Add Category", displayMode: .large)
+            
+         .navigationBarTitle("Add Category", displayMode: .large)
       } // End of VStack
    }
 }
 
-  

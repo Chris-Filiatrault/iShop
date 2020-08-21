@@ -40,7 +40,8 @@ struct AddListButton: View {
             .padding()
             .foregroundColor(Color("navBarFont"))
             .offset(x: 5)
-      }.sheet(isPresented: $showAddList) {
+      }
+      .sheet(isPresented: $showAddList) {
          AddList(showingAddListBinding: self.$showAddList)
       }
       

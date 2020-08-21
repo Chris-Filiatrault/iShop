@@ -22,13 +22,6 @@ struct NavBarTrailing: View {
       
       HStack {
          
-         // Edit button
-//         if globalVariables.catalogueShown {
-//
-////            == false && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
-//
-//         }
-         
          // More options ellipsis for iPhone
          if UIDevice.current.userInterfaceIdiom != .pad && globalVariables.catalogueShown == false {
             ListActionSheet(showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, thisList: self.thisList, startUp: self.startUp)

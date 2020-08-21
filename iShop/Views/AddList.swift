@@ -44,16 +44,14 @@ struct AddList: View {
             
             
             // ===Buttons===
-            HStack(alignment: .center) {
+            HStack {
                
                // Cancel button
                Button(action: {self.showingAddListBinding = false}) {
                   Text("Cancel")
                      .bold()
-                     .cornerRadius(20)
-                     .font(.subheadline)
-                     .frame(minWidth: 50)
-               }.contentShape(Rectangle())
+                     .padding()
+               }.padding(.trailing, 5)
                
                // Add button
                Button(action: {
@@ -66,18 +64,9 @@ struct AddList: View {
                   }
                }) {
                   Text("Add")
-                     .bold()
-                     .frame(minWidth: 50)
-                     .font(.subheadline)
-                     .padding(10)
-                     .background(Color("blueButton"))
-                     .foregroundColor(.white)
-                     .cornerRadius(10)
-                     .transition(.scale)
-                     .edgesIgnoringSafeArea(.horizontal)
-               }
-               .contentShape(Rectangle())
-               .padding(.leading, 20)
+                  .bold()
+                  .modifier(MainBlueButton())
+               }.padding(.leading, 5)
                
             }
             

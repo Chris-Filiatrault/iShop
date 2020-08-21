@@ -79,7 +79,7 @@ struct ItemDetails: View {
                   
                   
                   // Category
-                  if self.userDefaultsManager.useCategories == true {
+                  // oldItemCategory and newItemCategory are passed in from ItemRow and contain the value thisItem.categoryOrigin! (forced unwrapping
                      NavigationLink(destination: ChooseCategory(
                         thisItem: self.thisItem,
                         oldItemCategory: self.$oldItemCategory,
@@ -90,7 +90,6 @@ struct ItemDetails: View {
                               Text("Category")
                               Spacer()
                               Text("\(self.categoryName)").foregroundColor(.gray)
-                           }
                      }
                   }
                   
