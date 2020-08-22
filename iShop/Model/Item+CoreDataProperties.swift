@@ -28,19 +28,21 @@ extension Item {
    @NSManaged public var categoryOrigin: Category?
    @NSManaged public var position: Int32
    @NSManaged public var categoryOriginName: String?
+   @NSManaged public var timesPurchased: Int64
+   @NSManaged public var price: Double
+   @NSManaged public var itemDescription: String?
+   
+   
    
    // Added these properties to Item, so the String value from name can be easily accessed.
    public var wrappedName: String {
-      name ?? "Unknown item"
+      name ?? ""
    }
    
    public var wrappedDate: Date {
       dateAdded ?? Date()
    }
-   
-   public var markedOffWrapped: Bool {
-      markedOff
-   }
+
    
    public var wrappedOriginName: String {
       origin?.name ?? ""
@@ -52,6 +54,10 @@ extension Item {
    
    public var wrappedCategoryOriginName: String {
       categoryOrigin?.wrappedName ?? ""
+   }
+   
+   public var wrappedItemDescription: String {
+      itemDescription ?? ""
    }
    
 }

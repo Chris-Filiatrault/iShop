@@ -18,7 +18,8 @@ struct NavBarLeading: View {
    
     var body: some View {
         HStack {
-           // Back button
+           // Custom back button
+           // Implemented to allow the more options ellipsis to go next to the back button when using iPad
            Button(action : {
               self.presentationMode.wrappedValue.dismiss()
            }) {

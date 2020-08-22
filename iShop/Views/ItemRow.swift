@@ -50,6 +50,8 @@ struct ItemRow: View {
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .multilineTextAlignment(.leading)
                   
+                  Text("\(thisItem.timesPurchased)")
+                  
                 Spacer()
                   
                   Button(action: {

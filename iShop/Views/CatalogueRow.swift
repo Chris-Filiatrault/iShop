@@ -14,19 +14,20 @@ struct CatalogueRow: View {
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    var thisList: ListOfItems
-   var catalogueItem: Item
+   var thisItem: Item
    @State var removeItemAlert: Bool = false
    
    var body: some View {
       
       Button(action: {
-         if self.catalogueItem.addedToAList == true {
-            removeItemFromList(thisItem: self.catalogueItem, listOrigin: self.thisList)
+         if self.thisItem.addedToAList == true {
+            removeItemFromList(thisItem: self.thisItem, listOrigin: self.thisList)
             self.globalVariables.catalogueShown = true
          }
-         else if self.catalogueItem.addedToAList == false {
-            self.catalogueItem.addedToAList = true
-            addItemFromCatalogue(item: self.catalogueItem, listOrigin: self.thisList)
+         else if self.thisItem.addedToAList == false {
+            self.thisItem.addedToAList = true
+            addItemFromCatalogue(item: self.thisItem, listOrigin: self.thisList)
+            incrementItemPurchaseCount(thisItem: self.thisItem)
             self.globalVariables.itemInTextfield = ""
             self.globalVariables.catalogueShown = true
          }
@@ -35,18 +36,18 @@ struct CatalogueRow: View {
       }) {
          HStack {
             
-            Image(systemName: catalogueItem.addedToAList ? "plus.circle" : "plus.circle.fill")
+            Image(systemName: thisItem.addedToAList ? "plus.circle" : "plus.circle.fill")
                .imageScale(.medium)
-               .foregroundColor(catalogueItem.addedToAList ? .clear : Color("tickedOffItemBox"))
+               .foregroundColor(thisItem.addedToAList ? .clear : Color("tickedOffItemBox"))
             VStack {
-               if catalogueItem.quantity > 1 {
-                  Text("\(catalogueItem.quantity) x \(catalogueItem.wrappedName)")
-                     .foregroundColor(catalogueItem.addedToAList ? .gray : .black)
-                     .font(catalogueItem.addedToAList ? .subheadline : .headline)
+               if thisItem.quantity > 1 {
+                  Text("\(thisItem.quantity) x \(thisItem.wrappedName)")
+                     .foregroundColor(thisItem.addedToAList ? .gray : .black)
+                     .font(thisItem.addedToAList ? .subheadline : .headline)
                } else {
-                  Text(catalogueItem.wrappedName)
-                     .foregroundColor(catalogueItem.addedToAList ? .gray : .black)
-                     .font(catalogueItem.addedToAList ? .subheadline : .headline)
+                  Text(thisItem.wrappedName)
+                     .foregroundColor(thisItem.addedToAList ? .gray : .black)
+                     .font(thisItem.addedToAList ? .subheadline : .headline)
                }
             }
 //            Text("\(catalogueItem.position)")

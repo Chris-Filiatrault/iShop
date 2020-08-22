@@ -120,12 +120,15 @@ struct ItemList: View {
             }
          }
          }
-//         .gesture(DragGesture(minimumDistance: 60).updating($dragOffset, body: {
+         
+//         .gesture(
+//            // Because this gesture prevents the ability to reorder items (which is only possible when not using categories and sorting manually), only allow the gesture under those
+//            userDefaultsManager.useCategories == true || UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" ?
+//            DragGesture(minimumDistance: 60).updating($dragOffset, body: {
 //            (value, state, transaction) in
 //             if(value.startLocation.x < 20 && value.translation.width > 60) {
 //                 self.presentationMode.wrappedValue.dismiss()
-//             }
-//         }))
+//             }}) : nil)
             
             // ===Catalogue===
          if globalVariables.catalogueShown == true {

@@ -15,10 +15,13 @@
         <attribute name="categoryOriginName" optional="YES" attributeType="String"/>
         <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="itemDescription" optional="YES" attributeType="String"/>
         <attribute name="markedOff" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="price" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="timesPurchased" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="categoryOrigin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="itemsInCategory" inverseEntity="Category"/>
         <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ListOfItems" inverseName="items" inverseEntity="ListOfItems"/>
     </entity>
@@ -32,7 +35,7 @@
     <elements>
         <element name="Category" positionX="-36" positionY="72" width="128" height="118"/>
         <element name="InitDate" positionX="-45" positionY="72" width="128" height="28"/>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="193"/>
+        <element name="Item" positionX="-63" positionY="-18" width="128" height="238"/>
         <element name="ListOfItems" positionX="-54" positionY="45" width="128" height="118"/>
     </elements>
 </model>

@@ -244,7 +244,7 @@ func renameItem(currentName: String, newName: String) {
 
 
 // ===INCREMENT QUANTITY===
-func incrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
+func incrementItemQuantity(thisItem: Item) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -263,7 +263,7 @@ func incrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
 
 
 // ===DECREMENT QUANTITY===
-func decrementItemQuantity(thisItem: Item, thisList: ListOfItems) {
+func decrementItemQuantity(thisItem: Item) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
@@ -545,6 +545,25 @@ func sortItemPositionsAlphabetically(thisList: ListOfItems) {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
    
+}
+
+
+// ===INCREMENT QUANTITY===
+func incrementItemPurchaseCount(thisItem: Item) {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   thisItem.timesPurchased += 1
+   
+   do {
+      try managedContext.save()
+   } catch {
+      print("Could not save.")
+   }
 }
 
 

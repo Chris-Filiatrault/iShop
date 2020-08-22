@@ -38,12 +38,27 @@ struct ClearButton: ViewModifier {
 struct MainBlueButton: ViewModifier {
     func body(content: Content) -> some View {
         content
-         .padding(.horizontal, 15)
+         
          .frame(minWidth: 50)
          .padding(10)
          .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
          .foregroundColor(.white)
          .cornerRadius(40)
 
+    }
+}
+
+struct InCartButton: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+         .frame(minWidth: 50)
+         .font(.subheadline)
+         .padding(10)
+         .background(Color(.white))
+//         .background(LinearGradient(gradient: Gradient(colors: [Color("lightGray"), Color(.white)]), startPoint: .leading, endPoint: .trailing))
+         .foregroundColor(.black)
+         .cornerRadius(40)
+         .padding(.horizontal)
+            
     }
 }

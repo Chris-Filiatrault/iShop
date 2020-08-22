@@ -10,8 +10,7 @@ import SwiftUI
 import CoreData
 
 struct InCart: View {
-   
-//   @EnvironmentObject var globalVariables: GlobalVariableClass
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    var thisList: ListOfItems
    var category: Category
@@ -47,31 +46,22 @@ struct InCart: View {
                Spacer()
                   Text("Clear")
                      .bold()
-                     .frame(minWidth: 50)
-                     .font(.subheadline)
-                     .padding(8)
-                      .background(Color(.white))
-                     .foregroundColor(.black)
-                     .cornerRadius(10)
-                     .padding(.horizontal)
+                     .modifier(InCartButton())
                      .onTapGesture {
                         for item in self.items.wrappedValue {
                            removeItemFromList(thisItem: item, listOrigin: self.thisList)
+                           hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
                         }
                      }
                   
                   Text("Restore")
                   .bold()
-                  .frame(minWidth: 50)
-                  .font(.subheadline)
-                  .padding(8)
-                   .background(Color(.white))
-                  .foregroundColor(.black)
-                  .cornerRadius(10)
-                  .padding(.horizontal)
+                  .padding(.horizontal, 2)
+                  .modifier(InCartButton())
                   .onTapGesture {
                      for item in self.items.wrappedValue {
                         restoreItemInList(thisItem: item, thisList: self.thisList)
+                        hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
                      }
                   }
                Spacer()
@@ -104,6 +94,7 @@ struct InCart: View {
          thisItem.markedOff = false
          thisItem.quantity = 1
          thisItem.position = 0
+         thisItem.timesPurchased += 1
       }
       do {
          try managedContext.save()

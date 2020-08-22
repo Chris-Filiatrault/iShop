@@ -41,8 +41,8 @@ struct Catalogue: View {
          
          // List of filtered items
          List {
-            ForEach(fetchRequest.wrappedValue) { catalogueItem in
-               CatalogueRow(thisList: self.thisList, catalogueItem: catalogueItem)
+            ForEach(fetchRequest.wrappedValue) { item in
+               CatalogueRow(thisList: self.thisList, thisItem: item)
             }
             .onDelete(perform: deleteSwipedCatalogueItem)
             .listRowBackground(Color(.white))
@@ -62,20 +62,9 @@ struct Catalogue: View {
                   }
                   self.globalVariables.itemInTextfield = ""
                }) {
-
-//                  Image(systemName: "plus.circle.fill")
-//                     .imageScale(.large)
-//                     .foregroundColor(Color("tickedOffItemBox"))
-//                     .padding(20)
-
                   Text("Add")
                      .bold()
-                     .frame(minWidth: 50)
-                     .font(.subheadline)
-                     .padding(8)
-                     .background(Color("blueButton"))
-                     .foregroundColor(Color(.white))
-                     .cornerRadius(10)
+                     .modifier(MainBlueButton())
                      .transition(.scale)
                      .padding(.horizontal, 40)
                      .padding(.vertical, 10)

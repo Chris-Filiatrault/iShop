@@ -62,7 +62,7 @@ struct ItemDetails: View {
                         .foregroundColor(.black)
                         .imageScale(.large)
                         .onTapGesture {
-                           incrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+                           incrementItemQuantity(thisItem: self.thisItem)
                            self.thisItemQuantity += 1
                      }
                      Image(systemName: "minus")
@@ -71,7 +71,7 @@ struct ItemDetails: View {
                         .onTapGesture {
                            if self.thisItemQuantity > 1 {
                               self.thisItemQuantity -= 1
-                              decrementItemQuantity(thisItem: self.thisItem, thisList: self.thisList)
+                              decrementItemQuantity(thisItem: self.thisItem)
                            }
                      }
                      .padding(.leading, 10)
