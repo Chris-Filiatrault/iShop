@@ -27,6 +27,9 @@ struct ItemList: View {
    let inCart = inCartCategory()
    var startUp: StartUp
    
+   static var textfieldValue: String = ""
+   static var textfieldValueBinding = Binding<String>(get: { textfieldValue }, set: { textfieldValue = $0 } )
+   
    init(listFromHomePage: ListOfItems, startUpPassedIn: StartUp) {
       
       thisList = listFromHomePage
@@ -53,25 +56,29 @@ struct ItemList: View {
       
       VStack(spacing: 0) {
          
+         MultilineTextField("Add item", text: ItemList.textfieldValueBinding, onCommit: {
+            print("Commit")
+            }, focusTextfieldCursor: false).padding()
+         
          // ===Enter item textfield===
-         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
-            self.globalVariables.catalogueShown = true
-            self.editMode?.wrappedValue = .inactive
-         }, onCommit: {
-            if self.globalVariables.itemInTextfield != "" {
-               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-               self.globalVariables.itemInTextfield = ""
-            }
-            self.globalVariables.itemInTextfield = ""
-         })
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .background(Color(.white))
-            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
-            .modifier(ClearButton())
-            .padding(.top, 10)
-            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
-               globalVariables.itemInTextfield == "" ? 15 : 0
-            ))
+//         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+//            self.globalVariables.catalogueShown = true
+//            self.editMode?.wrappedValue = .inactive
+//         }, onCommit: {
+//            if self.globalVariables.itemInTextfield != "" {
+//               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+//               self.globalVariables.itemInTextfield = ""
+//            }
+//            self.globalVariables.itemInTextfield = ""
+//         })
+//            .textFieldStyle(RoundedBorderTextFieldStyle())
+//            .background(Color(.white))
+//            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
+//            .modifier(ClearButton())
+//            .padding(.top, 10)
+//            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
+//               globalVariables.itemInTextfield == "" ? 15 : 0
+//            ))
          
          
          VStack {

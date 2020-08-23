@@ -38,8 +38,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          .environment(\.managedObjectContext, context)
          .environmentObject(globalVariables)
          .environment(\.editMode, Binding.constant(EditMode.inactive))
-      
-//      let contentView = ContentView4()
+
+//      let contentView = ContentView()
 
       
       
