@@ -10,12 +10,14 @@
 import SwiftUI
 
 struct RenameList: View {
+      
+   static var focusTextfield: Bool = true
+   static var newListName: String = ""
+   static var newListNameBinding = Binding<String>(get: { newListName }, set: { newListName = $0 } )
    
    var thisList: ListOfItems
-   @State var newListName: String
    @State var duplicateListAlert = false
    @Binding var showingRenameListBinding: Bool
-   
    @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
    
@@ -24,30 +26,27 @@ struct RenameList: View {
       NavigationView {
          VStack {
             
-            // ===Enter item textfield===
-            TextField("Enter new name", text: $newListName, onCommit: {
+            CustomTextField("", text: RenameList.newListNameBinding, focusTextfieldCursor: RenameList.focusTextfield, onCommit: {
                self.commit()
             })
-               .textFieldStyle(RoundedBorderTextFieldStyle())
-               .padding(5)
-               .cornerRadius(5)
-               .padding(.bottom, 20)
+               .padding()
+               .padding(.top, 40)
                .alert(isPresented: $duplicateListAlert) {
                   Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
             }
-            
 
             // ===Buttons===
             HStack(alignment: .center) {
                
                // Cancel button
-               Button(action: { self.showingRenameListBinding = false }) {
+               Button(action: {
+                  self.preventKeyboardFromPoppingUp()
+                  self.showingRenameListBinding = false
+               }) {
                   Text("Cancel")
                      .bold()
-                     .cornerRadius(20)
-                     .font(.subheadline)
-                     .frame(minWidth: 50)
-               }.contentShape(Rectangle())
+                  
+               }
                
                // Add button
                Button(action: {
@@ -55,20 +54,12 @@ struct RenameList: View {
                   }) {
                   Text("Rename")
                      .bold()
-                     .frame(minWidth: 50)
-                     .font(.subheadline)
-                     .padding(10)
-                     .background(Color("blueButton"))
-                     .foregroundColor(.white)
-                     .cornerRadius(10)
-                     .transition(.scale)
-                     .edgesIgnoringSafeArea(.horizontal)
-               }
+                     .modifier(MainBlueButton())
+                  }
                .contentShape(Rectangle())
                .padding(.leading, 20)
                
             }
-            
             Spacer()
          }
          .padding()
@@ -78,19 +69,39 @@ struct RenameList: View {
          
       } // End of VStack
          .environment(\.horizontalSizeClass, .compact)
+         .onAppear {
+            RenameList.newListName = self.thisList.wrappedName
+      }
+         .onDisappear {
+            //                  // This simply makes the string being reset unseen by the user (cleaner)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            RenameList.newListName = ""
+            }
+      }
       
    }
    func commit() {
-      if self.newListName != "" && listNameIsUnique(name: self.newListName) {
-         renameList(thisList: self.thisList, newName: self.newListName)
+      if RenameList.newListName != "" && listNameIsUnique(name: RenameList.newListName) {
+         renameList(thisList: self.thisList, newName: RenameList.newListName)
+         self.preventKeyboardFromPoppingUp()
          self.showingRenameListBinding = false
-         self.newListName = ""
       }
-      else if !listNameIsUnique(name: self.newListName) {
+      else if RenameList.newListName == self.thisList.wrappedName {
+         self.preventKeyboardFromPoppingUp()
+         self.showingRenameListBinding = false
+      }
+      else if !listNameIsUnique(name: RenameList.newListName) {
          self.duplicateListAlert = true
       }
-      else if self.newListName == "" {
+      else if RenameList.newListName == "" {
+         self.preventKeyboardFromPoppingUp()
          self.showingRenameListBinding = false
       }
    }
+   
+   /// Setting `focusTextfield = false` prevents the keyboard from popping up after the sheet is dismissed
+   func preventKeyboardFromPoppingUp() {
+      RenameList.focusTextfield = false
+   }
+   
 }

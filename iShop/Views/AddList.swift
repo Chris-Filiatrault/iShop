@@ -8,86 +8,101 @@
 
 
 import SwiftUI
+import Foundation
 
 struct AddList: View {
    
-   @State var newList: String = ""
    @State var duplicateListAlert = false
    @Binding var showingAddListBinding: Bool
    
+   // Changing this variable to false when dismissing the sheet prevents the keyboard from popping up again
+   static var focusTextfield: Bool = true
+   static var newList: String = ""
+   static var newListBinding = Binding<String>(get: { newList }, set: { newList = $0 } )
+   
    var body: some View {
-      VStack {
-      MultilineTextField("Add item", text: ItemList.textfieldValueBinding, onCommit: {
-         print("Commit")
-         }, focusTextfieldCursor: true)
+      
+      NavigationView {
+         VStack {
+            
+            CustomTextField("Enter list name",
+                            text: AddList.newListBinding,
+                            focusTextfieldCursor: AddList.focusTextfield,
+                            onCommit: { self.commit() }
+            )
+               .padding()
+               .padding(.top, 40)
+               .alert(isPresented: $duplicateListAlert) {
+                  Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
+            }
+            
+            
+            // ===Buttons===
+            HStack {
+               
+               // Cancel button
+               Button(action: {
+                  self.preventKeyboardFromPoppingUp()
+                  self.showingAddListBinding = false
+                  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                     // This simply makes the string being reset unseen by the user (cleaner)
+                     AddList.newList = ""
+                  }
+               }) {
+                  Text("Cancel")
+                     .bold()
+                     .padding()
+               }.padding(.trailing, 5)
+               
+               // Add button
+               Button(action: {
+                  self.commit()
+               }) {
+                  Text("Add")
+                     .bold()
+                     .modifier(MainBlueButton())
+               }.padding(.leading, 5)
+               
+            }
+            
+            Spacer()
+         }
          .padding()
-         .padding(.top, 40)
+         .navigationBarTitle("Add List", displayMode: .large)
          
-         Spacer()
-         
-      }
-//      NavigationView {
-//         VStack {
-//            
-//            // when implementing the new textfield, call becomeFirstResponder, and don't use AdaptsToSoftwareKeyboard() (as I get mutating state warnings)
-//            
-//            // ===Enter item textfield===
-//            TextField("Enter list name", text: $newList, onCommit: {
-//                        if self.newList != "" && listNameIsUnique(name: self.newList) {
-//                           addList(listName: self.newList)
-//                           self.showingAddListBinding = false
-//                           self.newList = ""
-//                        }
-//                        else if !listNameIsUnique(name: self.newList) {
-//                           self.duplicateListAlert = true
-//                        }
-//                        else if self.newList == "" {
-//                           self.showingAddListBinding = false
-//                        }
-//            })
-//               .textFieldStyle(RoundedBorderTextFieldStyle())
-//               .padding(5)
-//               .cornerRadius(5)
-//               .padding(.bottom, 20)
-//               .alert(isPresented: $duplicateListAlert) {
-//                  Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-//            }
-//            
-//            
-//            // ===Buttons===
-//            HStack {
-//               
-//               // Cancel button
-//               Button(action: {self.showingAddListBinding = false}) {
-//                  Text("Cancel")
-//                     .bold()
-//                     .padding()
-//               }.padding(.trailing, 5)
-//               
-//               // Add button
-//               Button(action: {
-//                  if self.newList != "" && listNameIsUnique(name: self.newList) {
-//                     addList(listName: self.newList)
-//                     self.showingAddListBinding = false
-//                     self.newList = ""
-//                  }
-//                  else if !listNameIsUnique(name: self.newList) { self.duplicateListAlert = true
-//                  }
-//               }) {
-//                  Text("Add")
-//                  .bold()
-//                  .modifier(MainBlueButton())
-//               }.padding(.leading, 5)
-//               
-//            }
-//            
-//            Spacer()
-//         }
-//         .padding()
-//         .modifier(AdaptsToSoftwareKeyboard())
-//         .navigationBarTitle("Add List", displayMode: .large)
-//         
-//      } // End of VStack
-//      .environment(\.horizontalSizeClass, .compact)
+      } // End of VStack
+         .environment(\.horizontalSizeClass, .compact)
    }
+   
+   
+   
+   /// Adds list if the name is unique. Alerts user if name not unique. Dismisses sheet if textfield is blank.
+   func commit() {
+      
+      if AddList.newList != "" && listNameIsUnique(name: AddList.newList) {
+         addList(listName: AddList.newList)
+         self.showingAddListBinding = false
+         self.preventKeyboardFromPoppingUp()
+         AddList.newList = ""
+      }
+         
+      else if !listNameIsUnique(name: AddList.newList) {
+         self.duplicateListAlert = true
+      }
+         
+      else if AddList.newList.isEmpty {
+         self.preventKeyboardFromPoppingUp()
+         self.showingAddListBinding = false
+      }
+   }
+   
+   /// Setting `focusTextfield = false` prevents the keyboard from popping up after the sheet is dismissed
+   func preventKeyboardFromPoppingUp() {
+      AddList.focusTextfield = false
+   }
+   
+   
 }
+
+
+

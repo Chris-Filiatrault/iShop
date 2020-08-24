@@ -34,8 +34,8 @@ struct ListActionSheet: View {
             }
          }) {
             Image(systemName: "ellipsis.circle")
-               .imageScale(.large)
                .foregroundColor(Color("navBarFont"))
+               .imageScale(.large)
                .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 5))
          }.padding(.vertical, 10)
        
@@ -50,6 +50,7 @@ struct ListActionSheet: View {
                   },
                   .default(Text("Rename List")) {
                      self.showRenameList.toggle()
+                     RenameList.focusTextfield = true
                   },
                   .default(Text("Send Via Text")) {
                      self.startUp.presentMessageCompose(

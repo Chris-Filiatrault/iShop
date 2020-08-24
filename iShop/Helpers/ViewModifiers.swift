@@ -44,6 +44,7 @@ struct MainBlueButton: ViewModifier {
          .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
          .foregroundColor(.white)
          .cornerRadius(40)
+         .padding(.horizontal, 3)
 
     }
 }

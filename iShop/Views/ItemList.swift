@@ -56,29 +56,26 @@ struct ItemList: View {
       
       VStack(spacing: 0) {
          
-         MultilineTextField("Add item", text: ItemList.textfieldValueBinding, onCommit: {
-            print("Commit")
-            }, focusTextfieldCursor: false).padding()
-         
-         // ===Enter item textfield===
-//         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
-//            self.globalVariables.catalogueShown = true
-//            self.editMode?.wrappedValue = .inactive
-//         }, onCommit: {
-//            if self.globalVariables.itemInTextfield != "" {
-//               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-//               self.globalVariables.itemInTextfield = ""
-//            }
-//            self.globalVariables.itemInTextfield = ""
-//         })
-//            .textFieldStyle(RoundedBorderTextFieldStyle())
-//            .background(Color(.white))
-//            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
-//            .modifier(ClearButton())
-//            .padding(.top, 10)
-//            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
-//               globalVariables.itemInTextfield == "" ? 15 : 0
-//            ))
+
+//          ===Enter item textfield===
+         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+            self.globalVariables.catalogueShown = true
+            self.editMode?.wrappedValue = .inactive
+         }, onCommit: {
+            if self.globalVariables.itemInTextfield != "" {
+               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+               self.globalVariables.itemInTextfield = ""
+            }
+            self.globalVariables.itemInTextfield = ""
+         })
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .background(Color(.white))
+            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
+            .modifier(ClearButton())
+            .padding(.top, 10)
+            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
+               globalVariables.itemInTextfield == "" ? 15 : 0
+            ))
          
          
          VStack {
@@ -101,7 +98,7 @@ struct ItemList: View {
                
             }.padding(.bottom)
                .sheet(isPresented: self.$showRenameList){
-                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
+                  RenameList(thisList: self.thisList, showingRenameListBinding: self.$showRenameList)
                      .environmentObject(self.globalVariables)
             }
          }
@@ -122,7 +119,7 @@ struct ItemList: View {
                
             }.padding(.bottom)
                .sheet(isPresented: self.$showRenameList){
-                  RenameList(thisList: self.thisList, newListName: self.thisList.wrappedName, showingRenameListBinding: self.$showRenameList)
+                  RenameList(thisList: self.thisList, showingRenameListBinding: self.$showRenameList)
                      .environmentObject(self.globalVariables)
             }
          }
