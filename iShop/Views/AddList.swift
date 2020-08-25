@@ -42,7 +42,7 @@ struct AddList: View {
                
                // Cancel button
                Button(action: {
-                  self.preventKeyboardFromPoppingUp()
+                  self.setFocusTextfieldToFalse()
                   self.showingAddListBinding = false
                   DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                      // This simply makes the string being reset unseen by the user (cleaner)
@@ -82,7 +82,7 @@ struct AddList: View {
       if AddList.newList != "" && listNameIsUnique(name: AddList.newList) {
          addList(listName: AddList.newList)
          self.showingAddListBinding = false
-         self.preventKeyboardFromPoppingUp()
+         self.setFocusTextfieldToFalse()
          AddList.newList = ""
       }
          
@@ -91,13 +91,13 @@ struct AddList: View {
       }
          
       else if AddList.newList.isEmpty {
-         self.preventKeyboardFromPoppingUp()
+         self.setFocusTextfieldToFalse()
          self.showingAddListBinding = false
       }
    }
    
    /// Setting `focusTextfield = false` prevents the keyboard from popping up after the sheet is dismissed
-   func preventKeyboardFromPoppingUp() {
+   func setFocusTextfieldToFalse() {
       AddList.focusTextfield = false
    }
    

@@ -46,7 +46,7 @@ struct ItemCategory: View {
       let markedOffPredicate = NSPredicate(format: "markedOff == false")
       let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [categoryOriginNamePredicate, originPredicate, inListPredicate, markedOffPredicate])
       
-      items = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      items = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
       ], predicate: compoundPredicate)
       
    }

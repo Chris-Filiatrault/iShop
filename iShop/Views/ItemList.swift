@@ -27,8 +27,9 @@ struct ItemList: View {
    let inCart = inCartCategory()
    var startUp: StartUp
    
-   static var textfieldValue: String = ""
-   static var textfieldValueBinding = Binding<String>(get: { textfieldValue }, set: { textfieldValue = $0 } )
+   static var focusTextfield: Bool = true
+   static var itemInTextfield: String = ""
+   static var itemInTextfieldBinding = Binding<String>(get: { itemInTextfield }, set: { itemInTextfield = $0 } )
    
    init(listFromHomePage: ListOfItems, startUpPassedIn: StartUp) {
       
@@ -41,13 +42,13 @@ struct ItemList: View {
       
       itemsFetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [
          UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" ?
-            NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:))) :
+            NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:))) :
             NSSortDescriptor(key: "position", ascending: true)
       ], predicate: compoundPredicate)
       
       
       categoriesFetchRequest = FetchRequest<Category>(entity: Category.entity(), sortDescriptors: [
-         NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+         NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
          ], predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       )
    }
@@ -56,27 +57,63 @@ struct ItemList: View {
       
       VStack(spacing: 0) {
          
-
-//          ===Enter item textfield===
-         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
-            self.globalVariables.catalogueShown = true
-            self.editMode?.wrappedValue = .inactive
-         }, onCommit: {
-            if self.globalVariables.itemInTextfield != "" {
-               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-               self.globalVariables.itemInTextfield = ""
-            }
-            self.globalVariables.itemInTextfield = ""
-         })
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .background(Color(.white))
-            .disableAutocorrection(userDefaultsManager.disableAutoCorrect)
-            .modifier(ClearButton())
-            .padding(.top, 10)
-            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
-               globalVariables.itemInTextfield == "" ? 15 : 0
-            ))
+//         HStack() {
+            
+            // ===Textfield===
+            CustomTextField("Add item", text: $globalVariables.itemInTextfield, focusTextfieldCursor: false, onCommit: {
+                        if self.globalVariables.itemInTextfield != "" {
+                           addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+                           self.globalVariables.itemInTextfield = ""
+                        }
+                        else if self.globalVariables.itemInTextfield == "" {
+                           withAnimation {
+                              self.globalVariables.catalogueShown = false
+                              UIApplication.shared.endEditing()
+                           }
+                        }
+                        
+                     }, onBeginEditing: {
+                        self.globalVariables.catalogueShown = true
+                        self.editMode?.wrappedValue = .inactive
+                     })
+                     .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing:
+                        globalVariables.itemInTextfield == "" ? 15 : 0
+                     ))
+                     .padding(.top, 10)
+                     .modifier(ClearButton())
+                     .environmentObject(globalVariables)
+            
+            
+            // ===Clear button===
+//            if !globalVariables.itemInTextfield.isEmpty {
+//               Spacer()
+//               Button(action: {
+//                  self.globalVariables.itemInTextfield = ""
+//               }) {
+//                  Image(systemName: "multiply.circle")
+//                     .imageScale(.large)
+//                     .foregroundColor(Color(.gray))
+//                     .padding(5)
+//               }
+//               .padding(.trailing, 10)
+//            }
+//         }
          
+         
+//          ===Enter item textfield===
+//         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
+////            self.globalVariables.catalogueShown = true
+////            self.editMode?.wrappedValue = .inactive
+//         }, onCommit: {
+////            if self.globalVariables.itemInTextfield != "" {
+////               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+////               self.globalVariables.itemInTextfield = ""
+////            }
+////            self.globalVariables.itemInTextfield = ""
+//         })
+//
+//            .background(Color(.white))
+//
          
          VStack {
          // ===List of items WITH categories===
@@ -138,7 +175,8 @@ struct ItemList: View {
          if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
          }
-      }
+         
+      } // End of VStack
       .background(Color("listBackground").edgesIgnoringSafeArea(.all))
       .modifier(AdaptsToSoftwareKeyboard())
       .onDisappear() {
@@ -185,11 +223,15 @@ struct ItemList: View {
       fetchRequest.predicate = compoundPredicate
       
       if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" {
-         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.position, ascending: true)]
+         fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Item.position, ascending: true)
+         ]
          print("Fetch by position")
       }
       else if UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
-         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+         fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
+         ]
          print("Fetch by name")
       }
       

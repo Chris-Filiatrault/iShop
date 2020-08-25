@@ -23,7 +23,7 @@ struct Catalogue: View {
       thisList = passedInList
       filterVar = filter
       
-      fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+      fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
       ], predicate: NSPredicate(format: "origin = %@", thisList))
       
       if filter != "" {
@@ -31,7 +31,7 @@ struct Catalogue: View {
          let containsPredicate = NSPredicate(format: "name CONTAINS[c] %@", filter)
          let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, containsPredicate])
          
-         fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+         fetchRequest = FetchRequest<Item>(entity: Item.entity(), sortDescriptors: [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
          ], predicate: compoundPredicate)
       }
    }
@@ -132,6 +132,7 @@ struct Catalogue: View {
                   managedContext.delete(item)
                }
             }
+            self.globalVariables.itemInTextfield = ""
          }
          
          do {
@@ -150,3 +151,4 @@ struct Catalogue: View {
    
    
 }
+

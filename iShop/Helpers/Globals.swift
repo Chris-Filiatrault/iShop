@@ -15,6 +15,7 @@ import CoreData
 
 class GlobalVariableClass: ObservableObject {
  
+   
    @Published var itemInTextfield: String = ""
    @Published var catalogueShown: Bool = false
    @State var restoreItemsFromInBasket: Bool = false

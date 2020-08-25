@@ -29,8 +29,8 @@ struct RenameList: View {
             CustomTextField("", text: RenameList.newListNameBinding, focusTextfieldCursor: RenameList.focusTextfield, onCommit: {
                self.commit()
             })
-               .padding()
-               .padding(.top, 40)
+               .padding(.vertical, 20)
+               .padding(.bottom)
                .alert(isPresented: $duplicateListAlert) {
                   Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
             }
@@ -40,7 +40,7 @@ struct RenameList: View {
                
                // Cancel button
                Button(action: {
-                  self.preventKeyboardFromPoppingUp()
+                  self.setFocusTextfieldToFalse()
                   self.showingRenameListBinding = false
                }) {
                   Text("Cancel")
@@ -83,24 +83,24 @@ struct RenameList: View {
    func commit() {
       if RenameList.newListName != "" && listNameIsUnique(name: RenameList.newListName) {
          renameList(thisList: self.thisList, newName: RenameList.newListName)
-         self.preventKeyboardFromPoppingUp()
+         self.setFocusTextfieldToFalse()
          self.showingRenameListBinding = false
       }
       else if RenameList.newListName == self.thisList.wrappedName {
-         self.preventKeyboardFromPoppingUp()
+         self.setFocusTextfieldToFalse()
          self.showingRenameListBinding = false
       }
       else if !listNameIsUnique(name: RenameList.newListName) {
          self.duplicateListAlert = true
       }
       else if RenameList.newListName == "" {
-         self.preventKeyboardFromPoppingUp()
+         self.setFocusTextfieldToFalse()
          self.showingRenameListBinding = false
       }
    }
    
    /// Setting `focusTextfield = false` prevents the keyboard from popping up after the sheet is dismissed
-   func preventKeyboardFromPoppingUp() {
+   func setFocusTextfieldToFalse() {
       RenameList.focusTextfield = false
    }
    

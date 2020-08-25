@@ -161,15 +161,6 @@
 
 
 
-//   @FetchRequest(entity: Item.entity(), sortDescriptors: [
-//      NSSortDescriptor(keyPath: \Item.name, ascending: true)
-//   ])
-//   var itemsFromFetchRequest: FetchedResults<Item>
-//
-
-
-
-
 //// ===Add item button===
 //if addItemButtonIsShown == true {
 //
@@ -751,7 +742,7 @@
 //                  secondaryButton:
 //               .default(Text("Remove")) {
 //                  removeItemFromList(item: self.catalogueItem)
-//                  self.globalVariables.itemInTextfield = ""
+//                   ItemList.itemInTextfield = ""
 //                  self.globalVariables.catalogueShown = true
 //               }
 //            )
@@ -775,7 +766,7 @@
 //
 //   let fetchRequest:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "ListOfItems")
 //   fetchRequest.sortDescriptors = [
-//      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+//       NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
 //   ]
 //   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
 //

@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct CustomTextField: View {
-
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    private var placeholder: String
    var focusTextfieldCursor: Bool
    private var onBeginEditing: (() -> Void)?
@@ -28,7 +28,20 @@ struct CustomTextField: View {
    
    var placeholderView: some View {
       Group {
-         if shouldShowPlaceholder {
+         
+         // Placeholder for ItemList textfield
+         if placeholder == "Add item" && globalVariables.itemInTextfield == "" {
+            HStack(alignment: .center) {
+               Text(placeholder)
+                  .foregroundColor(.gray)
+                  .padding(.leading, 8)
+
+               Spacer()
+            }
+         }
+            
+         // Placeholder for other textfields
+         else if placeholder != "Add item" && shouldShowPlaceholder {
             HStack(alignment: .center) {
                Text(placeholder)
                   .foregroundColor(.gray)
@@ -66,6 +79,7 @@ struct CustomTextField: View {
 
 // UIViewRepresentable view for UITextField
 struct UITextViewWrapper: UIViewRepresentable {
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    typealias UIViewType = UITextView
 
    @Binding var text: String
@@ -154,7 +168,6 @@ struct UITextViewWrapper: UIViewRepresentable {
 
       func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
          if let onCommit = self.onCommit, text == "\n" {
-            textView.resignFirstResponder()
             onCommit()
             return false
          }

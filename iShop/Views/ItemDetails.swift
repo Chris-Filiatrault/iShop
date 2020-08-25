@@ -13,9 +13,8 @@ struct ItemDetails: View {
    
    @Environment(\.presentationMode) var presentationMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-   
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var lists: FetchedResults<ListOfItems>
    
    

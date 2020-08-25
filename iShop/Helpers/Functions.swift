@@ -51,12 +51,10 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             
             if returnedCategories != [] {
                let uncategorised = returnedCategories[0]
-               print("Got \(uncategorised.wrappedName)")
                
                // add to uncategorised category
                uncategorised.addToItemsInCategory(newItem)
                newItem.categoryOrigin = uncategorised
-               print("Added item to \(uncategorised.wrappedName) category in \(list.wrappedName)")
             }
             
             // Add a copy of the new item to the list in which it was added
@@ -525,7 +523,7 @@ func sortItemPositionsAlphabetically(thisList: ListOfItems) {
    
    let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.predicate = compoundPredicate
-   fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+   fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
    
    do {
       let items = try managedContext.fetch(fetchRequest)
@@ -677,7 +675,7 @@ func deleteSwipedListAlphabetical(indices: IndexSet) {
    
    let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    fetchRequest.sortDescriptors = [
-      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
    ]
    fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    
@@ -966,7 +964,9 @@ func sortListPositionsAlphabetically() {
    
    let fetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
+   fetchRequest.sortDescriptors = [
+      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
+   ]
    
    do {
       let lists = try managedContext.fetch(fetchRequest)
@@ -1003,7 +1003,7 @@ func listItemsWithCategoriesAsString(thisList: ListOfItems) -> String {
    
    let categoryFetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
-   categoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+   categoryFetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
    
    let uncategorisedRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    uncategorisedRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
@@ -1290,7 +1290,7 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
 
    let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.sortDescriptors = [
-      NSSortDescriptor(keyPath: \Item.name, ascending: true)
+      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
    ]
    fetchRequest.predicate = NSPredicate(format: "name == %@", thisItem.wrappedName)
    

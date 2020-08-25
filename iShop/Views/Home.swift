@@ -21,7 +21,7 @@ struct Home: View {
    var startUp: StartUp
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)
+      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsAlphabetical: FetchedResults<ListOfItems>
    
@@ -30,10 +30,6 @@ struct Home: View {
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsManual: FetchedResults<ListOfItems>
    
-   @FetchRequest(entity: Category.entity(), sortDescriptors:[],
-                 predicate: NSPredicate(format: "name == %@", "Uncategorised")) var uncategorised: FetchedResults<Category>
-   
-    
    
    var body: some View {
       VStack {
@@ -45,7 +41,7 @@ struct Home: View {
                VStack {
                   if listsManual.count == 0 && listsAlphabetical.count == 0 {
                      VStack {
-                        Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long 🙂\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings.\n")
+                        Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long.\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings.\n")
                      }
                   } else {
                      Text(" ")

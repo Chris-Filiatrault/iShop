@@ -16,7 +16,7 @@ struct ClearButton: ViewModifier {
    @EnvironmentObject var globalVariables: GlobalVariableClass
 
    public func body(content: Content) -> some View {
-      HStack() {
+      HStack(alignment: .center) {
          content
          if !globalVariables.itemInTextfield.isEmpty {
             Spacer()

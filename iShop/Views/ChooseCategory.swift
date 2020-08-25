@@ -14,8 +14,8 @@ struct ChooseCategory: View {
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
   
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \Category.name, ascending: true)
-   ],predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
+      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
+   ] ,predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
 
    
    var thisItem: Item
@@ -31,7 +31,7 @@ struct ChooseCategory: View {
       VStack {
          
          
-         
+// ===Code I started writing for creating a navigation link to the settings (for when the user isn't using categories)===
 //         if userDefaultsManager.useCategories == false {
 //            VStack {
 //               Text("Categories are not being used.\n\nYou can enable categories in the Settings page.")
@@ -116,7 +116,7 @@ struct ChooseCategory: View {
       
       let fetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
       fetchRequest.sortDescriptors = [
-         NSSortDescriptor(keyPath: \Category.name, ascending: true)
+         NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
       ]
       fetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       
