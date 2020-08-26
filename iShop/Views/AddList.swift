@@ -15,63 +15,68 @@ struct AddList: View {
    @State var duplicateListAlert = false
    @Binding var showingAddListBinding: Bool
    
-   // Changing this variable to false when dismissing the sheet prevents the keyboard from popping up again
    static var focusTextfield: Bool = true
    static var newList: String = ""
    static var newListBinding = Binding<String>(get: { newList }, set: { newList = $0 } )
    
    var body: some View {
       
-      NavigationView {
-         VStack {
-            
-            CustomTextField("Enter list name",
-                            text: AddList.newListBinding,
-                            focusTextfieldCursor: AddList.focusTextfield,
-                            onCommit: { self.commit() }
-            )
-               .padding()
-               .padding(.top, 40)
-               .alert(isPresented: $duplicateListAlert) {
-                  Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-            }
-            
-            
-            // ===Buttons===
-            HStack {
-               
-               // Cancel button
-               Button(action: {
-                  self.setFocusTextfieldToFalse()
-                  self.showingAddListBinding = false
-                  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                     // This simply makes the string being reset unseen by the user (cleaner)
-                     AddList.newList = ""
-                  }
-               }) {
-                  Text("Cancel")
-                     .bold()
-                     .padding()
-               }.padding(.trailing, 5)
-               
-               // Add button
-               Button(action: {
-                  self.commit()
-               }) {
-                  Text("Add")
-                     .bold()
-                     .modifier(MainBlueButton())
-               }.padding(.leading, 5)
-               
-            }
-            
-            Spacer()
-         }
-         .padding()
-         .navigationBarTitle("Add List", displayMode: .large)
+      VStack {
          
-      } // End of VStack
-         .environment(\.horizontalSizeClass, .compact)
+         Text("Add List")
+            .bold()
+            .font(.largeTitle)
+            .padding(.top, 50)
+         Divider()
+            .padding(.bottom, 30)
+            .offset(y: -15)
+         
+         
+         // ===Add List Textfield===
+         CustomTextField("Enter list name",
+                         text: AddList.newListBinding,
+                         focusTextfieldCursor: AddList.focusTextfield,
+                         onCommit: { self.commit() }
+         )
+            .padding(.bottom)
+            .alert(isPresented: $duplicateListAlert) {
+               Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
+         }
+         
+         // ===Buttons===
+         HStack {
+            
+            // Cancel button
+            Button(action: {
+               self.setFocusTextfieldToFalse()
+               self.showingAddListBinding = false
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                  // This simply makes the string being reset unseen by the user (cleaner)
+                  AddList.newList = ""
+               }
+            }) {
+               Text("Cancel")
+                  .bold()
+                  .padding()
+            }.padding(.trailing, 5)
+            
+            // Add button
+            Button(action: {
+               self.commit()
+            }) {
+               Text("Add")
+                  .bold()
+                  .modifier(MainBlueButton())
+            }.padding(.leading, 5)
+            
+         }
+         
+         Spacer()
+      }
+      .padding()
+      .environment(\.horizontalSizeClass, .compact)
+      .background(Color("plainSheetBackground").edgesIgnoringSafeArea(.all))
+      
    }
    
    
@@ -105,4 +110,12 @@ struct AddList: View {
 }
 
 
+
+struct AddList_Previews: PreviewProvider {
+   static var previews: some View {
+      AddList(showingAddListBinding: PreviewValues().$myBinding)
+         .previewDevice(PreviewDevice(rawValue: "iPhone X"))
+         .previewDisplayName("iPhone X")
+   }
+}
 

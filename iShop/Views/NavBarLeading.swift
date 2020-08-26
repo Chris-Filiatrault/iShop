@@ -36,7 +36,7 @@ struct NavBarLeading: View {
            
            // More options ellipsis for iPad (the action sheet doesn't work as a trailing button on iPad)
            if UIDevice.current.userInterfaceIdiom == .pad {
-              ListActionSheet(showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, thisList: self.thisList, startUp: self.startUp)
+              ListActionSheet(showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, thisList: self.thisList, startUp: self.startUp, presentationMode: self.presentationMode)
                  .padding()
            }
         }

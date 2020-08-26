@@ -1144,6 +1144,70 @@ func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
 }
 
 
+// ===Delete any extra default lists===
+// Also need the function below (firstDateCreated)
+//func deleteExtraDefaultLists() {
+//
+//   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+//      else {
+//         return
+//   }
+//   let managedContext = appDelegate.persistentContainer.viewContext
+//
+//   let fetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+//   fetchRequest.predicate = NSPredicate(format: "name == %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+//   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ListOfItems.name, ascending: true)]
+//
+//   do {
+//      let lists = try managedContext.fetch(fetchRequest)
+//      var index: Int = 0
+//      for list in lists {
+//         list.position = Int32(index)
+//         index += 1
+//      }
+//
+//      do {
+//         try managedContext.save()
+//      } catch let error as NSError {
+//         print("Could not save.\(error), \(error.userInfo)")
+//      }
+//
+//   } catch let error as NSError {
+//      print("Could not fetch. \(error), \(error.userInfo)")
+//   }
+//
+//}
+
+// ===Return first date===
+//func firstDateCreated(context: NSManagedObjectContext) -> InitDate? {
+//
+//   let returnValue: InitDate
+//
+//   let fetchRequest: NSFetchRequest<InitDate> = NSFetchRequest.init(entityName: "InitDate")
+//   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \InitDate.initDate, ascending: true)]
+//
+//   do {
+//      let dates = try context.fetch(fetchRequest)
+//
+//      var result: Bool = dates.count > 1
+//
+//      if dates != [] {
+//         let earliestDate = dates[0].initDate
+//         for date in dates {
+//            if date.initDate != earliestDate {
+//               context.delete(date)
+//            }
+//         }
+//      }
+//   } catch let error as NSError {
+//      print("Could not fetch. \(error), \(error.userInfo)")
+//   }
+//
+//   return nil
+//}
+
+
+
 // ===MERGE STARTUP GROCERIES LISTS===
 //
 // Needed?

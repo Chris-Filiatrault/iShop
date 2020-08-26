@@ -78,8 +78,8 @@ struct Catalogue: View {
          Alert(title: Text("Information"),
                message:
             UserDefaults.standard.integer(forKey: "syncNumTimesUsed") == 1 ?
-               Text("Tap an item to add it to the current list, or type in a new item.") :
-            Text("Delete items from the Item History by swiping left."),
+               Text("Tap an item to add it, or type in a new item.") :
+            Text("Delete items by swiping left."),
                dismissButton: .default(Text("OK")))
       }
       .onAppear {

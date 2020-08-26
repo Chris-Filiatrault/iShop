@@ -10,7 +10,7 @@
 import SwiftUI
 
 struct RenameList: View {
-      
+   
    static var focusTextfield: Bool = true
    static var newListName: String = ""
    static var newListNameBinding = Binding<String>(get: { newListName }, set: { newListName = $0 } )
@@ -23,61 +23,67 @@ struct RenameList: View {
    
    var body: some View {
       
-      NavigationView {
-         VStack {
-            
-            CustomTextField("", text: RenameList.newListNameBinding, focusTextfieldCursor: RenameList.focusTextfield, onCommit: {
-               self.commit()
-            })
-               .padding(.vertical, 20)
-               .padding(.bottom)
-               .alert(isPresented: $duplicateListAlert) {
-                  Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-            }
-
-            // ===Buttons===
-            HStack(alignment: .center) {
-               
-               // Cancel button
-               Button(action: {
-                  self.setFocusTextfieldToFalse()
-                  self.showingRenameListBinding = false
-               }) {
-                  Text("Cancel")
-                     .bold()
-                  
-               }
-               
-               // Add button
-               Button(action: {
-                  self.commit()
-                  }) {
-                  Text("Rename")
-                     .bold()
-                     .modifier(MainBlueButton())
-                  }
-               .contentShape(Rectangle())
-               .padding(.leading, 20)
-               
-            }
-            Spacer()
-         }
-         .padding()
-         .modifier(AdaptsToSoftwareKeyboard())
-            
-         .navigationBarTitle("Rename List", displayMode: .large)
+      VStack {
          
-      } // End of VStack
+         Text("Rename List")
+            .bold()
+            .font(.largeTitle)
+            .padding(.top, 50)
+         Divider()
+            .padding(.bottom, 30)
+            .offset(y: -15)
+         
+         // ===Rename List Textfield===
+         CustomTextField("", text: RenameList.newListNameBinding, focusTextfieldCursor: RenameList.focusTextfield, onCommit: {
+            self.commit()
+         })
+            .padding(.bottom)
+            .alert(isPresented: $duplicateListAlert) {
+               Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
+         }
+         
+         // ===Buttons===
+         HStack(alignment: .center) {
+            
+            // Cancel button
+            Button(action: {
+               self.setFocusTextfieldToFalse()
+               self.showingRenameListBinding = false
+            }) {
+               Text("Cancel")
+                  .bold()
+               
+            }
+            
+            // Add button
+            Button(action: {
+               self.commit()
+            }) {
+               Text("Rename")
+                  .bold()
+                  .modifier(MainBlueButton())
+            }
+            .contentShape(Rectangle())
+            .padding(.leading, 20)
+            
+         }
+         Spacer()
+         
+      }// End of VStack
+         
+         .padding()
          .environment(\.horizontalSizeClass, .compact)
+         .background(Color("plainSheetBackground").edgesIgnoringSafeArea(.all))
+         
          .onAppear {
             RenameList.newListName = self.thisList.wrappedName
       }
          .onDisappear {
             //                  // This simply makes the string being reset unseen by the user (cleaner)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            RenameList.newListName = ""
+               RenameList.newListName = ""
             }
-      }
+         }
       
    }
    func commit() {

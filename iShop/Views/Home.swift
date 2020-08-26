@@ -69,7 +69,7 @@ struct Home: View {
                      }
                }
                .onDelete(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? deleteSwipedListManual : deleteSwipedListAlphabetical)
-               .onMove(perform: moveList)
+               .onMove(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? moveList : nil)
                
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
@@ -82,23 +82,13 @@ struct Home: View {
                
                // ===Nav bar items===
                .navigationBarItems(
-                  
                   leading:
+                  SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
+                  ,trailing:
                   HStack {
-                     
-                     // Reset MOC
-                     resetButton()
-                     
-                     // Settings
-                     SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
-                  },
-                  // Add list plus button
-                  trailing:
-                  HStack {
-                     
-                     if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
-                        EditButton()
-                     }
+                     EditButton()
+//                     if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
+//                     }
                      if listsManual.count != 0 && listsAlphabetical.count != 0 {
                         AddListButton(showAddList: self.$showAddList)
                      }

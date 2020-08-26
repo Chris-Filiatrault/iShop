@@ -56,10 +56,8 @@ struct ItemList: View {
    var body: some View {
       
       VStack(spacing: 0) {
-         
-//         HStack() {
             
-            // ===Textfield===
+            // ===Add Item Textfield===
             CustomTextField("Add item", text: $globalVariables.itemInTextfield, focusTextfieldCursor: false, onCommit: {
                         if self.globalVariables.itemInTextfield != "" {
                            addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
@@ -82,38 +80,7 @@ struct ItemList: View {
                      .padding(.top, 10)
                      .modifier(ClearButton())
                      .environmentObject(globalVariables)
-            
-            
-            // ===Clear button===
-//            if !globalVariables.itemInTextfield.isEmpty {
-//               Spacer()
-//               Button(action: {
-//                  self.globalVariables.itemInTextfield = ""
-//               }) {
-//                  Image(systemName: "multiply.circle")
-//                     .imageScale(.large)
-//                     .foregroundColor(Color(.gray))
-//                     .padding(5)
-//               }
-//               .padding(.trailing, 10)
-//            }
-//         }
          
-         
-//          ===Enter item textfield===
-//         TextField("Add item", text: self.$globalVariables.itemInTextfield, onEditingChanged: { changed in
-////            self.globalVariables.catalogueShown = true
-////            self.editMode?.wrappedValue = .inactive
-//         }, onCommit: {
-////            if self.globalVariables.itemInTextfield != "" {
-////               addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-////               self.globalVariables.itemInTextfield = ""
-////            }
-////            self.globalVariables.itemInTextfield = ""
-//         })
-//
-//            .background(Color(.white))
-//
          
          VStack {
          // ===List of items WITH categories===
@@ -197,7 +164,7 @@ struct ItemList: View {
             if globalVariables.catalogueShown == false && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
                EditButton()
             }
-            NavBarTrailing(thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList)
+               NavBarTrailing(thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, presentationMode: self.presentationMode)
             }
       )
       

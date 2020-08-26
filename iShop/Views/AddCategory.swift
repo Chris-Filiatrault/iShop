@@ -12,7 +12,6 @@ import CoreData
 struct AddCategory: View {
    @Environment(\.presentationMode) var presentationModeChooseCategory: Binding<PresentationMode>
    
-//   @State var AddCategory.newCategoryName: String = ""
    @State var duplicateCategoryAlert = false
    var thisItem: Item
    @Binding var newItemCategory: Category
@@ -21,69 +20,62 @@ struct AddCategory: View {
    static var focusTextfield: Bool = true
    static var newCategoryName: String = ""
    static var newCategoryNameBinding = Binding<String>(get: { newCategoryName }, set: { newCategoryName = $0 } )
-
+   
    
    var body: some View {
-      NavigationView {
-         VStack {
-            
-            CustomTextField("Enter category name",
-                            text: AddCategory.newCategoryNameBinding,
-                            focusTextfieldCursor: false,
-                            onCommit: { self.commit() }
-               )
-               .padding(.vertical)
-               .padding(.bottom)
-               .alert(isPresented: $duplicateCategoryAlert) {
-                  Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-            }
-            
-            
-//            // ===Enter item textfield===
-//            TextField("Enter category name", text: $AddCategory.newCategoryName,
-//                      onCommit: {
-//                        self.commit()
-//            })
-//               .textFieldStyle(RoundedBorderTextFieldStyle())
-//               .padding(5)
-//               .cornerRadius(5)
-//               .padding(.bottom, 20)
-
-            
-            
-            // ===Buttons===
-            HStack(alignment: .center) {
-               
-               // Cancel button
-               Button(action: {
-                  self.presentationModeChooseCategory.wrappedValue.dismiss()
-                  AddCategory.newCategoryName = ""
-               }) {
-                  Text("Cancel")
-                     .bold()
-               }.padding(.trailing, 5)
-               
-               // Add button
-               Button(action: {
-                  self.commit()
-               }) {
-                  Text("Add")
-                     .bold()
-                     .modifier(MainBlueButton())
-               }
-               .padding(.leading, 5)
-               
-            }
-            Spacer()
+      
+      VStack {
+         
+         Text("Add Category")
+            .bold()
+            .font(.largeTitle)
+            .padding(.top, 50)
+         Divider()
+            .padding(.bottom, 30)
+            .offset(y: -15)
+         
+         // ===Add Category Textfield===
+         CustomTextField("Enter category name",
+                         text: AddCategory.newCategoryNameBinding,
+                         focusTextfieldCursor: false,
+                         onCommit: { self.commit() }
+         )
+            .padding(.bottom)
+            .alert(isPresented: $duplicateCategoryAlert) {
+               Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
          }
-         .padding()
-//         .modifier(AdaptsToSoftwareKeyboard())
+         
+         
+         // ===Buttons===
+         HStack(alignment: .center) {
             
-         .navigationBarTitle("Add Category", displayMode: .large)
-      } // End of VStack
-         .onAppear {
+            // Cancel button
+            Button(action: {
+               self.presentationModeChooseCategory.wrappedValue.dismiss()
+               AddCategory.newCategoryName = ""
+            }) {
+               Text("Cancel")
+                  .bold()
+            }.padding(.trailing, 5)
             
+            // Add button
+            Button(action: {
+               self.commit()
+            }) {
+               Text("Add")
+                  .bold()
+                  .modifier(MainBlueButton())
+            }
+            .padding(.leading, 5)
+            
+         }
+         Spacer()
       }
+      .padding()
+      .environment(\.horizontalSizeClass, .compact)
+      .background(Color("plainSheetBackground").edgesIgnoringSafeArea(.all))
+
+      
    }
    
    /// Setting `focusTextfield = false` prevents the navigation link from glitching after the view is dismissed

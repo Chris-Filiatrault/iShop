@@ -12,14 +12,13 @@ struct ListActionSheet: View {
    
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.editMode)  var editMode
-   @Environment(\.presentationMode) var presentationModeNav
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @Binding var showListOptions: Bool
    @Binding var showRenameList: Bool
    @State var confirmDeleteListAlert: Bool = false
    var thisList: ListOfItems
    var startUp: StartUp
-//   var presentationModeNav: Binding<PresentationMode>
+   var presentationMode: Binding<PresentationMode>
    
     var body: some View {
         
@@ -76,7 +75,7 @@ struct ListActionSheet: View {
                   message: Text("This can't be undone."),
                   primaryButton: .default(Text("Cancel")),
                   secondaryButton: .destructive(Text("Delete")) {
-                     self.presentationModeNav.wrappedValue.dismiss()
+                     self.presentationMode.wrappedValue.dismiss()
                      deleteList(thisList: self.thisList)
                      if !isFirstTimeLaunch() && userHasNoLists() {
                         addList(listName: "Groceries")

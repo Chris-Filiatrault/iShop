@@ -17,6 +17,7 @@ struct NavBarTrailing: View {
    var startUp: StartUp
    @Binding var showListOptions: Bool
    @Binding var showRenameList: Bool
+   var presentationMode: Binding<PresentationMode>
    
    var body: some View {
       
@@ -24,7 +25,7 @@ struct NavBarTrailing: View {
          
          // More options ellipsis for iPhone
          if UIDevice.current.userInterfaceIdiom != .pad && globalVariables.catalogueShown == false {
-            ListActionSheet(showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, thisList: self.thisList, startUp: self.startUp)
+            ListActionSheet(showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, thisList: self.thisList, startUp: self.startUp, presentationMode: self.presentationMode)
          }
          
          
