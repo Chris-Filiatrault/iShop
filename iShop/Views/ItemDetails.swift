@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct ItemDetails: View {
-   
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.presentationMode) var presentationMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
@@ -31,6 +31,10 @@ struct ItemDetails: View {
    @State var textfieldActive: Bool = false
    var thisList: ListOfItems
    
+   static var itemName: String = ""
+   static var itemNameBinding = Binding<String>(get: { itemName }, set: { itemName = $0 } )
+
+   
    var body: some View {
       
       NavigationView {
@@ -38,19 +42,20 @@ struct ItemDetails: View {
             VStack {
                
                Form {
-                  
-                  // Name
-                  TextField("Enter name", text: self.$itemName,
-                            onEditingChanged: { edit in
-                              self.textfieldActive = true
-                  }, onCommit: {
-                     if self.itemName != "" {
-                        renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
+                  HStack {
+                  Text("Name: ")
+                  CustomTextField("", text: ItemDetails.itemNameBinding, focusTextfieldCursor: false, onCommit: {
+                     print("Commit")
+                     if ItemDetails.itemName != "" {
+                        renameItem(currentName: self.thisItem.wrappedName, newName: ItemDetails.itemName)
                      }
+                     UIApplication.shared.endEditing()
+                  }, onBeginEditing: {
+                     print("Begin editing")
+                     self.textfieldActive = true
                   })
-                     .cornerRadius(5)
-                     .frame(width: geometry.size.width * 0.9)
-                     .font(.headline)
+                  
+               }
                   
                   // Quantity
                   HStack {
@@ -114,19 +119,27 @@ struct ItemDetails: View {
                
                
             }// End of VStack
-               
                .background(Color("listBackground").edgesIgnoringSafeArea(.all))
                
                // === Nav bar ===
                .navigationBarTitle("Details", displayMode: .inline)
                .navigationBarItems(trailing:
                   Button(action: {
-                     self.showItemDetails.toggle()
-//                     self.presentationMode.wrappedValue.dismiss()
-                     print("\(self.showItemDetails)")
-                     if self.itemName != "" {
-                        renameItem(currentName: self.thisItem.wrappedName, newName: self.itemName)
+                     
+                     // Dismiss keyboard if active
+                     if self.textfieldActive == true {
+                     UIApplication.shared.endEditing()
                      }
+                     // Dismiss item details sheet
+                     self.showItemDetails.toggle()
+                     print("\(self.showItemDetails)")
+                     
+                     // Change item name if needed
+                     if ItemDetails.itemName != "" && ItemDetails.itemName != self.thisItem.wrappedName {
+                        renameItem(currentName: self.thisItem.wrappedName, newName: ItemDetails.itemName)
+                     }
+                     
+                     // Change list if needed
                      if self.oldList != self.newList {
                         print("change list")
                         changeItemList(thisItem: self.thisItem, oldList: self.oldList, newList: self.newList)
@@ -140,6 +153,9 @@ struct ItemDetails: View {
          }
       }
       .environment(\.horizontalSizeClass, .compact)
+      .onAppear {
+         ItemDetails.itemName = self.thisItem.wrappedName
+      }
       .onDisappear {
          if self.oldItemCategory != self.newItemCategory {
             changeCategory(thisItem: self.thisItem,

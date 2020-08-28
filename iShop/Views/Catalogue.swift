@@ -67,7 +67,7 @@ struct Catalogue: View {
                      .modifier(MainBlueButton())
                      .transition(.scale)
                      .padding(.horizontal, 40)
-                     .padding(.vertical, 10)
+                     .padding(.vertical, 7)
                }
                }
             }

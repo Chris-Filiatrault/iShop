@@ -28,7 +28,8 @@ struct ClearButton: ViewModifier {
                   .foregroundColor(Color(.gray))
                   .padding(5)
             }
-            .padding(.trailing, 10)
+            .padding(.trailing, 5)
+            .padding(5)
          }
       }
    }
@@ -38,13 +39,37 @@ struct ClearButton: ViewModifier {
 struct MainBlueButton: ViewModifier {
     func body(content: Content) -> some View {
         content
-         
-         .frame(minWidth: 50)
+         .frame(minWidth: 60)
+         .font(.headline)
          .padding(10)
-         .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
+         .background(Color("blueButton"))
          .foregroundColor(.white)
-         .cornerRadius(40)
-         .padding(.horizontal, 3)
+         .cornerRadius(8)
+
+//         .frame(minWidth: 50)
+//         .padding(10)
+//         .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
+//         .foregroundColor(.white)
+//         .cornerRadius(40)
+//         .padding(.horizontal, 3)
+
+    }
+}
+
+
+struct CancelButton: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+         .padding()
+         .foregroundColor(Color("blueButton"))
+
+
+//         .frame(minWidth: 50)
+//         .padding(10)
+//         .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
+//         .foregroundColor(.white)
+//         .cornerRadius(40)
+//         .padding(.horizontal, 3)
 
     }
 }

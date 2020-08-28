@@ -10,92 +10,100 @@ import SwiftUI
 import CoreData
 
 struct ChooseCategory: View {
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.presentationMode) var presentationMode
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
-  
+   @Environment(\.editMode) var editMode
+   
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
       NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
    ] ,predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
-
+   
    
    var thisItem: Item
    @Binding var oldItemCategory: Category
    @Binding var newItemCategory: Category
    @Binding var categoryName: String
    @Binding var textfieldActive: Bool
-   @State var showSettings: Bool = true
+   @State var showRenameCategory: Bool = false
    @State var deleteItemCategoryAlert: Bool = false
    @State var deletedCategory: String = ""
    
    var body: some View {
+      
       VStack {
-         
-         
-// ===Code I started writing for creating a navigation link to the settings (for when the user isn't using categories)===
-//         if userDefaultsManager.useCategories == false {
-//            VStack {
-//               Text("Categories are not being used.\n\nYou can enable categories in the Settings page.")
-//                  .padding(.top)
-//                  .padding(.top)
-//                  .font(.headline)
-//                  .lineLimit(nil)
-//
-////               NavigationLink(destination: Settings(showSettingsBinding: $showSettings)) {
-////                  Text("Settings")
-////               }
-//               Spacer()
-//            }
-//         }
-//         else {
-            VStack {
-               List {
-                  NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
-                     HStack {
-                        Text("Add Category")
-                           .bold()
-                     }
-                  }
-                  if thisItem.categoryOriginName == "Uncategorised" {
-                     HStack {
-                        Text("Uncategorised")
-                        Spacer()
-                        Image(systemName: "checkmark")
-                           .imageScale(.medium)
-                     }.foregroundColor(.blue)
-                  }
-                  ForEach(self.categories) { category in
-                     Button(action: {
-                        self.newItemCategory = category
-                        self.categoryName = category.wrappedName
-                        self.presentationMode.wrappedValue.dismiss()
-                     }) {
-                        HStack {
-                           if category.wrappedName == self.thisItem.categoryOriginName {
-                              HStack {
-                                 Text(category.wrappedName)
-//                                 Text("\(category.position)")
-                                 Spacer()
-                                 Image(systemName: "checkmark")
-                                    .imageScale(.medium)
-                              }
-                              .foregroundColor(.blue)
-                           }
-                           else {
-                              Text(category.wrappedName)
-                                 .foregroundColor(.black)
-//                              Text("\(category.position)")
-                           }
-                        }
-                     }
-                  }
-                  .onDelete(perform: deleteSwipedCategory)
+         List {
+            
+            // Add new category
+            NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
+               HStack {
+                  Text("Add Category")
+                     .bold()
                }
             }
-//            .alert(isPresented: $deleteItemCategoryAlert) {
-//               Alert(title: Text(""), message: Text("To delete \(self.deletedCategory), first move \(thisItem.wrappedName) to a different category."), dismissButton: .default(Text("OK")))
-//         }
-//         }
+            
+            // Uncategorised (label, not a button)
+            if thisItem.categoryOriginName == "Uncategorised" {
+               HStack {
+                  Text("Uncategorised")
+                  Spacer()
+                  Image(systemName: "checkmark")
+                     .imageScale(.medium)
+               }.foregroundColor(.blue)
+            }
+            
+            // List of categories
+            ForEach(self.categories) { category in
+               Button(action: {
+                  self.newItemCategory = category
+                  self.categoryName = category.wrappedName
+                  self.presentationMode.wrappedValue.dismiss()
+               }) {
+                  HStack {
+                     
+                     // Selected category
+                     if category.wrappedName == self.thisItem.categoryOriginName {
+                        HStack {
+                           Text(category.wrappedName)
+                           Spacer()
+                           Image(systemName: "checkmark")
+                              .imageScale(.medium)
+                        }
+                        .foregroundColor(.blue)
+                     }
+                     
+                     // Non-selected categories
+                     else {
+                        Text(category.wrappedName)
+                           .foregroundColor(.black)
+//                           Spacer()
+                     }
+                     
+//                     if self.editMode?.wrappedValue == .active {
+//                     // Rename button
+//                        Divider()
+//
+//                        Image(systemName: "square.and.pencil")
+//                           .imageScale(.large)
+//                           .foregroundColor(.black)
+//                           .padding(7)
+//                           .onTapGesture {
+//                              self.showRenameCategory = true
+////                              self.editMode?.wrappedValue = .inactive
+//                        }
+//                        .sheet(isPresented: self.$showRenameCategory){
+//                           Text("Sheet")
+//                        }
+//                     }
+                  }
+                  
+               }
+            }
+            .onDelete(perform: deleteSwipedCategory)
+         }
+         
       }
+                     
       .navigationBarTitle(Text("Category"), displayMode: .inline)
       .navigationBarItems(trailing:
          EditButton()
@@ -137,9 +145,9 @@ struct ChooseCategory: View {
                if categoryToBeDeleted == self.oldItemCategory {
                   self.oldItemCategory = uncategorised
                   self.newItemCategory = uncategorised
-//                  self.deletedCategory = categoryToBeDeleted.wrappedName
-//                  self.deleteItemCategoryAlert.toggle()
-//                  return
+                  //                  self.deletedCategory = categoryToBeDeleted.wrappedName
+                  //                  self.deleteItemCategoryAlert.toggle()
+                  //                  return
                }
                
                for category in categories {
@@ -154,7 +162,7 @@ struct ChooseCategory: View {
                
                managedContext.delete(categoryToBeDeleted)
             }
-//            self.categoryName = "Uncategorised"
+            //            self.categoryName = "Uncategorised"
          }
          
          do {
@@ -168,3 +176,4 @@ struct ChooseCategory: View {
       }
    }
 }
+

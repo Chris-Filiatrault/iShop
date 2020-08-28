@@ -144,6 +144,7 @@ struct ItemList: View {
          }
          
       } // End of VStack
+         
       .background(Color("listBackground").edgesIgnoringSafeArea(.all))
       .modifier(AdaptsToSoftwareKeyboard())
       .onDisappear() {

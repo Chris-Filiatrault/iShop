@@ -51,8 +51,8 @@ struct RenameList: View {
                self.showingRenameListBinding = false
             }) {
                Text("Cancel")
-                  .bold()
-               
+               .bold()
+               .modifier(CancelButton())
             }
             
             // Add button

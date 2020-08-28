@@ -12,6 +12,7 @@ import CoreData
 struct AddCategory: View {
    @Environment(\.presentationMode) var presentationModeChooseCategory: Binding<PresentationMode>
    
+   @Environment(\.editMode) var editMode
    @State var duplicateCategoryAlert = false
    var thisItem: Item
    @Binding var newItemCategory: Category
@@ -55,7 +56,8 @@ struct AddCategory: View {
                AddCategory.newCategoryName = ""
             }) {
                Text("Cancel")
-                  .bold()
+               .bold()
+               .modifier(CancelButton())
             }.padding(.trailing, 5)
             
             // Add button

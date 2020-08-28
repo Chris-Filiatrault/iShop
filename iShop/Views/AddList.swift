@@ -57,7 +57,7 @@ struct AddList: View {
             }) {
                Text("Cancel")
                   .bold()
-                  .padding()
+                  .modifier(CancelButton())
             }.padding(.trailing, 5)
             
             // Add button

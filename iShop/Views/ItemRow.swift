@@ -26,7 +26,6 @@ struct ItemRow: View {
       HStack {
          
          Button(action: {
-            
             if self.thisItem.markedOff == false {
                markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
             }
@@ -35,22 +34,26 @@ struct ItemRow: View {
             }
             GlobalVariableClass().refreshingID = UUID()
             hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
-            }) {
-            
-            ZStack {
-               Rectangle().hidden()
+         }) {
+            HStack {
+               Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
+                  .imageScale(.large)
+                  .foregroundColor(thisItem.markedOff == true ? Color("navBarFont") : .black)
+               
+               Text(thisItem.quantity > 1 ?
+                  "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
+                  "\(thisItem.wrappedName)")
+                  .foregroundColor(thisItem.markedOff == true ? .white : .black)
+                  .multilineTextAlignment(.leading)
+               
+               
+               
+               // Item details button
                HStack {
-                  Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
-                     .imageScale(.large)
-                     .foregroundColor(thisItem.markedOff == true ? Color("navBarFont") : .black)
                   
-                     Text(thisItem.quantity > 1 ?
-                        "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
-                        "\(thisItem.wrappedName)")
-                        .foregroundColor(thisItem.markedOff == true ? .white : .black)
-                        .multilineTextAlignment(.leading)
+                  Spacer()
                   
-                Spacer()
+                  Divider()
                   
                   Button(action: {
                      self.showItemDetails.toggle()
@@ -64,31 +67,31 @@ struct ItemRow: View {
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .padding(7)
                   }
-                  .sheet(isPresented: self.$showItemDetails) {
-                     VStack {
-                        if self.thisItem.categoryOrigin != nil {
-                     ItemDetails(thisItem: self.thisItem,
-                                 showItemDetails: self.$showItemDetails,
-                                 itemName: self.thisItem.wrappedName,
-                                 oldItemCategory: self.thisItem.categoryOrigin!,
-                                 newItemCategory: self.thisItem.categoryOrigin!,
-                                 thisItemQuantity: self.thisItem.quantity,
-                                 oldList: self.thisItem.origin!,
-                                 newList: self.thisItem.origin!,
-                                 categoryName: self.thisItem.categoryOrigin!.wrappedName,
-                                 thisList: self.thisList)
-                     } else {
-                        errorMessage(debuggingErrorMessage: "origin and/or categoryOrigin not found when passing thisItem into ItemDetails()")
-                        }
-                     }
-                        .environment(\.managedObjectContext, self.context)
-                  }
                }
             }
          }
       }
       .id(globalVariables.refreshingID)
       .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
+      .sheet(isPresented: self.$showItemDetails) {
+         VStack {
+            if self.thisItem.categoryOrigin != nil {
+               ItemDetails(thisItem: self.thisItem,
+                           showItemDetails: self.$showItemDetails,
+                           itemName: self.thisItem.wrappedName,
+                           oldItemCategory: self.thisItem.categoryOrigin!,
+                           newItemCategory: self.thisItem.categoryOrigin!,
+                           thisItemQuantity: self.thisItem.quantity,
+                           oldList: self.thisItem.origin!,
+                           newList: self.thisItem.origin!,
+                           categoryName: self.thisItem.categoryOrigin!.wrappedName,
+                           thisList: self.thisList)
+            } else {
+               errorMessage(debuggingErrorMessage: "origin and/or categoryOrigin not found when passing thisItem into ItemDetails()")
+            }
+         }
+         .environment(\.managedObjectContext, self.context)
+      }
    }
 }
 

@@ -18,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
       // Sync User Defaults to iCloud
       MKiCloudSync.start(withPrefix: "sync")
-     
       return true
    }
    

@@ -18,6 +18,7 @@ class GlobalVariableClass: ObservableObject {
    
    @Published var itemInTextfield: String = ""
    @Published var catalogueShown: Bool = false
+   @Published var isEditMode: EditMode = .inactive
    @State var restoreItemsFromInBasket: Bool = false
    @State var refreshingID = UUID()
    @State var onboardingShownFromSettings: Bool = false
