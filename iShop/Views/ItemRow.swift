@@ -47,7 +47,6 @@ struct ItemRow: View {
                   .multilineTextAlignment(.leading)
                
                
-               
                // Item details button
                HStack {
                   
@@ -57,6 +56,7 @@ struct ItemRow: View {
                   
                   Button(action: {
                      self.showItemDetails.toggle()
+                     hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
                      withAnimation {
                         self.editMode?.wrappedValue = .inactive
                      }

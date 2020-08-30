@@ -83,13 +83,16 @@ struct Home: View {
                // ===Nav bar items===
                .navigationBarItems(
                   leading:
-                  SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
-                  ,trailing:
                   HStack {
-                     EditButton()
+//                  resetButton()
+                  SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
+                  }
+                  ,trailing:
 //                     if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
 //                     }
-                     if listsManual.count != 0 && listsAlphabetical.count != 0 {
+                  HStack {
+                  if listsManual.count != 0 && listsAlphabetical.count != 0 {
+                        EditButton()
                         AddListButton(showAddList: self.$showAddList)
                      }
                   }

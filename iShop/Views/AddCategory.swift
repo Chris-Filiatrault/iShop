@@ -100,10 +100,6 @@ struct AddCategory: View {
       else if !categoryNameIsUnique(name: AddCategory.newCategoryName) {
          self.duplicateCategoryAlert = true
       }
-      else if AddCategory.newCategoryName == "" {
-         self.setFocusTextfieldToFalse()
-         self.presentationModeChooseCategory.wrappedValue.dismiss()
-      }
       
    }
 }

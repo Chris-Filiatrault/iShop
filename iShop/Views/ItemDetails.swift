@@ -12,6 +12,7 @@ import CoreData
 struct ItemDetails: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.presentationMode) var presentationMode
+   @Environment(\.managedObjectContext) var context
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
       NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
@@ -89,7 +90,9 @@ struct ItemDetails: View {
                         oldItemCategory: self.$oldItemCategory,
                         newItemCategory: self.$newItemCategory,
                         categoryName: self.$categoryName,
-                        textfieldActive: self.$textfieldActive)) {
+                        textfieldActive: self.$textfieldActive)
+                     .environment(\.managedObjectContext, self.context)
+                     ) {
                            HStack {
                               Text("Category")
                               Spacer()

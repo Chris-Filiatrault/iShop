@@ -12,6 +12,7 @@ import CoreData
 struct ChooseCategory: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.presentationMode) var presentationMode
+   @Environment(\.managedObjectContext) var context
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @Environment(\.editMode) var editMode
    
@@ -28,9 +29,11 @@ struct ChooseCategory: View {
    @State var showRenameCategory: Bool = false
    @State var deleteItemCategoryAlert: Bool = false
    @State var deletedCategory: String = ""
+   @State var categoryBeingRenamed: Category = uncategorisedCategory()!
    
    var body: some View {
       
+      ZStack {
       VStack {
          List {
             
@@ -76,34 +79,50 @@ struct ChooseCategory: View {
                      else {
                         Text(category.wrappedName)
                            .foregroundColor(.black)
-//                           Spacer()
                      }
-                     
-//                     if self.editMode?.wrappedValue == .active {
-//                     // Rename button
-//                        Divider()
-//
-//                        Image(systemName: "square.and.pencil")
-//                           .imageScale(.large)
-//                           .foregroundColor(.black)
-//                           .padding(7)
-//                           .onTapGesture {
-//                              self.showRenameCategory = true
-////                              self.editMode?.wrappedValue = .inactive
-//                        }
+                     Spacer()
+
+                     // Rename button
+                     if self.editMode?.wrappedValue == .active {
+   
+                        Divider()
+
+                        Image(systemName: "square.and.pencil")
+                           .imageScale(.large)
+                           .foregroundColor(.black)
+                           .padding(7)
+                           .onTapGesture {
+                              RenameCategory.renamedCategoryName = category.wrappedName
+                              hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                                 self.categoryBeingRenamed = category
+                              self.showRenameCategory = true
+                        }
+                        
 //                        .sheet(isPresented: self.$showRenameCategory){
-//                           Text("Sheet")
+//                           RenameCategory(thisCategory: category, showRenameCategory: self.$showRenameCategory, categoryName: self.$categoryName)
+//                                    .environment(\.managedObjectContext, self.context)
+////                              .onDisappear {
+////                                 self.editMode?.wrappedValue = .inactive
+////                           }
 //                        }
-//                     }
+                     }
                   }
-                  
                }
             }
             .onDelete(perform: deleteSwipedCategory)
          }
-         
       }
-                     
+         
+         Color(.black)
+            .edgesIgnoringSafeArea(.all)
+            .opacity(showRenameCategory == true ? 0.2 : 0)
+      }
+//      .brightness(showRenameCategory == true ? -0.2 : 0)
+      .overlay(
+         self.showRenameCategory == true ?
+         RenameCategory(thisCategory: categoryBeingRenamed, showRenameCategory: $showRenameCategory, categoryName: self.$categoryName)
+         : nil
+      )
       .navigationBarTitle(Text("Category"), displayMode: .inline)
       .navigationBarItems(trailing:
          EditButton()
