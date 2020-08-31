@@ -12,5 +12,5 @@ class PreviewValues: ObservableObject {
 
    @State var myBinding: Bool = false
    @State var categoryName: String = "Uncategorised"
-
+   
 }

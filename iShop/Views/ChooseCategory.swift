@@ -22,113 +22,112 @@ struct ChooseCategory: View {
    
    
    var thisItem: Item
+   
+   @State var showRenameCategory: Bool = false
+   @State var deleteItemCategoryAlert: Bool = false
+   @State var deletedCategory: String = ""
+   @State var categoryBeingRenamed: Category? = nil
+   
    @Binding var oldItemCategory: Category
    @Binding var newItemCategory: Category
    @Binding var categoryName: String
    @Binding var textfieldActive: Bool
-   @State var showRenameCategory: Bool = false
-   @State var deleteItemCategoryAlert: Bool = false
-   @State var deletedCategory: String = ""
-   @State var categoryBeingRenamed: Category = uncategorisedCategory()!
    
    var body: some View {
       
       ZStack {
-      VStack {
-         List {
-            
-            // Add new category
-            NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
-               HStack {
-                  Text("Add Category")
-                     .bold()
-               }
-            }
-            
-            // Uncategorised (label, not a button)
-            if thisItem.categoryOriginName == "Uncategorised" {
-               HStack {
-                  Text("Uncategorised")
-                  Spacer()
-                  Image(systemName: "checkmark")
-                     .imageScale(.medium)
-               }.foregroundColor(.blue)
-            }
-            
-            // List of categories
-            ForEach(self.categories) { category in
-               Button(action: {
-                  self.newItemCategory = category
-                  self.categoryName = category.wrappedName
-                  self.presentationMode.wrappedValue.dismiss()
-               }) {
+         VStack {
+            List {
+               
+               // Add new category
+               NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
                   HStack {
-                     
-                     // Selected category
-                     if category.wrappedName == self.thisItem.categoryOriginName {
-                        HStack {
-                           Text(category.wrappedName)
-                           Spacer()
-                           Image(systemName: "checkmark")
-                              .imageScale(.medium)
-                        }
-                        .foregroundColor(.blue)
-                     }
-                     
-                     // Non-selected categories
-                     else {
-                        Text(category.wrappedName)
-                           .foregroundColor(.black)
-                     }
+                     Text("Add Category")
+                        .bold()
+                  }
+               }
+               
+               // Uncategorised (label, not a button)
+               if thisItem.categoryOriginName == "Uncategorised" {
+                  HStack {
+                     Text("Uncategorised")
                      Spacer()
-
-                     // Rename button
-                     if self.editMode?.wrappedValue == .active {
-   
-                        Divider()
-
-                        Image(systemName: "square.and.pencil")
-                           .imageScale(.large)
-                           .foregroundColor(.black)
-                           .padding(7)
-                           .onTapGesture {
-                              RenameCategory.renamedCategoryName = category.wrappedName
-                              hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
-                                 self.categoryBeingRenamed = category
-                              self.showRenameCategory = true
-                        }
+                     Image(systemName: "checkmark")
+                        .imageScale(.medium)
+                  }.foregroundColor(.blue)
+               }
+               
+               // List of categories
+               ForEach(self.categories) { category in
+                  Button(action: {
+                     self.newItemCategory = category
+                     self.categoryName = category.wrappedName
+                     self.presentationMode.wrappedValue.dismiss()
+                  }) {
+                     HStack {
                         
-//                        .sheet(isPresented: self.$showRenameCategory){
-//                           RenameCategory(thisCategory: category, showRenameCategory: self.$showRenameCategory, categoryName: self.$categoryName)
-//                                    .environment(\.managedObjectContext, self.context)
-////                              .onDisappear {
-////                                 self.editMode?.wrappedValue = .inactive
-////                           }
-//                        }
+                        // Selected category
+                        if category.wrappedName == self.thisItem.categoryOriginName {
+                           HStack {
+                              Text(category.wrappedName)
+                              Spacer()
+                              Image(systemName: "checkmark")
+                                 .imageScale(.medium)
+                           }
+                           .foregroundColor(.blue)
+                        }
+                           
+                           // Non-selected categories
+                        else {
+                           Text(category.wrappedName)
+                              .foregroundColor(.black)
+                        }
+                        Spacer()
+                        
+                        // Rename button
+                        if self.editMode?.wrappedValue == .active {
+                           
+                           Divider()
+                           
+                           Text("Rename")
+                              .foregroundColor(Color("blueButton"))
+                              .padding(3)
+                              .onTapGesture {
+                                 self.categoryBeingRenamed = category
+                                 hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                                 RenameCategory.renamedCategoryName = category.wrappedName
+                                 RenameCategory.focusTextfield = true
+                                 if self.categoryBeingRenamed != nil {
+                                 self.showRenameCategory = true
+                                 }
+                           }
+                        }
                      }
                   }
                }
+               .onDelete(perform: deleteSwipedCategory)
             }
-            .onDelete(perform: deleteSwipedCategory)
          }
-      }
          
+         // Makes the screen dim when RenameCategory is shown
          Color(.black)
             .edgesIgnoringSafeArea(.all)
-            .opacity(showRenameCategory == true ? 0.2 : 0)
+            .opacity(showRenameCategory == true ? 0.25 : 0)
       }
-//      .brightness(showRenameCategory == true ? -0.2 : 0)
+         
       .overlay(
          self.showRenameCategory == true ?
-         RenameCategory(thisCategory: categoryBeingRenamed, showRenameCategory: $showRenameCategory, categoryName: self.$categoryName)
-         : nil
+            // Rename category is shown if the "Rename" button above successfully assigned a category to categoryBeingRenamed
+            RenameCategory(thisItem: self.thisItem, thisCategory: categoryBeingRenamed!, showRenameCategory: $showRenameCategory, categoryName: self.$categoryName)
+            : nil
       )
-      .navigationBarTitle(Text("Category"), displayMode: .inline)
-      .navigationBarItems(trailing:
-         EditButton()
-            .padding()
+         .navigationBarTitle(Text("Category"), displayMode: .inline)
+         .navigationBarItems(trailing:
+            EditButton()
+               .padding()
+               .opacity(showRenameCategory == true ? 0 : 1)
       )
-      
+               
    }
    // ===DELETE (swiped) CATEGORY===
    func deleteSwipedCategory(indices: IndexSet) {

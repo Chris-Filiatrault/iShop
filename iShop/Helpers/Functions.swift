@@ -1338,10 +1338,48 @@ func addCategory(categoryName: String, thisItem: Item) {
 
 
 
+// ===RENAME CATEGORY===
+/// Changes the name of all categories in the managed context with the name `currentName`, of which there should only be one, though this will also capture any potential duplicates.
+func renameCategory(currentName: String, newName: String) {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest: NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
+   
+   do {
+      let categories = try managedContext.fetch(fetchRequest)
+      
+      if categories != [] {
+         for category in categories {
+            if category.wrappedName == currentName {
+               category.name = newName
+               for item in category.itemsInCategoryArray {
+                  item.categoryOriginName = newName
+               }
+            }
+         }
+      }
+      
+      do {
+         try managedContext.save()
+      } catch let error as NSError {
+         print("Could not save. \(error), \(error.userInfo)")
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+}
 
 
 // ===CHANGE CATEGORY===
-// Changes both the category array + category origin, upon the ItemDetails sheet disappearing (to avoid issues with the Done button in the sheet not working).
+/// Changes both the category array + category origin, upon the ItemDetails sheet disappearing (to avoid issues with the Done button in the sheet not working).
 func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
 
    guard let appDelegate =
@@ -1387,34 +1425,6 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
       print("Could not fetch. \(error), \(error.userInfo)")
    }
 }
-
-//// ===CHANGE CATEGORY ARRAY===
-//func changeCategoryArray(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
-//
-//   guard let appDelegate =
-//      UIApplication.shared.delegate as? AppDelegate else {
-//         return
-//   }
-//
-//   let managedContext =
-//      appDelegate.persistentContainer.viewContext
-//
-//   for item in oldItemCategory.itemsInCategoryArray {
-//      if item.wrappedName == thisItem.wrappedName {
-//         oldItemCategory.removeFromItemsInCategory(item)
-//      }
-//   }
-//   for item in newItemCategory.itemsInCategoryArray {
-//      if item.wrappedName == thisItem.wrappedName {
-//         newItemCategory.addToItemsInCategory(item)
-//      }
-//   }
-//   do {
-//      try managedContext.save()
-//   } catch let error as NSError {
-//      print("Could not save. \(error), \(error.userInfo)")
-//   }
-//}
 
 
 //===GET NUMBER OF UNTICKED ITEMS IN CATEGORY===
@@ -1785,6 +1795,16 @@ func errorMessage(debuggingErrorMessage: String) -> some View {
 }
 
 
+func deviceIsiPhoneSE() -> Bool {
+   var result = false
+   let deviceName: String = UIDevice.current.modelName
+   if deviceName == "iPhone8,4" {
+      result = true
+   }
+   
+   return result
+}
+
 // =====================================================
 // ================== Development ======================
 // =====================================================
@@ -1878,3 +1898,30 @@ func resetButton() -> some View {
 }
 
 
+
+
+// ===RANDOM ITEM FOR PREVIEW===
+func itemForCanvasPreview() -> Item? {
+   
+   guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+      return nil
+   }
+   
+   let managedContext = appDelegate.persistentContainer.viewContext
+   
+   let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+   
+   do {
+      
+      let items = try managedContext.fetch(fetchRequest)
+      
+      if items != [] {
+         return items.first
+      }
+      
+   } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+   }
+   
+   return nil
+}

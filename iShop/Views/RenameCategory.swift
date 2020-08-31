@@ -21,7 +21,6 @@ import CoreData
 
 struct RenameCategory: View {
    
-   //   @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.editMode) var editMode
    
    @FetchRequest(entity: Category.entity(), sortDescriptors: [
@@ -29,10 +28,11 @@ struct RenameCategory: View {
    ] ,predicate: NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])) var categories: FetchedResults<Category>
    
    
+   var thisItem: Item
    var thisCategory: Category
    
-   
    @State var duplicateCategoryAlert: Bool = false
+   @State var opacityValue: Double = 0
    @Binding var showRenameCategory: Bool
    @Binding var categoryName: String
    
@@ -42,169 +42,152 @@ struct RenameCategory: View {
    
    
    var body: some View {
-      
+         
       ZStack {
-       RoundedRectangle(cornerRadius: 20)
-         .foregroundColor(Color("alertWithTextfield")).edgesIgnoringSafeArea(.all)
-      
-      VStack {
+         RoundedRectangle(cornerRadius: 20)
+            .foregroundColor(Color("alertWithTextfield")).edgesIgnoringSafeArea(.all)
          
-         Text("Rename Category")
-            .bold()
-            .font(.headline)
-            .padding(5)
-         
-         
-         // ===Rename Category Textfield===
-         CustomTextField("Enter category name",
-                         text: RenameCategory.renamedCategoryNameBinding,
-                         focusTextfieldCursor: true,
-                         onCommit: { self.commit() }
+         VStack {
+            
+            Text("Rename Category")
+               .bold()
+               .font(.headline)
+               .padding(5)
             
             
-         )
-            .padding(.bottom, 10)
-         Divider()
+            // ===Rename Category Textfield===
+            CustomTextField("",
+                            text: RenameCategory.renamedCategoryNameBinding,
+                            focusTextfieldCursor: RenameCategory.focusTextfield,
+                            onCommit: { self.commit() }
+            )
             .padding(.bottom, 5)
-            .alert(isPresented: $duplicateCategoryAlert) {
-               Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-         }
-         
-         
-         // ===Buttons===
-         HStack(alignment: .center) {
             
-            Spacer()
-            
-            // Cancel button
-            Button(action: {
-               self.showRenameCategory = false
-               RenameCategory.renamedCategoryName = ""
-               self.editMode?.wrappedValue = .inactive
-            }) {
-               Text("Cancel")
-            }.padding(.trailing, 5)
-            
-            Spacer()
             Divider()
-            Spacer()
-            
-            // Add button
-            Button(action: {
-               self.commit()
-            }) {
-               Text("Rename")
-                  .bold()
+               .padding(.horizontal, -25)
+               .offset(y: 5)
+               .alert(isPresented: $duplicateCategoryAlert) {
+                  Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")) {
+                     RenameCategory.focusTextfield = true
+                     })
+                  
             }
-            .padding(.leading, 5)
             
-            Spacer()
+            // ===Buttons===
+            HStack(alignment: .center) {
+               
+               Spacer()
+               
+               // Cancel button
+               Button(action: {
+                  self.showRenameCategory = false
+                  RenameCategory.renamedCategoryName = ""
+                  UIApplication.shared.endEditing()
+                  self.editMode?.wrappedValue = .inactive
+               }) {
+                  ZStack {
+                     Rectangle()
+                        .hidden()
+                  Text("Cancel")
+                     .padding(15)
+                     
+                  }
+               }.padding(.trailing, 5)
+               
+               Spacer()
+               Divider()
+               Spacer()
+               
+               // Add button
+               Button(action: {
+                  self.commit()
+               }) {
+                  ZStack {
+                     Rectangle()
+                        .hidden()
+                        
+                  Text("Rename")
+                     .bold()
+                     .padding(15)
+                  }
+               }
+               .padding(.leading, 5)
+               
+               Spacer()
+            }
          }
-      }
-      .padding()
-      
-      .onAppear {
-         RenameCategory.renamedCategoryName = self.thisCategory.wrappedName
-         RenameCategory.focusTextfield = true
-      }
-      .onDisappear {
-         RenameCategory.focusTextfield = false
+         .padding(EdgeInsets(top: 15, leading: 25, bottom: 0, trailing: 25))
+         .onAppear {
+            RenameCategory.renamedCategoryName = self.thisCategory.wrappedName
+            RenameCategory.focusTextfield = true
+         }
+         .onDisappear {
+            RenameCategory.focusTextfield = false
          }
          
-      }.frame(width: 300, height: 100)
+      }.frame(width: deviceIsiPhoneSE() ? 300 : 350,
+              height: 150)
+         // Bring up the alert so it doesn't get in the way of the keyboard (bring it up higher on iPad)
+         .offset(y: UIDevice.current.userInterfaceIdiom == .phone ? -110 : -200)
    }
-   
-   
    
    
    
    /// Setting `focusTextfield = false` prevents the navigation link from glitching after the view is dismissed
    func setFocusTextfieldToFalse() {
-      AddCategory.focusTextfield = false
+      RenameCategory.focusTextfield = false
    }
    
    func commit() {
       
-      if AddCategory.newCategoryName != "" && categoryNameIsUnique(name: AddCategory.newCategoryName) {
-         //      addCategory(categoryName: AddCategory.newCategoryName, thisItem: self.thisItem)
-         //      self.setFocusTextfieldToFalse()
-         //      self.presentationModeChooseCategory.wrappedValue.dismiss()
-         //      AddCategory.newCategoryName = ""
+      // Changes made
+      if RenameCategory.renamedCategoryName != "" && categoryNameIsUnique(name: RenameCategory.renamedCategoryName) {
+         
+         // change the string category name shown in the picker preview
+         if thisItem.categoryOriginName == thisCategory.wrappedName {
+            self.categoryName = RenameCategory.renamedCategoryName
+         }
+         
+         // rename in core data
+         renameCategory(currentName: thisCategory.wrappedName, newName: RenameCategory.renamedCategoryName)
+               self.setFocusTextfieldToFalse()
+         RenameCategory.renamedCategoryName = ""
+         UIApplication.shared.endEditing()
+         self.editMode?.wrappedValue = .inactive
+         showRenameCategory = false
       }
-      else if AddCategory.newCategoryName == "" {
+         
+      // Blank string
+      else if RenameCategory.renamedCategoryName == "" {
          // Do nothing
       }
-      else if !categoryNameIsUnique(name: AddCategory.newCategoryName) {
-               self.duplicateCategoryAlert = true
+      
+      // No changes made
+      else if RenameCategory.renamedCategoryName == thisCategory.wrappedName {
+            RenameCategory.renamedCategoryName = ""
+            UIApplication.shared.endEditing()
+            self.editMode?.wrappedValue = .inactive
+            showRenameCategory = false
+
       }
-      self.editMode?.wrappedValue = .inactive
+      
+      // New name not unique
+      else if !categoryNameIsUnique(name: RenameCategory.renamedCategoryName) && RenameCategory.renamedCategoryName != thisCategory.wrappedName {
+         self.duplicateCategoryAlert = true // dismiss keyboard, otherwise the user can't dismiss the alert on devices with small screens
+         self.setFocusTextfieldToFalse()
+      }
+      
    }
    
 }
 
 
-
-
-//var body: some View {
-//   VStack {
-//
-//      Text("Category Details")
-//         .bold()
-//         .font(.largeTitle)
-//         .padding(.top, 50)
-//      Divider()
-//         .padding(.bottom, 30)
-//         .offset(y: -15)
-//
-//      // ===Rename Category Textfield===
-//      CustomTextField("Enter category name",
-//                      text: AddCategory.newCategoryNameBinding,
-//                      focusTextfieldCursor: false,
-//                      onCommit: { self.commit() }
-//      )
-//         .padding(.bottom)
-//         .alert(isPresented: $duplicateCategoryAlert) {
-//            Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
-//      }
-//
-//
-//      // ===Buttons===
-//      HStack(alignment: .center) {
-//
-//         // Cancel button
-//         Button(action: {
-//            self.showRenameCategory = false
-//            //                 AddCategory.newCategoryName = ""
-//         }) {
-//            Text("Cancel")
-//               .modifier(CancelButton())
-//         }.padding(.trailing, 5)
-//
-//         // Add button
-//         Button(action: {
-//            self.commit()
-//         }) {
-//            Text("Add")
-//               .bold()
-//               .modifier(MainBlueButton())
-//         }
-//         .padding(.leading, 5)
-//
-//      }
-//      Spacer()
-//   }
-//   .padding()
-//   .environment(\.horizontalSizeClass, .compact)
-//   .background(Color("plainSheetBackground").edgesIgnoringSafeArea(.all))
-//   .onAppear {
-//      //            RenameList.newListName = self.thisList.wrappedName
-//   }
-//}
-
 struct RenameCategory_Previews: PreviewProvider {
    static var previews: some View {
-      
-      RenameCategory(thisCategory: uncategorisedCategory()!, showRenameCategory: PreviewValues().$myBinding, categoryName: PreviewValues().$categoryName)
+      ZStack {
+      Color(.black)
+         RenameCategory(thisItem: itemForCanvasPreview()!, thisCategory: uncategorisedCategory()!, showRenameCategory: PreviewValues().$myBinding, categoryName: PreviewValues().$categoryName)
    }
-   
+   }
+
 }
