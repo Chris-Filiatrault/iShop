@@ -30,31 +30,19 @@ struct NavBarTrailing: View {
          
          
          // Done button
-         if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count == 0 {
+         if globalVariables.catalogueShown == true {
             Button(action: {
                withAnimation {
                   UIApplication.shared.endEditing()
                   self.globalVariables.catalogueShown = false
+                  self.globalVariables.itemInTextfield = ""
                }
             }) {
-               Text("Done")
+               Text(globalVariables.itemInTextfield.count == 0 ? "Done" : "Cancel")
                .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 5))
             }
          }
-            
-         // Add button
-         else if globalVariables.catalogueShown == true && globalVariables.itemInTextfield.count > 0 && editMode?.wrappedValue == .inactive {
-            Button(action: {
-               if self.globalVariables.itemInTextfield != "" {
-                  addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-                  self.globalVariables.itemInTextfield = ""
-               }
-               self.globalVariables.itemInTextfield = ""
-            }) {
-               Text("Add")
-                  .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 5))
-            }
-         }
+         
       }
       .font(.headline)
       .foregroundColor(Color("navBarFont"))

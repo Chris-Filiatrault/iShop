@@ -61,6 +61,7 @@ struct ItemList: View {
             CustomTextField("Add item", text: $globalVariables.itemInTextfield, focusTextfieldCursor: false, onCommit: {
                         if self.globalVariables.itemInTextfield != "" {
                            addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
+                           hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
                            self.globalVariables.itemInTextfield = ""
                         }
                         else if self.globalVariables.itemInTextfield == "" {
@@ -101,10 +102,7 @@ struct ItemList: View {
                }
                
             }.padding(.bottom)
-               .sheet(isPresented: self.$showRenameList){
-                  RenameList(thisList: self.thisList, showingRenameListBinding: self.$showRenameList)
-                     .environmentObject(self.globalVariables)
-            }
+
          }
          
          // ===List of items WITHOUT categories===
@@ -144,7 +142,10 @@ struct ItemList: View {
          }
          
       } // End of VStack
-         
+         .sheet(isPresented: self.$showRenameList){
+            RenameList(thisList: self.thisList, showingRenameListBinding: self.$showRenameList)
+               .environmentObject(self.globalVariables)
+      }
       .background(Color("listBackground").edgesIgnoringSafeArea(.all))
       .modifier(AdaptsToSoftwareKeyboard())
       .onDisappear() {
@@ -173,7 +174,7 @@ struct ItemList: View {
    
    
    // REMOVE (swiped) ITEM
-   func removeSwipedItem(indicies: IndexSet) {
+   func removeSwipedItem(indices: IndexSet) {
       
       guard let appDelegate =
          UIApplication.shared.delegate as? AppDelegate else {
@@ -206,7 +207,7 @@ struct ItemList: View {
       do {
          let items = try managedContext.fetch(fetchRequest)
          
-         for index in indicies {
+         for index in indices {
             
             let swipedItem = items[index] // find item
             

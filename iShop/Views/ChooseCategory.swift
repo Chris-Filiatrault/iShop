@@ -5,7 +5,6 @@
 //  Created by Chris Filiatrault on 12/7/20.
 //  Copyright © 2020 Chris Filiatrault. All rights reserved.
 //
-
 import SwiftUI
 import CoreData
 
@@ -24,14 +23,15 @@ struct ChooseCategory: View {
    var thisItem: Item
    
    @State var showRenameCategory: Bool = false
-   @State var deleteItemCategoryAlert: Bool = false
-   @State var deletedCategory: String = ""
+   @State var cannotDeleteCategoryAlert: Bool = false
    @State var categoryBeingRenamed: Category? = nil
+   @State var deletedCategory: Category? = nil
    
    @Binding var oldItemCategory: Category
    @Binding var newItemCategory: Category
    @Binding var categoryName: String
    @Binding var textfieldActive: Bool
+   
    
    var body: some View {
       
@@ -98,7 +98,7 @@ struct ChooseCategory: View {
                                  RenameCategory.renamedCategoryName = category.wrappedName
                                  RenameCategory.focusTextfield = true
                                  if self.categoryBeingRenamed != nil {
-                                 self.showRenameCategory = true
+                                    self.showRenameCategory = true
                                  }
                            }
                         }
@@ -108,6 +108,23 @@ struct ChooseCategory: View {
                .onDelete(perform: deleteSwipedCategory)
             }
          }
+         .alert(isPresented: $cannotDeleteCategoryAlert, content: {
+            
+            self.deletedCategory == self.thisItem.categoryOrigin ?
+            
+            // Deleted category contains thisItem
+            Alert(title: Text("Alert"),
+                  message: Text("Cannot delete a category containing the current item.\n\nTo delete \(oldItemCategory.wrappedName), first move \(thisItem.wrappedName) to a different category."),
+                  dismissButton: .default(Text("OK")))
+               :
+            // Deleted category doesn't contain thisItem
+            Alert(title: Text("Delete Category?"),
+                  message: Text("All items in \(deletedCategory?.wrappedName ?? "this category") will be moved to Uncategorised"),
+                  primaryButton: .destructive(Text("Delete")) {
+                     print("Deleted")
+                  }, secondaryButton: .cancel())
+         })
+         
          
          // Makes the screen dim when RenameCategory is shown
          Color(.black)
@@ -127,7 +144,7 @@ struct ChooseCategory: View {
                .padding()
                .opacity(showRenameCategory == true ? 0 : 1)
       )
-               
+      
    }
    // ===DELETE (swiped) CATEGORY===
    func deleteSwipedCategory(indices: IndexSet) {
@@ -146,47 +163,15 @@ struct ChooseCategory: View {
       ]
       fetchRequest.predicate = NSPredicate(format: "NOT name IN %@", ["Uncategorised", "In Cart"])
       
-      let uncategorisedFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
-      uncategorisedFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
-      
       do {
          let categories = try managedContext.fetch(fetchRequest)
-         let uncategorisedFetchReturn = try managedContext.fetch(uncategorisedFetchRequest)
          
-         if uncategorisedFetchReturn != [] {
-            let uncategorised = uncategorisedFetchReturn[0]
+         for index in indices {
             
-            for index in indices {
-               
-               let categoryToBeDeleted = categories[index]
-               
-               if categoryToBeDeleted == self.oldItemCategory {
-                  self.oldItemCategory = uncategorised
-                  self.newItemCategory = uncategorised
-                  //                  self.deletedCategory = categoryToBeDeleted.wrappedName
-                  //                  self.deleteItemCategoryAlert.toggle()
-                  //                  return
-               }
-               
-               for category in categories {
-                  if category.position > categoryToBeDeleted.position {
-                     category.position -= 1
-                  }
-               }
-               for item in categoryToBeDeleted.itemsInCategoryArray {
-                  item.categoryOrigin = uncategorised
-                  item.categoryOriginName = "Uncategorised"
-               }
-               
-               managedContext.delete(categoryToBeDeleted)
-            }
-            //            self.categoryName = "Uncategorised"
-         }
-         
-         do {
-            try managedContext.save()
-         } catch let error as NSError {
-            print("Could not delete. \(error), \(error.userInfo)")
+            // Assign the deleted category to deletedCategory, and bring up the deleteCategory alert. What is displayed in the alert and the options available depend on whether thisItem is in the deleted category.
+            deletedCategory = categories[index]
+            self.cannotDeleteCategoryAlert.toggle()
+            
          }
          
       } catch let error as NSError {
@@ -195,3 +180,32 @@ struct ChooseCategory: View {
    }
 }
 
+
+
+
+
+//               if categoryToBeDeleted == self.oldItemCategory {
+////                  self.oldItemCategory = uncategorised
+////                  self.newItemCategory = uncategorised
+////                  self.deletedCategory = categoryToBeDeleted.wrappedName
+//                  return
+//               }
+
+//               for category in categories {
+//                  if category.position > categoryToBeDeleted.position {
+//                     category.position -= 1
+//                  }
+//               }
+//               for item in categoryToBeDeleted.itemsInCategoryArray {
+//                  item.categoryOrigin = uncategorised
+//                  item.categoryOriginName = "Uncategorised"
+//               }
+
+//               managedContext.delete(categoryToBeDeleted)
+
+
+//         do {
+//            try managedContext.save()
+//         } catch let error as NSError {
+//            print("Could not delete. \(error), \(error.userInfo)")
+//         }

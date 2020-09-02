@@ -19,7 +19,7 @@ struct ItemDetails: View {
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")) var lists: FetchedResults<ListOfItems>
    
    
-   var thisItem: Item
+   @State var thisItem: Item
    @Binding var showItemDetails: Bool
    @State var itemName: String
    @State var oldItemCategory: Category
@@ -46,13 +46,13 @@ struct ItemDetails: View {
                   HStack {
                   Text("Name: ")
                   CustomTextField("", text: ItemDetails.itemNameBinding, focusTextfieldCursor: false, onCommit: {
-                     print("Commit")
+                     
                      if ItemDetails.itemName != "" {
                         renameItem(currentName: self.thisItem.wrappedName, newName: ItemDetails.itemName)
                      }
                      UIApplication.shared.endEditing()
+                     
                   }, onBeginEditing: {
-                     print("Begin editing")
                      self.textfieldActive = true
                   })
                   
@@ -83,8 +83,7 @@ struct ItemDetails: View {
                   }
                   
                   
-                  // Category
-                  // oldItemCategory and newItemCategory are passed in from ItemRow and contain the value thisItem.categoryOrigin! (forced unwrapping
+                  // Choose category
                      NavigationLink(destination: ChooseCategory(
                         thisItem: self.thisItem,
                         oldItemCategory: self.$oldItemCategory,
@@ -149,7 +148,7 @@ struct ItemDetails: View {
                      }
                      
                   }) {
-                     Text("Done")
+                     Text("Save")
                         .font(.headline)
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
                })

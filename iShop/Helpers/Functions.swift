@@ -15,6 +15,15 @@ import CoreData
 
 
 // ===ADD NEW ITEM===
+
+/**
+ Adds a new Item object
+ 
+   * If `itemName` is unique, an Item object with that name is added to all lists, and the object in the current list is added.
+   * If `itemName` is not unique, the existing `Item` object is simply added to the list.
+   * If the existing object is already in the list, `quantity` is incremented by 1.
+ 
+ */
 func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -1901,7 +1910,7 @@ func resetButton() -> some View {
 
 
 // ===RANDOM ITEM FOR PREVIEW===
-func itemForCanvasPreview() -> Item? {
+func randomItem() -> Item? {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return nil

@@ -24,7 +24,6 @@ struct ItemRow: View {
    var body: some View {
       
       HStack {
-         
          Button(action: {
             if self.thisItem.markedOff == false {
                markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
@@ -73,6 +72,7 @@ struct ItemRow: View {
       }
       .id(globalVariables.refreshingID)
       .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
+      
       .sheet(isPresented: self.$showItemDetails) {
          VStack {
             if self.thisItem.categoryOrigin != nil {
@@ -86,12 +86,14 @@ struct ItemRow: View {
                            newList: self.thisItem.origin!,
                            categoryName: self.thisItem.categoryOrigin!.wrappedName,
                            thisList: self.thisList)
+               .environment(\.managedObjectContext, self.context)
             } else {
                errorMessage(debuggingErrorMessage: "origin and/or categoryOrigin not found when passing thisItem into ItemDetails()")
             }
          }
-         .environment(\.managedObjectContext, self.context)
+         
       }
+      
    }
 }
 

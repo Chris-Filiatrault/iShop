@@ -186,7 +186,7 @@ struct RenameCategory_Previews: PreviewProvider {
    static var previews: some View {
       ZStack {
       Color(.black)
-         RenameCategory(thisItem: itemForCanvasPreview()!, thisCategory: uncategorisedCategory()!, showRenameCategory: PreviewValues().$myBinding, categoryName: PreviewValues().$categoryName)
+         RenameCategory(thisItem: randomItem()!, thisCategory: uncategorisedCategory()!, showRenameCategory: PreviewValues().$myBinding, categoryName: PreviewValues().$categoryName)
    }
    }
 
