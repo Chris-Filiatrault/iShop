@@ -43,7 +43,7 @@ struct AddCategory: View {
          )
             .padding(.bottom)
             .alert(isPresented: $duplicateCategoryAlert) {
-               Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
+               Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("Done")))
          }
          
          

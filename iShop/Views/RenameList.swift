@@ -39,7 +39,7 @@ struct RenameList: View {
          })
             .padding(.bottom)
             .alert(isPresented: $duplicateListAlert) {
-               Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")))
+               Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("Done")))
          }
          
          // ===Buttons===

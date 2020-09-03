@@ -671,111 +671,6 @@ func renameList(thisList: ListOfItems, newName: String) {
 }
 
 
-// ===DELETE SWIPED LIST (alphabetical fetch request)===
-func deleteSwipedListAlphabetical(indices: IndexSet) {
-   
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
-   }
-   
-   let managedContext =
-      appDelegate.persistentContainer.viewContext
-   
-   let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
-   fetchRequest.sortDescriptors = [
-      NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
-   ]
-   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-   
-   do {
-      
-      let lists = try managedContext.fetch(fetchRequest)
-      for index in indices {
-         
-         let listToBeDeleted = lists[index]
-         for list in lists {
-            if list.position > listToBeDeleted.position {
-               list.position -= 1
-            }
-         }
-         
-         for item in listToBeDeleted.itemArray {
-            managedContext.delete(item)
-         }
-         
-         managedContext.delete(listToBeDeleted)
-         
-         if userHasNoLists() {
-            addList(listName: "Groceries")
-         }
-      }
-      
-      do {
-         try managedContext.save()
-      } catch let error as NSError {
-         print("Could not delete. \(error), \(error.userInfo)")
-      }
-      
-   } catch let error as NSError {
-      print("Could not fetch. \(error), \(error.userInfo)")
-   }
-}
-
-
-// ===DELETE SWIPED LIST (by position fetch request)===
-func deleteSwipedListManual(indices: IndexSet) {
-   
-   guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
-   }
-   
-   let managedContext =
-      appDelegate.persistentContainer.viewContext
-   
-   let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
-   fetchRequest.sortDescriptors = [
-      NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
-   ]
-   fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-   
-   
-   do {
-      let lists = try managedContext.fetch(fetchRequest)
-      for index in indices {
-         
-         let listToBeDeleted = lists[index]
-         for list in lists {
-            if list.position > listToBeDeleted.position {
-               list.position -= 1
-            }
-         }
-         
-         for item in listToBeDeleted.itemArray {
-            managedContext.delete(item)
-         }
-         
-         managedContext.delete(listToBeDeleted)
-         
-         if userHasNoLists() {
-            addList(listName: "Groceries")
-         }
-         
-      }
-      
-      do {
-         try managedContext.save()
-      } catch let error as NSError {
-         print("Could not delete. \(error), \(error.userInfo)")
-      }
-      
-   } catch let error as NSError {
-      print("Could not fetch. \(error), \(error.userInfo)")
-   }
-}
-
-
 // ===DELETE LIST===
 func deleteList(thisList: ListOfItems) {
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -802,6 +697,10 @@ func deleteList(thisList: ListOfItems) {
          managedContext.delete(item)
       }
       managedContext.delete(thisList)
+      
+      if userHasNoLists() {
+         addList(listName: "Groceries")
+      }
       
       do {
          try managedContext.save()
@@ -1347,6 +1246,37 @@ func addCategory(categoryName: String, thisItem: Item) {
 
 
 
+//===DELETE CATEGORY===
+func deleteCategory(category: Category) {
+   
+   guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+         return
+   }
+   
+   let managedContext =
+      appDelegate.persistentContainer.viewContext
+   
+   do {
+      let uncategorised = uncategorisedCategory()
+      if uncategorised != nil {
+         for item in category.itemsInCategoryArray {
+            item.categoryOrigin = uncategorised
+            item.categoryOriginName = "Uncategorised"
+         }
+      }
+      
+      managedContext.delete(category)
+      
+      try managedContext.save()
+   } catch let error as NSError {
+      print("Could not save. \(error), \(error.userInfo)")
+   }
+   
+}
+
+
+
 // ===RENAME CATEGORY===
 /// Changes the name of all categories in the managed context with the name `currentName`, of which there should only be one, though this will also capture any potential duplicates.
 func renameCategory(currentName: String, newName: String) {
@@ -1762,25 +1692,20 @@ func startupItemStrings() -> [[String]] {
 
 
 // ===HAPTIC FEEDBACK (single)===
-func hapticFeedback(enabled: Bool) {
-   if enabled {
-      let generator = UIImpactFeedbackGenerator(style: .light)
-      generator.impactOccurred()
-   }
+func hapticFeedback() {
+   let generator = UIImpactFeedbackGenerator(style: .light)
+   generator.impactOccurred()
 }
 
 
 // ===HAPTIC FEEDBACK (success)===
-func successHapticFeedback (enabled: Bool) {
-   if enabled {
-      let generator = UINotificationFeedbackGenerator()
-      generator.notificationOccurred(.success)
-   }
+func successHapticFeedback () {
+   let generator = UINotificationFeedbackGenerator()
+   generator.notificationOccurred(.success)
 }
 
 
 func errorMessage(debuggingErrorMessage: String) -> some View {
-   let userDefaultsManager = UserDefaultsManager()
    
    return
       VStack {
@@ -1794,7 +1719,7 @@ func errorMessage(debuggingErrorMessage: String) -> some View {
          Button(action: {
                let pasteboard = UIPasteboard.general
                pasteboard.string = debuggingErrorMessage
-               successHapticFeedback(enabled: userDefaultsManager.hapticFeedback)
+               successHapticFeedback()
          }) {
             Text("Copy error message")
             .bold()
@@ -1826,7 +1751,7 @@ func resetDefaults() {
    UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
    UserDefaults.standard.set(false, forKey: "onboardingShown")
    UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
-   UserDefaults.standard.set("Alphabetical", forKey: "syncSortListsBy")
+   UserDefaults.standard.set("Manual", forKey: "syncSortListsBy")
    UserDefaults.standard.set("Manual", forKey: "syncSortItemsBy")
    UserDefaults.standard.set(true, forKey: "syncUseCategories")
    UserDefaults.standard.set(nil, forKey: "syncUserHasLaunchedPreviously")

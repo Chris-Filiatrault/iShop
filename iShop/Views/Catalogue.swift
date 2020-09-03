@@ -58,7 +58,7 @@ struct Catalogue: View {
                   if self.globalVariables.itemInTextfield != "" {
                      addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
                      self.globalVariables.itemInTextfield = ""
-                     hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                     hapticFeedback()
                   }
                   self.globalVariables.itemInTextfield = ""
                }) {
@@ -80,7 +80,7 @@ struct Catalogue: View {
             UserDefaults.standard.integer(forKey: "syncNumTimesUsed") == 1 ?
                Text("Tap an item to add it, or type in a new item.") :
             Text("Delete items by swiping left."),
-               dismissButton: .default(Text("OK")))
+               dismissButton: .default(Text("Done")))
       }
       .onAppear {
          

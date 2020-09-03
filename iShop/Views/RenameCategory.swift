@@ -67,7 +67,7 @@ struct RenameCategory: View {
                .padding(.horizontal, -25)
                .offset(y: 5)
                .alert(isPresented: $duplicateCategoryAlert) {
-                  Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("OK")) {
+                  Alert(title: Text("Alert"), message: Text("Category names must be unique\nPlease choose another name"), dismissButton: .default(Text("Done")) {
                      RenameCategory.focusTextfield = true
                      })
                   

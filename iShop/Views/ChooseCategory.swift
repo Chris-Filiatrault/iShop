@@ -23,7 +23,7 @@ struct ChooseCategory: View {
    var thisItem: Item
    
    @State var showRenameCategory: Bool = false
-   @State var cannotDeleteCategoryAlert: Bool = false
+   @State var deleteCategoryAlert: Bool = false
    @State var categoryBeingRenamed: Category? = nil
    @State var deletedCategory: Category? = nil
    
@@ -94,7 +94,7 @@ struct ChooseCategory: View {
                               .padding(3)
                               .onTapGesture {
                                  self.categoryBeingRenamed = category
-                                 hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                                 hapticFeedback()
                                  RenameCategory.renamedCategoryName = category.wrappedName
                                  RenameCategory.focusTextfield = true
                                  if self.categoryBeingRenamed != nil {
@@ -108,20 +108,23 @@ struct ChooseCategory: View {
                .onDelete(perform: deleteSwipedCategory)
             }
          }
-         .alert(isPresented: $cannotDeleteCategoryAlert, content: {
+         .alert(isPresented: $deleteCategoryAlert, content: {
             
             self.deletedCategory == self.thisItem.categoryOrigin ?
             
             // Deleted category contains thisItem
             Alert(title: Text("Alert"),
                   message: Text("Cannot delete a category containing the current item.\n\nTo delete \(oldItemCategory.wrappedName), first move \(thisItem.wrappedName) to a different category."),
-                  dismissButton: .default(Text("OK")))
+                  dismissButton: .default(Text("Done")))
                :
             // Deleted category doesn't contain thisItem
             Alert(title: Text("Delete Category?"),
-                  message: Text("All items in \(deletedCategory?.wrappedName ?? "this category") will be moved to Uncategorised"),
+                  message: Text("All items in \(deletedCategory?.wrappedName ?? "this category") will be moved to Uncategorised."),
                   primaryButton: .destructive(Text("Delete")) {
                      print("Deleted")
+                     if self.deletedCategory != nil {
+                     deleteCategory(category: self.deletedCategory!)
+                     }
                   }, secondaryButton: .cancel())
          })
          
@@ -170,7 +173,7 @@ struct ChooseCategory: View {
             
             // Assign the deleted category to deletedCategory, and bring up the deleteCategory alert. What is displayed in the alert and the options available depend on whether thisItem is in the deleted category.
             deletedCategory = categories[index]
-            self.cannotDeleteCategoryAlert.toggle()
+            self.deleteCategoryAlert.toggle()
             
          }
          
@@ -179,33 +182,3 @@ struct ChooseCategory: View {
       }
    }
 }
-
-
-
-
-
-//               if categoryToBeDeleted == self.oldItemCategory {
-////                  self.oldItemCategory = uncategorised
-////                  self.newItemCategory = uncategorised
-////                  self.deletedCategory = categoryToBeDeleted.wrappedName
-//                  return
-//               }
-
-//               for category in categories {
-//                  if category.position > categoryToBeDeleted.position {
-//                     category.position -= 1
-//                  }
-//               }
-//               for item in categoryToBeDeleted.itemsInCategoryArray {
-//                  item.categoryOrigin = uncategorised
-//                  item.categoryOriginName = "Uncategorised"
-//               }
-
-//               managedContext.delete(categoryToBeDeleted)
-
-
-//         do {
-//            try managedContext.save()
-//         } catch let error as NSError {
-//            print("Could not delete. \(error), \(error.userInfo)")
-//         }

@@ -50,7 +50,7 @@ struct InCart: View {
                      .onTapGesture {
                         for item in self.items.wrappedValue {
                            removeItemFromList(thisItem: item, listOrigin: self.thisList)
-                           hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                           hapticFeedback()
                         }
                      }
                   
@@ -61,7 +61,7 @@ struct InCart: View {
                   .onTapGesture {
                      for item in self.items.wrappedValue {
                         restoreItemInList(thisItem: item, thisList: self.thisList)
-                        hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                        hapticFeedback()
                      }
                   }
                Spacer()

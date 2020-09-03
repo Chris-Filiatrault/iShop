@@ -27,12 +27,12 @@ struct Settings: View {
    @State var isShowingMailView = false
    @State var alertNoMail = false
    @State var disableAutocorrect: Bool = false
-//   @State var hapticFeedbackSelection: String = UserDefaults.standard.string(forKey: "syncHapticFeedback") ?? "On"
    @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Manual"
-   @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Alphabetical"
+   @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Manual"
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    @State var onboardingShownFromSettings: Bool = false
+   let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
    
    @Binding var showSettingsBinding: Bool
    
@@ -42,6 +42,7 @@ struct Settings: View {
          VStack {
             
             Form {
+               
                
                // ===LIST OPTIONS===
                Section(header: Text("LIST OPTIONS")) {
@@ -99,7 +100,7 @@ struct Settings: View {
                         Text(" Manual ").bold() +
                      Text("above, then press the") +
                         Text(" Edit ").bold() +
-                     Text("button on the home page.")
+                     Text("button on the home page.\n\n")
                      }
                      .font(.subheadline)
                      .foregroundColor(.gray)
@@ -115,20 +116,17 @@ struct Settings: View {
                      Text("Keep Screen On")
                   }
                   
-                  // Haptic feedback
-                  Toggle(isOn: $userDefaultsManager.hapticFeedback) {
-                     Text("Haptic Feedback")
-                  }
-                  
-                  // Autocorrect
-//                  Toggle(isOn: $userDefaultsManager.disableAutoCorrect) {
-//                     Text("Disable Autocorrect")
-//                  }
+
                   
                }
                
                // ===ISHOP===
-               Section(header: Text("ISHOP")) {
+               Section(header: Text("ISHOP"),
+                       footer: appVersion == "" ?
+                  Text("") :
+                  Text("Version \(appVersion ?? "")")
+                  
+               ) {
                                     
                   // Introduction
                   Button(action: {
@@ -162,43 +160,46 @@ struct Settings: View {
                   
                }
                
+               
             }
             .padding(.top, 15)
                
-               // === Nav bar ===
-               .navigationBarTitle("Settings", displayMode: .inline)
-               .navigationBarItems(trailing:
-                  
-                  // Done button
-                  Button(action: {
-                     self.showSettingsBinding.toggle()
-                     
-                     // If going from alphabetically ordered items to manually ordered, update indices (so the items don't move)
-                     if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
-                        for list in self.lists {
-                           sortItemPositionsAlphabetically(thisList: list)
-                           print("Change item order")
-                        }
-                     }
-                     
-                     // If going from alphabetically ordered lists to manually ordered, update indices (so the lists don't move)
-                     if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
-                        sortListPositionsAlphabetically()
-                     }
-                     
-                     // Update user defaults
-                     UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
-                     UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
-                     UserDefaults.standard.set(self.userDefaultsManager.hapticFeedback, forKey: "syncHapticFeedback")
-                     
-                  }) {
-                     Text("Done")
-                        .font(.headline)
-                        .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
-                     
-               })
+            
+               
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))
+         
+         // === Nav bar ===
+         .navigationBarTitle("Settings", displayMode: .inline)
+         .navigationBarItems(trailing:
+            
+            // Done button
+            Button(action: {
+               self.showSettingsBinding.toggle()
+               
+               // If going from alphabetically ordered items to manually ordered, update indices (so the items don't move)
+               if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
+                  for list in self.lists {
+                     sortItemPositionsAlphabetically(thisList: list)
+                     print("Change item order")
+                  }
+               }
+               
+               // If going from alphabetically ordered lists to manually ordered, update indices (so the lists don't move)
+               if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
+                  sortListPositionsAlphabetically()
+               }
+               
+               // Update user defaults
+               UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
+               UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
+               
+            }) {
+               Text("Done")
+                  .font(.headline)
+                  .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
+               
+         })
          
       } // End of VStack
          .environment(\.horizontalSizeClass, .compact)

@@ -66,7 +66,7 @@ struct ListActionSheet: View {
                         listItemsWithCategoriesAsString(thisList: self.thisList) :
                         listItemsWithoutCategoriesAsString(thisList: self.thisList)
 
-                     successHapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                     successHapticFeedback()
                   },
                   .cancel(Text("Cancel"))])
          }

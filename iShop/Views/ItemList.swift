@@ -61,7 +61,7 @@ struct ItemList: View {
             CustomTextField("Add item", text: $globalVariables.itemInTextfield, focusTextfieldCursor: false, onCommit: {
                         if self.globalVariables.itemInTextfield != "" {
                            addNewItem(itemName: self.$globalVariables.itemInTextfield, listOrigin: self.thisList)
-                           hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                           hapticFeedback()
                            self.globalVariables.itemInTextfield = ""
                         }
                         else if self.globalVariables.itemInTextfield == "" {

@@ -32,7 +32,7 @@ struct ItemRow: View {
                restoreItemInList(thisItem: self.thisItem, thisList: self.thisList)
             }
             GlobalVariableClass().refreshingID = UUID()
-            hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+            hapticFeedback()
          }) {
             HStack {
                Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
@@ -55,7 +55,7 @@ struct ItemRow: View {
                   
                   Button(action: {
                      self.showItemDetails.toggle()
-                     hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+                     hapticFeedback()
                      withAnimation {
                         self.editMode?.wrappedValue = .inactive
                      }

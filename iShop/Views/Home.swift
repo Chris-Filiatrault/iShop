@@ -14,10 +14,12 @@ struct Home: View {
    @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
    
-   @Binding var navBarFont: UIColor
-   @Binding var navBarColor: UIColor
    @State var showSettings: Bool = false
    @State var showAddList: Bool = false
+   @State var showDeleteListAlert: Bool = false
+   @State var deletedList: ListOfItems? = nil
+   @Binding var navBarFont: UIColor
+   @Binding var navBarColor: UIColor
    var startUp: StartUp
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
@@ -68,7 +70,7 @@ struct Home: View {
                         
                      }
                }
-               .onDelete(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? deleteSwipedListManual : deleteSwipedListAlphabetical)
+               .onDelete(perform: deleteSwipedList)
                .onMove(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? moveList : nil)
                
             }
@@ -84,12 +86,10 @@ struct Home: View {
                .navigationBarItems(
                   leading:
                   HStack {
-//                  resetButton()
+                  resetButton()
                   SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
                   }
                   ,trailing:
-//                     if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
-//                     }
                   HStack {
                   if listsManual.count != 0 && listsAlphabetical.count != 0 {
                         EditButton()
@@ -101,8 +101,84 @@ struct Home: View {
             // ===Nav bar modifiers===
             .accentColor(Color("navBarFont")) // Back button color
             .navigationViewStyle(StackNavigationViewStyle())
+            .alert(isPresented: $showDeleteListAlert) {
+               Alert(title: Text("Delete List?"), message: Text("This can't be undone."), primaryButton: .destructive(Text("Delete")) {
+                  if self.deletedList != nil {
+                     deleteList(thisList: self.deletedList!)
+                  }
+                  }, secondaryButton: .cancel())
+         }
       }
    } // End of body
+   
+   
+   /// Assigns the state variable `deletedList` with the swiped list, and brings up the delete list confirmation alert.
+   func deleteSwipedList(indices: IndexSet) {
+      for index in indices {
+         showDeleteListAlert = true
+         if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
+            self.deletedList = listsManual[index]
+         } else {
+            self.deletedList = listsAlphabetical[index]
+         }
+      }
+      
+   }
+
+
+   // ===DELETE SWIPED LIST (by position fetch request)===
+//   func deleteSwipedListManual(indices: IndexSet) {
+//
+//      guard let appDelegate =
+//         UIApplication.shared.delegate as? AppDelegate else {
+//            return
+//      }
+//
+//      let managedContext =
+//         appDelegate.persistentContainer.viewContext
+//
+//      let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
+//      fetchRequest.sortDescriptors = [
+//         NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
+//      ]
+//      fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
+//
+//
+//      do {
+//         let lists = try managedContext.fetch(fetchRequest)
+//         for index in indices {
+//
+//            let listToBeDeleted = lists[index]
+//            for list in lists {
+//               if list.position > listToBeDeleted.position {
+//                  list.position -= 1
+//               }
+//            }
+//
+//            for item in listToBeDeleted.itemArray {
+//               managedContext.delete(item)
+//            }
+//
+//            managedContext.delete(listToBeDeleted)
+//
+//            if userHasNoLists() {
+//               addList(listName: "Groceries")
+//            }
+//
+//         }
+//
+//         do {
+//            try managedContext.save()
+//         } catch let error as NSError {
+//            print("Could not delete. \(error), \(error.userInfo)")
+//         }
+//
+//      } catch let error as NSError {
+//         print("Could not fetch. \(error), \(error.userInfo)")
+//      }
+//   }
+   
+   
 }
 
 

@@ -32,7 +32,7 @@ struct CatalogueRow: View {
             self.globalVariables.catalogueShown = true
          }
          
-         hapticFeedback(enabled: self.userDefaultsManager.hapticFeedback)
+         hapticFeedback()
       }) {
          HStack {
             

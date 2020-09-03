@@ -21,7 +21,6 @@ struct StartUp: View {
    
    var body: some View {
       VStack {
-         //         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
          if onboardingShown != true {
             OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
          }
@@ -30,7 +29,7 @@ struct StartUp: View {
          }
       }
       
-   } // End of body
+   }
    
    
    // ========================================
@@ -39,13 +38,10 @@ struct StartUp: View {
    
    init() {
       
-      // To remove all separators in list:
-      // UITableView.appearance().separatorStyle = .none
-      
-      // To remove only extra separators below the list:
+      // Removes extra separators below the list:
       UITableView.appearance().tableFooterView = UIView()
       
-      // Remove UITableView background, so it can be programmed using SwiftUI
+      // Remove UITableView background, so the background color can be programmed using SwiftUI
       UITableView.appearance().backgroundColor = .clear
       
       
@@ -53,12 +49,13 @@ struct StartUp: View {
       DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
          print("Running delayed code")
          
+         
+         /// Create initial items, categories, lists and set user defaults accordingly, if it is the first time launch.
          if isFirstTimeLaunch() {
             print("Is first time launch")
             
             UserDefaultsManager().useCategories = true
             UserDefaultsManager().keepScreenOn = true
-            UserDefaultsManager().hapticFeedback = true
             
             
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -147,7 +144,6 @@ struct StartUp: View {
 }
 
 
-// presentMessageCompose needs to be called from the top of the view hierarchy (StartUp), though the button for calling it is inside NavBarList. Thus StartUp() passes self into Home, which is passed into ItemList, and then into NavBarList, which calls presentMessageCompose
 extension StartUp {
    
    class MessageComposerDelegate: NSObject, MFMessageComposeViewControllerDelegate {
@@ -156,7 +152,8 @@ extension StartUp {
          controller.dismiss(animated: true)
       }
    }
-   // Present a message compose view controller modally in UIKit environment
+   
+   /// `presentMessageCompose()` needs to be called from the top of the view hierarchy (`StartUp`), though the button for calling it is inside `NavBarList`. Thus this instance of `StartUp()` is passed down the view hierarchy to `NavBarList`, which then calls `presentMessageCompose`
    func presentMessageCompose(messageBody: String) {
       guard MFMessageComposeViewController.canSendText() else {
          return

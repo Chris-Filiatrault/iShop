@@ -69,11 +69,13 @@ struct ItemDetails: View {
                         .onTapGesture {
                            incrementItemQuantity(thisItem: self.thisItem)
                            self.thisItemQuantity += 1
+                           hapticFeedback()
                      }
                      Image(systemName: "minus")
                         .foregroundColor(.black)
                         .imageScale(.large)
                         .onTapGesture {
+                           hapticFeedback()
                            if self.thisItemQuantity > 1 {
                               self.thisItemQuantity -= 1
                               decrementItemQuantity(thisItem: self.thisItem)
