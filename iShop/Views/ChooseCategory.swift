@@ -129,10 +129,6 @@ struct ChooseCategory: View {
          })
          
          
-         // Makes the screen dim when RenameCategory is shown
-         Color(.black)
-            .edgesIgnoringSafeArea(.all)
-            .opacity(showRenameCategory == true ? 0.25 : 0)
       }
          
       .overlay(

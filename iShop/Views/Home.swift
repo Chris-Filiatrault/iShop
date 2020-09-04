@@ -86,7 +86,7 @@ struct Home: View {
                .navigationBarItems(
                   leading:
                   HStack {
-                  resetButton()
+//                  resetButton()
                   SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
                   }
                   ,trailing:
