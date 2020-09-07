@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreData
+import StoreKit
 
 // =====================================================
 // ====================== Item =========================
@@ -1739,6 +1740,15 @@ func deviceIsiPhoneSE() -> Bool {
    return result
 }
 
+
+// ===REQUEST APP STORE REVIEW===
+func requestAppStoreReview() {
+   if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 20 && UserDefaults.standard.bool(forKey: "syncShownReviewRequest") != true {
+      SKStoreReviewController.requestReview()
+      UserDefaults.standard.set(true, forKey: "syncShownReviewRequest")
+   }
+}
+
 // =====================================================
 // ================== Development ======================
 // =====================================================
@@ -1755,6 +1765,7 @@ func resetDefaults() {
    UserDefaults.standard.set("Manual", forKey: "syncSortItemsBy")
    UserDefaults.standard.set(true, forKey: "syncUseCategories")
    UserDefaults.standard.set(nil, forKey: "syncUserHasLaunchedPreviously")
+   UserDefaults.standard.set(nil, forKey: "syncShownReviewRequest")
    
 }
 

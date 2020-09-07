@@ -49,31 +49,28 @@ struct ItemRow: View {
                Spacer()
                
                Divider()
-
+               
                // Item details button
                
-                  
-                  
-                  Button(action: {
-                     self.showItemDetails.toggle()
-                     hapticFeedback()
-                     withAnimation {
-                        self.editMode?.wrappedValue = .inactive
-                     }
-                     
-                  }) {
-                     Image(systemName: "square.and.pencil")
-                        .imageScale(.large)
-                        .foregroundColor(thisItem.markedOff == true ? .white : .black)
-                        .padding(7)
+               Button(action: {
+                  self.showItemDetails.toggle()
+                  withAnimation {
+                     self.editMode?.wrappedValue = .inactive
                   }
+                  
+               }) {
+                  Image(systemName: "square.and.pencil")
+                     .imageScale(.large)
+                     .foregroundColor(thisItem.markedOff == true ? .white : .black)
+                     .padding(7)
+               }
                
             }
          }
       }
       .id(globalVariables.refreshingID)
       .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
-      
+         
       .sheet(isPresented: self.$showItemDetails) {
          VStack {
             if self.thisItem.categoryOrigin != nil {
@@ -87,7 +84,7 @@ struct ItemRow: View {
                            newList: self.thisItem.origin!,
                            categoryName: self.thisItem.categoryOrigin!.wrappedName,
                            thisList: self.thisList)
-               .environment(\.managedObjectContext, self.context)
+                  .environment(\.managedObjectContext, self.context)
                   .environmentObject(self.globalVariables)
             } else {
                errorMessage(debuggingErrorMessage: "origin and/or categoryOrigin not found when passing thisItem into ItemDetails()")

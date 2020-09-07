@@ -98,6 +98,9 @@ struct Catalogue: View {
             UserDefaults.standard.set(true, forKey: "syncSwipeToDeleteAlertShown")
          }
       }
+      .onDisappear {
+         requestAppStoreReview()
+      }
       
          
    } // End of body
