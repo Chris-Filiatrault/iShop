@@ -46,12 +46,13 @@ struct ItemRow: View {
                   .multilineTextAlignment(.leading)
                
                
+               Spacer()
+               
+               Divider()
+
                // Item details button
-               HStack {
+               
                   
-                  Spacer()
-                  
-                  Divider()
                   
                   Button(action: {
                      self.showItemDetails.toggle()
@@ -66,7 +67,7 @@ struct ItemRow: View {
                         .foregroundColor(thisItem.markedOff == true ? .white : .black)
                         .padding(7)
                   }
-               }
+               
             }
          }
       }
@@ -87,6 +88,7 @@ struct ItemRow: View {
                            categoryName: self.thisItem.categoryOrigin!.wrappedName,
                            thisList: self.thisList)
                .environment(\.managedObjectContext, self.context)
+                  .environmentObject(self.globalVariables)
             } else {
                errorMessage(debuggingErrorMessage: "origin and/or categoryOrigin not found when passing thisItem into ItemDetails()")
             }

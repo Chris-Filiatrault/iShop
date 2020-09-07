@@ -36,6 +36,8 @@ struct ItemDetails: View {
    static var itemNameBinding = Binding<String>(get: { itemName }, set: { itemName = $0 } )
 
    
+   @State var testText: String = ""
+   
    var body: some View {
       
       NavigationView {
@@ -43,19 +45,15 @@ struct ItemDetails: View {
             VStack {
                
                Form {
+                  
                   HStack {
                   Text("Name: ")
                   CustomTextField("", text: ItemDetails.itemNameBinding, focusTextfieldCursor: false, onCommit: {
-                     
-                     if ItemDetails.itemName != "" {
-                        renameItem(currentName: self.thisItem.wrappedName, newName: ItemDetails.itemName)
-                     }
-                     UIApplication.shared.endEditing()
-                     
+                     self.commit()
                   }, onBeginEditing: {
                      self.textfieldActive = true
                   })
-                  
+                     
                }
                   
                   // Quantity
@@ -108,6 +106,7 @@ struct ItemDetails: View {
                      }
                   }
                   
+                  
                   // Delete (remove from list)
                   Button(action: {
                      removeItemFromList(thisItem: self.thisItem, listOrigin: self.newList)
@@ -130,18 +129,7 @@ struct ItemDetails: View {
                .navigationBarItems(trailing:
                   Button(action: {
                      
-                     // Dismiss keyboard if active
-                     if self.textfieldActive == true {
-                     UIApplication.shared.endEditing()
-                     }
-                     // Dismiss item details sheet
-                     self.showItemDetails.toggle()
-                     print("\(self.showItemDetails)")
-                     
-                     // Change item name if needed
-                     if ItemDetails.itemName != "" && ItemDetails.itemName != self.thisItem.wrappedName {
-                        renameItem(currentName: self.thisItem.wrappedName, newName: ItemDetails.itemName)
-                     }
+                     self.commit()
                      
                      // Change list if needed
                      if self.oldList != self.newList {
@@ -168,4 +156,14 @@ struct ItemDetails: View {
          }
       }
    }
+   
+   func commit() {
+      UIApplication.shared.endEditing()
+      self.showItemDetails.toggle()
+      
+      if ItemDetails.itemName != "" && ItemDetails.itemName != self.thisItem.wrappedName {
+         renameItem(currentName: self.thisItem.wrappedName, newName: ItemDetails.itemName)
+      }
+   }
+   
 }

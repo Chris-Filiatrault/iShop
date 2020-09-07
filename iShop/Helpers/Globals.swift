@@ -25,5 +25,8 @@ class GlobalVariableClass: ObservableObject {
    @State var showItemDetails: Bool = false
       
 
+   
+   
+   @State var testTextString: String = ""
 }
 
