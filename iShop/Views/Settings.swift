@@ -91,21 +91,7 @@ struct Settings: View {
                   }
                   
                   // List Order
-                  Picker(selection: self.$sortListsBy, label: Text("List Order")) {
-                     ForEach(self.sortOptions, id: \.self) { option in
-                        Text(option)
-                     }
-                     HStack {
-                     Text("To manually sort lists, select") +
-                        Text(" Manual ").bold() +
-                     Text("above, then press the") +
-                        Text(" Edit ").bold() +
-                     Text("button on the home page.\n\n")
-                     }
-                     .font(.subheadline)
-                     .foregroundColor(.gray)
-                     .padding(.vertical, 5)
-                  }
+//                  
                }
                
                // ===GENERAL===

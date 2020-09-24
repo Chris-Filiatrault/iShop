@@ -45,13 +45,13 @@ struct Home: View {
                      VStack {
                         Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long.\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings or at ishop-groceries@outlook.com.\n")
                      }
-                  } else {
-                     Text(" ")
                   }
+//                     else {
+//                     Text(" ")
+//                  }
                }.listRowBackground(Color("listBackground"))
                
-               ForEach(UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ?
-                  listsManual : listsAlphabetical) { list in
+               ForEach(listsAlphabetical) { list in
                      NavigationLink(destination: ItemList(listFromHomePage: list, startUpPassedIn: self.startUp)
                         .environment(\.managedObjectContext, self.context)
                         .environmentObject(self.globalVariables)
@@ -76,22 +76,18 @@ struct Home: View {
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
-               
-//            .background(NavigationConfigurator { nc in
-//               nc.navigationBar.barTintColor = self.navBarColor
-//               nc.navigationBar.titleTextAttributes = [.foregroundColor : self.navBarFont]
-//            })
+   
                
                // ===Nav bar items===
                .navigationBarItems(
                   leading:
                   HStack {
-                  resetButton()
+//                  resetButton()
                   SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
                   }
                   ,trailing:
                   HStack {
-                  EditButton()
+//                  EditButton()
                   if listsManual.count != 0 && listsAlphabetical.count != 0 {
                         AddListButton(showAddList: self.$showAddList)
                      }

@@ -35,7 +35,7 @@ struct ChooseCategory: View {
    
    var body: some View {
       
-         VStack {
+         List {
             
             // Add new category
             NavigationLink(destination: AddCategory(thisItem: thisItem, newItemCategory: $newItemCategory, categoryName: $categoryName)) {
@@ -106,6 +106,7 @@ struct ChooseCategory: View {
             }
             .onDelete(perform: deleteSwipedCategory)
          }
+         .listStyle(GroupedListStyle())
          .navigationBarTitle(Text("Category"), displayMode: .inline)
          .navigationBarItems(trailing:
                               EditButton()
