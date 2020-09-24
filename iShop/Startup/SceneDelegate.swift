@@ -50,7 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       // (In order to change the status bar to light mode, using HostingController.swift)
       if let windowScene = scene as? UIWindowScene {
          let window = UIWindow(windowScene: windowScene)
-         window.rootViewController = HostingController(rootView: contentView)
+         window.rootViewController = UIHostingController(rootView: contentView)
          self.window = window
          window.makeKeyAndVisible()
          

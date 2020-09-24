@@ -43,7 +43,7 @@ struct Home: View {
                VStack {
                   if listsManual.count == 0 && listsAlphabetical.count == 0 {
                      VStack {
-                        Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long.\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings.\n")
+                        Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long.\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings or at ishop-groceries@outlook.com.\n")
                      }
                   } else {
                      Text(" ")
@@ -77,22 +77,22 @@ struct Home: View {
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
                
-            .background(NavigationConfigurator { nc in
-               nc.navigationBar.barTintColor = self.navBarColor
-               nc.navigationBar.titleTextAttributes = [.foregroundColor : self.navBarFont]
-            })
+//            .background(NavigationConfigurator { nc in
+//               nc.navigationBar.barTintColor = self.navBarColor
+//               nc.navigationBar.titleTextAttributes = [.foregroundColor : self.navBarFont]
+//            })
                
                // ===Nav bar items===
                .navigationBarItems(
                   leading:
                   HStack {
-//                  resetButton()
+                  resetButton()
                   SettingsButton(showSettings: self.$showSettings, startUp: self.startUp)
                   }
                   ,trailing:
                   HStack {
+                  EditButton()
                   if listsManual.count != 0 && listsAlphabetical.count != 0 {
-                        EditButton()
                         AddListButton(showAddList: self.$showAddList)
                      }
                   }
@@ -125,59 +125,6 @@ struct Home: View {
       
    }
 
-
-   // ===DELETE SWIPED LIST (by position fetch request)===
-//   func deleteSwipedListManual(indices: IndexSet) {
-//
-//      guard let appDelegate =
-//         UIApplication.shared.delegate as? AppDelegate else {
-//            return
-//      }
-//
-//      let managedContext =
-//         appDelegate.persistentContainer.viewContext
-//
-//      let fetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
-//      fetchRequest.sortDescriptors = [
-//         NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
-//      ]
-//      fetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
-//
-//
-//      do {
-//         let lists = try managedContext.fetch(fetchRequest)
-//         for index in indices {
-//
-//            let listToBeDeleted = lists[index]
-//            for list in lists {
-//               if list.position > listToBeDeleted.position {
-//                  list.position -= 1
-//               }
-//            }
-//
-//            for item in listToBeDeleted.itemArray {
-//               managedContext.delete(item)
-//            }
-//
-//            managedContext.delete(listToBeDeleted)
-//
-//            if userHasNoLists() {
-//               addList(listName: "Groceries")
-//            }
-//
-//         }
-//
-//         do {
-//            try managedContext.save()
-//         } catch let error as NSError {
-//            print("Could not delete. \(error), \(error.userInfo)")
-//         }
-//
-//      } catch let error as NSError {
-//         print("Could not fetch. \(error), \(error.userInfo)")
-//      }
-//   }
-   
    
 }
 
