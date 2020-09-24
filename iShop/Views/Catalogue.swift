@@ -42,7 +42,9 @@ struct Catalogue: View {
          // List of filtered items
          List {
             ForEach(fetchRequest.wrappedValue) { item in
+               HStack {
                CatalogueRow(thisList: self.thisList, thisItem: item)
+               }
             }
             .onDelete(perform: deleteSwipedCatalogueItem)
             .listRowBackground(Color(.white))

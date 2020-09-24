@@ -37,7 +37,7 @@ struct ItemRow: View {
             HStack {
                Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
                   .imageScale(.large)
-                  .foregroundColor(thisItem.markedOff == true ? Color("navBarFont") : .black)
+                  .foregroundColor(thisItem.markedOff == true ? Color("lightBlue") : .black)
                
                Text(thisItem.quantity > 1 ?
                   "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
