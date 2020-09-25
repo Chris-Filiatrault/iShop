@@ -48,8 +48,10 @@ struct InCart: View {
                      .bold()
                      .modifier(InCartButton())
                      .onTapGesture {
+                        withAnimation {
                         for item in self.items.wrappedValue {
                            removeItemFromList(thisItem: item, listOrigin: self.thisList)
+                        }
                            hapticFeedback()
                         }
                      }
@@ -59,9 +61,11 @@ struct InCart: View {
                   .padding(.horizontal, 2)
                   .modifier(InCartButton())
                   .onTapGesture {
+                     withAnimation {
                      for item in self.items.wrappedValue {
                         restoreItemInList(thisItem: item, thisList: self.thisList)
                         hapticFeedback()
+                     }
                      }
                   }
                Spacer()

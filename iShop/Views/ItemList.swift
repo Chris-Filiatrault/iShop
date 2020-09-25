@@ -106,7 +106,7 @@ struct ItemList: View {
          }
          
          // ===List of items WITHOUT categories===
-         if globalVariables.catalogueShown == false && useCategories == false {
+         else if globalVariables.catalogueShown == false && useCategories == false {
             
             List {
                ForEach(itemsFetchRequest.wrappedValue) { item in
@@ -125,29 +125,20 @@ struct ItemList: View {
                      .environmentObject(self.globalVariables)
             }
          }
-         }
-         
-//         .gesture(
-//            // Because this gesture prevents the ability to reorder items (which is only possible when not using categories and sorting manually), only allow the gesture under those
-//            userDefaultsManager.useCategories == true || UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" ?
-//            DragGesture(minimumDistance: 60).updating($dragOffset, body: {
-//            (value, state, transaction) in
-//             if(value.startLocation.x < 20 && value.translation.width > 60) {
-//                 self.presentationMode.wrappedValue.dismiss()
-//             }}) : nil)
-            
-            // ===Catalogue===
-         if globalVariables.catalogueShown == true {
+
+         // ===Catalogue===
+         else if globalVariables.catalogueShown == true {
             Catalogue(passedInList: thisList, filter: globalVariables.itemInTextfield)
+            }
          }
-         
+
       } // End of VStack
          .sheet(isPresented: self.$showRenameList){
             RenameList(thisList: self.thisList, showingRenameListBinding: self.$showRenameList)
                .environmentObject(self.globalVariables)
       }
+      .navigationBarColor(backgroundColor: globalVariables.navBarColor, fontColor: UIColor.white)
       .background(Color("listBackground").edgesIgnoringSafeArea(.all))
-      .modifier(AdaptsToSoftwareKeyboard())
       .onDisappear() {
          self.globalVariables.itemInTextfield = ""
       }

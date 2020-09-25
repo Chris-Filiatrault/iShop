@@ -14,20 +14,22 @@ struct StartUp: View {
    
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var navBarFont: UIColor = UIColor.white
-   @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
+   @State var navBarColor: UIColor = UIColor(red: 30/255, green: 80/255, blue: 190/255, alpha: 1)
    @State var onboardingShown = UserDefaults.standard.bool(forKey: "onboardingShown")
    @EnvironmentObject var globalVariables: GlobalVariableClass
    let messageComposeDelegate = MessageComposerDelegate()
    
    var body: some View {
-      VStack {
-         if onboardingShown != true {
-            OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
-         }
-         else {
-            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
-         }
-      }
+         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+         
+//      VStack {
+//         if onboardingShown != true {
+//            OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+//         }
+//         else {
+//            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+//         }
+//      }
       
    }
    
@@ -164,5 +166,6 @@ extension StartUp {
       composeVC.body = messageBody
       vc?.present(composeVC, animated: true)
    }
+   
 }
 

@@ -20,6 +20,7 @@ struct Home: View {
    @State var deletedList: ListOfItems? = nil
    @Binding var navBarFont: UIColor
    @Binding var navBarColor: UIColor
+   
    var startUp: StartUp
    
    @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
@@ -76,6 +77,8 @@ struct Home: View {
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
             .navigationBarTitle(Text("Lists"), displayMode: .inline)
+            .navigationBarColor(backgroundColor: globalVariables.navBarColor, fontColor: UIColor.white)
+            
    
                
                // ===Nav bar items===
@@ -104,6 +107,10 @@ struct Home: View {
                   }
                   }, secondaryButton: .cancel())
          }
+      }
+      .onAppear {
+         self.navBarFont = UIColor.white
+         self.navBarColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
       }
    } // End of body
    

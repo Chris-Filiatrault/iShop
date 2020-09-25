@@ -76,6 +76,7 @@ struct AddCategory: View {
       .padding()
       .environment(\.horizontalSizeClass, .compact)
       .background(Color("plainSheetBackground").edgesIgnoringSafeArea(.all))
+      
 
       
    }

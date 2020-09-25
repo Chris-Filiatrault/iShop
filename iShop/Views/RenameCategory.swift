@@ -128,7 +128,7 @@ struct RenameCategory: View {
       }.frame(width: deviceIsiPhoneSE() ? 300 : 350,
               height: 150)
          // Bring up the alert so it doesn't get in the way of the keyboard (bring it up higher on iPad)
-         .offset(y: UIDevice.current.userInterfaceIdiom == .phone ? -110 : -200)
+//         .offset(y: UIDevice.current.userInterfaceIdiom == .phone ? -110 : -200)
    }
    
    

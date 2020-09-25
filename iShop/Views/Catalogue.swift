@@ -75,7 +75,7 @@ struct Catalogue: View {
             }
 
       }
-         
+      .navigationBarColor(backgroundColor: globalVariables.navBarColor, fontColor: UIColor.white)
       .alert(isPresented: $showDeleteItemInfoAlert) {
          Alert(title: Text("Information"),
                message:

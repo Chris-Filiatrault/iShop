@@ -59,6 +59,7 @@ struct MailView: UIViewControllerRepresentable {
        vc.setMessageBody("<p><br><br>Version: \(appVersion ?? "")<br>\(OS): \(osVersion)</p>", isHTML: true)
        vc.setSubject("iShop")
        vc.mailComposeDelegate = context.coordinator
+      vc.navigationBar.tintColor = UIColor.systemBlue
        return vc
    }
 

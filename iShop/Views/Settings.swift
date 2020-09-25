@@ -114,16 +114,16 @@ struct Settings: View {
                   
                ) {
                                     
-                  // Introduction
-                  Button(action: {
-                     self.onboardingShownFromSettings.toggle()
-                  }) {
-                     Text("Show Introduction")
-                        .foregroundColor(.black)
-                  }
-                  .sheet(isPresented: $onboardingShownFromSettings) {
-                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
-                  }
+//                  // Introduction
+//                  Button(action: {
+//                     self.onboardingShownFromSettings.toggle()
+//                  }) {
+//                     Text("Show Introduction")
+//                        .foregroundColor(.black)
+//                  }
+//                  .sheet(isPresented: $onboardingShownFromSettings) {
+//                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
+//                  }
                   
                   
                   // Contact
@@ -139,6 +139,7 @@ struct Settings: View {
                   }
                   .sheet(isPresented: $isShowingMailView) {
                      MailView(result: self.$result)
+                     
                   }
                   .alert(isPresented: self.$alertNoMail) {
                      Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
@@ -154,6 +155,7 @@ struct Settings: View {
                
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))
+         .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
          
          // === Nav bar ===
          .navigationBarTitle("Settings", displayMode: .inline)
@@ -183,6 +185,7 @@ struct Settings: View {
             }) {
                Text("Done")
                   .font(.headline)
+                  .foregroundColor(.blue)
                   .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
                
          })

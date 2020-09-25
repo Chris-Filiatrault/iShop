@@ -108,11 +108,30 @@ struct ChooseCategory: View {
          }
          .listStyle(GroupedListStyle())
          .navigationBarTitle(Text("Category"), displayMode: .inline)
-         .navigationBarItems(trailing:
+         .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
+         .navigationBarItems(
+            leading:
+               Button(action : {
+                  self.presentationMode.wrappedValue.dismiss()
+               }) {
+                  HStack {
+                     Image(systemName: "chevron.left")
+                        .imageScale(.large)
+                        .font(.headline)
+                     
+                     Text("Details")
+                  }
+                  .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 15))
+                  .foregroundColor(.blue)
+               }
+            ,trailing:
                               EditButton()
+                              .foregroundColor(.blue)
                               .padding()
                               .opacity(showRenameCategory == true ? 0 : 1)
          )
+         .navigationBarBackButtonHidden(true)
+         
       .overlay(
          self.showRenameCategory == true ?
             ZStack {

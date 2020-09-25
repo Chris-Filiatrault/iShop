@@ -140,11 +140,14 @@ struct ItemDetails: View {
                   }) {
                      Text("Save")
                         .font(.headline)
+                        .foregroundColor(.blue)
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
                })
          }
+         .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
       }
       .environment(\.horizontalSizeClass, .compact)
+      
       .onAppear {
          ItemDetails.itemName = self.thisItem.wrappedName
       }

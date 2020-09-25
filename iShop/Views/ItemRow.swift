@@ -25,11 +25,16 @@ struct ItemRow: View {
       
       HStack {
          Button(action: {
+            
             if self.thisItem.markedOff == false {
+               withAnimation {
                markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
+               }
             }
             else if self.thisItem.markedOff == true {
+               withAnimation {
                restoreItemInList(thisItem: self.thisItem, thisList: self.thisList)
+               }
             }
             GlobalVariableClass().refreshingID = UUID()
             hapticFeedback()
