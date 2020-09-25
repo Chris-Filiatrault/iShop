@@ -156,6 +156,23 @@ struct ItemList: View {
             HStack {
             if globalVariables.catalogueShown == false && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Manual" && UserDefaultsManager().useCategories == false {
                EditButton()
+                  .foregroundColor(Color("navBarFont"))
+                  .padding()
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
             }
                NavBarTrailing(thisList: self.thisList, startUp: self.startUp, showListOptions: self.$showListOptions, showRenameList: self.$showRenameList, presentationMode: self.presentationMode)
             }

@@ -54,6 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          self.window = window
          window.makeKeyAndVisible()
          
+         
          // change this for premium users later
          window.overrideUserInterfaceStyle = .light
       }

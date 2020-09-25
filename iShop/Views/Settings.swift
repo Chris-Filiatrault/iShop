@@ -114,16 +114,16 @@ struct Settings: View {
                   
                ) {
                                     
-//                  // Introduction
-//                  Button(action: {
-//                     self.onboardingShownFromSettings.toggle()
-//                  }) {
-//                     Text("Show Introduction")
-//                        .foregroundColor(.black)
-//                  }
-//                  .sheet(isPresented: $onboardingShownFromSettings) {
-//                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
-//                  }
+                  // Introduction
+                  Button(action: {
+                     self.onboardingShownFromSettings.toggle()
+                  }) {
+                     Text("Show Introduction")
+                        .foregroundColor(.black)
+                  }
+                  .sheet(isPresented: $onboardingShownFromSettings) {
+                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
+                  }
                   
                   
                   // Contact

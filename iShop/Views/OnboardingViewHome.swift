@@ -98,7 +98,7 @@ struct OnboardingViewSettings: View {
          OBPageViewController(currentPageIndex: self.$currentPageIndex, viewControllers: self.subviews)
             .edgesIgnoringSafeArea(.all)
          VStack {
-            if currentPageIndex != subviews.count - 1 {
+            if currentPageIndex == 0 {
                withAnimation {
                   HStack {
                      Button(action: {
@@ -164,7 +164,7 @@ struct Subview: View {
       ZStack {
          
          Color(.black).edgesIgnoringSafeArea(.all)
-         GeometryReader { geometry in
+            
             VStack {
                
                Text(self.title)
@@ -182,9 +182,9 @@ struct Subview: View {
                   .padding(.vertical, 5)
                
             }
-            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5,
-                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5)
-         }
+            .frame(width: 300, height: 350)
+//            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5,
+//                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5)
       }
       
    }
@@ -197,7 +197,6 @@ struct LastSubview: View {
       ZStack {
          
          Color(.black).edgesIgnoringSafeArea(.all)
-         GeometryReader { geometry in
             VStack {
                Spacer()
                Text("Start")
@@ -208,12 +207,13 @@ struct LastSubview: View {
                   .background(Color("blueButton"))
                   .foregroundColor(.white)
                   .cornerRadius(10)
-               
-               
             }
-            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6,
-                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6)
-         }
+            .frame(width: 300, height: 350)
+               
+               
+            
+//            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6,
+//                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6)
          
       }
    }

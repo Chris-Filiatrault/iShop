@@ -109,13 +109,3 @@ struct AddList: View {
    
 }
 
-
-
-struct AddList_Previews: PreviewProvider {
-   static var previews: some View {
-      AddList(showingAddListBinding: PreviewValues().$myBinding)
-         .previewDevice(PreviewDevice(rawValue: "iPhone X"))
-         .previewDisplayName("iPhone X")
-   }
-}
-

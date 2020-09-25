@@ -20,16 +20,16 @@ struct StartUp: View {
    let messageComposeDelegate = MessageComposerDelegate()
    
    var body: some View {
-         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+//         Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
          
-//      VStack {
-//         if onboardingShown != true {
-//            OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
-//         }
-//         else {
-//            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
-//         }
-//      }
+      VStack {
+         if onboardingShown != true {
+            OnboardingViewHome(onboardingShown: $onboardingShown, navBarColor: $navBarColor, navBarFont: $navBarFont)
+         }
+         else {
+            Home(navBarFont: $navBarFont, navBarColor: $navBarColor, startUp: self)
+         }
+      }
       
    }
    
