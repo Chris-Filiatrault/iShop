@@ -53,6 +53,7 @@
 		6DE6004424E9F60900AA3F1D /* ListActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE6004324E9F60900AA3F1D /* ListActionSheet.swift */; };
 		6DEB520824C642AD0096DBC8 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DEB520724C642AD0096DBC8 /* CloudKit.framework */; };
 		6DEC8AFC24F3651B00078E70 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEC8AFB24F3651B00078E70 /* CustomTextField.swift */; };
+		6DEEA135251EB54A001BA886 /* ChooseItemOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEEA134251EB54A001BA886 /* ChooseItemOrder.swift */; };
 		6DF0947524BB330500FB051C /* ChooseCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0947424BB330500FB051C /* ChooseCategory.swift */; };
 		6DF0947724BB3F2C00FB051C /* AddCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0947624BB3F2C00FB051C /* AddCategory.swift */; };
 		6DF871C524D93227007C6434 /* AddListButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF871C424D93227007C6434 /* AddListButton.swift */; };
@@ -134,6 +135,7 @@
 		6DE6004324E9F60900AA3F1D /* ListActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListActionSheet.swift; sourceTree = "<group>"; };
 		6DEB520724C642AD0096DBC8 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		6DEC8AFB24F3651B00078E70 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		6DEEA134251EB54A001BA886 /* ChooseItemOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseItemOrder.swift; sourceTree = "<group>"; };
 		6DF0947424BB330500FB051C /* ChooseCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategory.swift; sourceTree = "<group>"; };
 		6DF0947624BB3F2C00FB051C /* AddCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategory.swift; sourceTree = "<group>"; };
 		6DF871C424D93227007C6434 /* AddListButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListButton.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				6D0C5B5A24B14811000842C2 /* Catalogue.swift */,
 				6D0C5B5424B14811000842C2 /* CatalogueRow.swift */,
 				6DF0947424BB330500FB051C /* ChooseCategory.swift */,
+				6DEEA134251EB54A001BA886 /* ChooseItemOrder.swift */,
 				6DEC8AFB24F3651B00078E70 /* CustomTextField.swift */,
 				6D83AC0A24CFB7BE00797E5F /* Home.swift */,
 				6D780D9E24C1A28F00380C17 /* InCart.swift */,
@@ -492,6 +495,7 @@
 				6D0C5B4F24B1480C000842C2 /* AppDelegate.swift in Sources */,
 				6D0C5B6124B14811000842C2 /* AddList.swift in Sources */,
 				6D0C5B3724B147EC000842C2 /* UsefulCode.swift in Sources */,
+				6DEEA135251EB54A001BA886 /* ChooseItemOrder.swift in Sources */,
 				6D066CC724B6987400121692 /* ItemDetails.swift in Sources */,
 				6DEC8AFC24F3651B00078E70 /* CustomTextField.swift in Sources */,
 			);

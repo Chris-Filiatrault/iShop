@@ -23,6 +23,7 @@ struct Settings: View {
 //   let hapticFeedbackOptions: [String] = ["On", "Off"]
    var startUp: StartUp
    
+   @Environment(\.presentationMode) var mode: Binding<PresentationMode>
    @State var result: Result<MFMailComposeResult, Error>? = nil
    @State var isShowingMailView = false
    @State var alertNoMail = false
@@ -53,46 +54,21 @@ struct Settings: View {
                   }
                   
                   // Item Order
-                  if userDefaultsManager.useCategories == true {
-                     Picker(selection: self.$sortItemsBy, label: Text("Item Order")) {
+                  NavigationLink(destination: ChooseItemOrder(sortItemsBy: $sortItemsBy)
+                  ) {
                         HStack {
-                           Text("Alphabetical")
+                           Text("Item Order")
                            Spacer()
-                           Image(systemName: "checkmark")
-                              .foregroundColor(.blue)
-                              .imageScale(.medium)
-                              .font(.headline)
-                        }
-                        HStack {
-                           Text("Items are sorted alphabetically when using categories. To sort items manually, disable") +
-                              Text(" Use Categories ").bold() +
-                              Text("in Settings.")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.vertical, 5)
-                        
-                     }
-                  } else {
-                     Picker(selection: self.$sortItemsBy, label: Text("Item Order")) {
-                        ForEach(self.sortOptions, id: \.self) { option in
-                           Text(option)
-                        }
-                        HStack {
-                        Text("To manually sort items, select") +
-                           Text(" Manual ").bold() +
-                        Text("above, then press the") +
-                           Text(" Edit ").bold() +
-                        Text("button in any list.")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.vertical, 5)                     }
+                           Text(userDefaultsManager.useCategories == true ?
+                              "Alphabetical" :
+                              "\(sortItemsBy)"
+                           ).foregroundColor(.gray)
                   }
-                  
-                  // List Order
-//                  
                }
+                  
+               
+               }
+               
                
                // ===GENERAL===
                Section(header: Text("GENERAL")) {

@@ -35,6 +35,7 @@ struct SettingsButton: View {
            Settings(startUp: self.startUp, showSettingsBinding: self.$showSettings)
               .environmentObject(self.globalVariables)
               .environment(\.managedObjectContext, self.context)
+               .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
       }
       
    }

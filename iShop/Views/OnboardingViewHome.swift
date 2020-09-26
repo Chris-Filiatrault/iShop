@@ -182,9 +182,8 @@ struct Subview: View {
                   .padding(.vertical, 5)
                
             }
-            .frame(width: 300, height: 350)
-//            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5,
-//                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.5)
+            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 300 : 500,
+                   height: UIDevice.current.userInterfaceIdiom == .phone ? 350 : 600)
       }
       
    }
@@ -208,12 +207,8 @@ struct LastSubview: View {
                   .foregroundColor(.white)
                   .cornerRadius(10)
             }
-            .frame(width: 300, height: 350)
-               
-               
-            
-//            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6,
-//                   height: UIDevice.current.userInterfaceIdiom == .phone ? geometry.size.width * 0.9 : geometry.size.height * 0.6)
+            .frame(width: UIDevice.current.userInterfaceIdiom == .phone ? 300 : 500,
+                   height: UIDevice.current.userInterfaceIdiom == .phone ? 350 : 600)
          
       }
    }
