@@ -37,19 +37,20 @@ struct Catalogue: View {
    }
    
    var body: some View {
-      VStack {
+         VStack {
          
          // List of filtered items
+         
          List {
             ForEach(fetchRequest.wrappedValue) { item in
-               HStack {
                CatalogueRow(thisList: self.thisList, thisItem: item)
-               }
             }
             .onDelete(perform: deleteSwipedCatalogueItem)
             .listRowBackground(Color(.white))
+            
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))
+         
          
          
          // Add button
@@ -75,6 +76,7 @@ struct Catalogue: View {
             }
 
       }
+         
       .navigationBarColor(backgroundColor: globalVariables.navBarColor, fontColor: UIColor.white)
       .alert(isPresented: $showDeleteItemInfoAlert) {
          Alert(title: Text("Information"),

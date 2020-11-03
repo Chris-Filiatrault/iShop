@@ -28,12 +28,6 @@ struct Home: View {
    ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
    var listsAlphabetical: FetchedResults<ListOfItems>
    
-   @FetchRequest(entity: ListOfItems.entity(), sortDescriptors: [
-      NSSortDescriptor(keyPath: \ListOfItems.position, ascending: true)
-   ], predicate: NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D"))
-   var listsManual: FetchedResults<ListOfItems>
-   
-   
    var body: some View {
       VStack {
          
@@ -42,14 +36,11 @@ struct Home: View {
             List {
                
                VStack {
-                  if listsManual.count == 0 && listsAlphabetical.count == 0 {
+                  if listsAlphabetical.count == 0 {
                      VStack {
                         Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long.\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings or at ishop-groceries@outlook.com.\n")
                      }
                   }
-//                     else {
-//                     Text(" ")
-//                  }
                }.listRowBackground(Color("listBackground"))
                
                ForEach(listsAlphabetical) { list in
@@ -72,7 +63,6 @@ struct Home: View {
                      }
                }
                .onDelete(perform: deleteSwipedList)
-               .onMove(perform: UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" ? moveList : nil)
                
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))
@@ -91,7 +81,7 @@ struct Home: View {
                   ,trailing:
                   HStack {
 //                  EditButton()
-                  if listsManual.count != 0 && listsAlphabetical.count != 0 {
+                  if listsAlphabetical.count != 0 {
                         AddListButton(showAddList: self.$showAddList)
                      }
                   }
@@ -119,11 +109,7 @@ struct Home: View {
    func deleteSwipedList(indices: IndexSet) {
       for index in indices {
          showDeleteListAlert = true
-         if UserDefaults.standard.string(forKey: "syncSortListsBy") == "Manual" {
-            self.deletedList = listsManual[index]
-         } else {
-            self.deletedList = listsAlphabetical[index]
-         }
+         self.deletedList = listsAlphabetical[index]
       }
       
    }
