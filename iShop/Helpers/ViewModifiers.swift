@@ -45,14 +45,6 @@ struct MainBlueButton: ViewModifier {
          .background(Color("blueButton"))
          .foregroundColor(.white)
          .cornerRadius(8)
-
-//         .frame(minWidth: 50)
-//         .padding(10)
-//         .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
-//         .foregroundColor(.white)
-//         .cornerRadius(40)
-//         .padding(.horizontal, 3)
-
     }
 }
 
@@ -62,15 +54,6 @@ struct CancelButton: ViewModifier {
         content
          .padding()
          .foregroundColor(Color("blueButton"))
-
-
-//         .frame(minWidth: 50)
-//         .padding(10)
-//         .background(LinearGradient(gradient: Gradient(colors: [Color("darkBlue"), Color("lightBlue")]), startPoint: .leading, endPoint: .trailing))
-//         .foregroundColor(.white)
-//         .cornerRadius(40)
-//         .padding(.horizontal, 3)
-
     }
 }
 
@@ -81,10 +64,8 @@ struct InCartButton: ViewModifier {
          .font(.subheadline)
          .padding(10)
          .background(Color(.white))
-//         .background(LinearGradient(gradient: Gradient(colors: [Color("lightGray"), Color(.white)]), startPoint: .leading, endPoint: .trailing))
          .foregroundColor(.black)
          .cornerRadius(40)
          .padding(.horizontal)
-            
     }
 }

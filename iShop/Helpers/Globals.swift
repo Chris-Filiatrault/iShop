@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 import CoreData
 
-// ADD THIS TO ANY VIEW TO MAKE GLOBAL VARIABLES AVAILABLE
+// ADD THIS TO ANY STRUCT TO MAKE GLOBAL VARIABLES AVAILABLE
 //@EnvironmentObject var globalVariables: GlobalVariableClass
 
 class GlobalVariableClass: ObservableObject {

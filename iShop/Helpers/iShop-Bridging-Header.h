@@ -6,6 +6,8 @@
 //  Copyright © 2020 Chris Filiatrault. All rights reserved.
 //
 
+/// Needed to use Objective C code in MKiCloudSync.h and MKiCloudSync.m
+
 #ifndef iShop_Bridging_Header_h
 #define iShop_Bridging_Header_h
 

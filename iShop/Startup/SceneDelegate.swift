@@ -38,9 +38,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          .environment(\.managedObjectContext, context)
          .environmentObject(globalVariables)
          .environment(\.editMode, Binding.constant(EditMode.inactive))
-
-//      let contentView = ContentView()
-
       
       
       // Use a UIHostingController as window root view controller.
@@ -55,7 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          window.makeKeyAndVisible()
          
          
-         // change this for premium users later
+         // Change color scheme to light only (remove this if implementing dark mode)
          window.overrideUserInterfaceStyle = .light
       }
    }

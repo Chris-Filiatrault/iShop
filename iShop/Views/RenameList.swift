@@ -79,7 +79,7 @@ struct RenameList: View {
             RenameList.newListName = self.thisList.wrappedName
       }
          .onDisappear {
-            //                  // This simply makes the string being reset unseen by the user (cleaner)
+            // This simply makes the string being reset unseen by the user (cleaner)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                RenameList.newListName = ""
             }

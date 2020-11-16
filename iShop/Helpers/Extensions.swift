@@ -11,7 +11,7 @@ import UIKit
 
 
 // Dismiss keyboard
-// UIApplication.shared.endEditing() to use it when needed
+// Usage: UIApplication.shared.endEditing()
 extension UIApplication {
     func endEditing() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -21,8 +21,7 @@ extension UIApplication {
 
 
 // Get user's device model as a string
-// https://stackoverflow.com/questions/11197509/how-to-get-device-make-and-model-on-ios/11197770#11197770
-
+// Used at the bottom of the Settings screen and in MailView
 extension UIDevice {
     var modelName: String {
         var systemInfo = utsname()

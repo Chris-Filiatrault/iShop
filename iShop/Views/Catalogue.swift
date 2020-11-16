@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreData
 
+/// The list of items shared across lists. In the app this is referred to as `Item History`
 struct Catalogue: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @ObservedObject var userDefaultsManager = UserDefaultsManager()

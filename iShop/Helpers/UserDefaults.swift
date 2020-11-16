@@ -8,9 +8,11 @@
 
 import SwiftUI
 
+
+/// UserDefaults are saved this way, as changes to a toggle switch (in settings) are saved immediately.
+/// Usage: @ObservedObject var userDefaultsManager = UserDefaultsManager()
+
 class UserDefaultsManager: ObservableObject {
-   // add the following to any view using UserDefaultManager
-   // @ObservedObject var userDefaultsManager = UserDefaultsManager()
    
    @Published var useCategories: Bool = UserDefaults.standard.bool(forKey: "syncUseCategories") {
       didSet { UserDefaults.standard.set(self.useCategories, forKey: "syncUseCategories") }

@@ -24,9 +24,10 @@ import SwiftUI
 //}
 
 
+/// For modifying the navigation bar. Used in Home.swift
 struct NavigationBarModifier: ViewModifier {
         
-    var backgroundColor: UIColor?
+   var backgroundColor: UIColor?
    var fontColor: UIColor?
     
    init( backgroundColor: UIColor?, fontColor: UIColor?) {
@@ -61,7 +62,6 @@ struct NavigationBarModifier: ViewModifier {
 
 
 extension View {
- 
    func navigationBarColor(backgroundColor: UIColor?, fontColor: UIColor?) -> some View {
       self.modifier(NavigationBarModifier(backgroundColor: backgroundColor, fontColor: fontColor))
     }

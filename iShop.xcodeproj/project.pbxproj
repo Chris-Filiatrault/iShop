@@ -19,7 +19,6 @@
 		6D0C5B2E24B147E5000842C2 /* AdaptsToSk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B2824B147E5000842C2 /* AdaptsToSk.swift */; };
 		6D0C5B2F24B147E5000842C2 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B2924B147E5000842C2 /* HostingController.swift */; };
 		6D0C5B3024B147E5000842C2 /* NavigationConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B2A24B147E5000842C2 /* NavigationConfigurator.swift */; };
-		6D0C5B3724B147EC000842C2 /* UsefulCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B3224B147EC000842C2 /* UsefulCode.swift */; };
 		6D0C5B4924B14803000842C2 /* iShop.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B4124B14803000842C2 /* iShop.xcdatamodeld */; };
 		6D0C5B4F24B1480C000842C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B4D24B1480C000842C2 /* AppDelegate.swift */; };
 		6D0C5B5024B1480C000842C2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B4E24B1480C000842C2 /* SceneDelegate.swift */; };
@@ -40,10 +39,8 @@
 		6D3B0F3C24CFBF6500A0B486 /* NavBarTrailing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3B0F3B24CFBF6500A0B486 /* NavBarTrailing.swift */; };
 		6D67A49024C3D06300C9B377 /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D67A48F24C3D06300C9B377 /* MailView.swift */; };
 		6D67A49224C3FA9400C9B377 /* OnboardingViewHome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D67A49124C3FA9400C9B377 /* OnboardingViewHome.swift */; };
-		6D6CA62924F67D7800F87610 /* PreviewValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6CA62824F67D7800F87610 /* PreviewValues.swift */; };
 		6D780D9F24C1A28F00380C17 /* InCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D780D9E24C1A28F00380C17 /* InCart.swift */; };
 		6D83AC0B24CFB7BE00797E5F /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D83AC0A24CFB7BE00797E5F /* Home.swift */; };
-		6D8D8E4824F205220035E31C /* ContentView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8D8E4724F205220035E31C /* ContentView1.swift */; };
 		6D96372224F8A44600243E0A /* RenameCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D96372124F8A44600243E0A /* RenameCategory.swift */; };
 		6D96372824F9284500243E0A /* MKiCloudSync.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D96372624F9284500243E0A /* MKiCloudSync.m */; };
 		6DA186D024C9AEDC00427EA1 /* InitDate+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA186CE24C9AEDC00427EA1 /* InitDate+CoreDataClass.swift */; };
@@ -98,7 +95,6 @@
 		6D0C5B2824B147E5000842C2 /* AdaptsToSk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdaptsToSk.swift; sourceTree = "<group>"; };
 		6D0C5B2924B147E5000842C2 /* HostingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		6D0C5B2A24B147E5000842C2 /* NavigationConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationConfigurator.swift; sourceTree = "<group>"; };
-		6D0C5B3224B147EC000842C2 /* UsefulCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsefulCode.swift; sourceTree = "<group>"; };
 		6D0C5B4224B14803000842C2 /* iShop.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iShop.xcdatamodel; sourceTree = "<group>"; };
 		6D0C5B4D24B1480C000842C2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Startup/AppDelegate.swift; sourceTree = "<group>"; };
 		6D0C5B4E24B1480C000842C2 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = Startup/SceneDelegate.swift; sourceTree = "<group>"; };
@@ -121,11 +117,9 @@
 		6D3D7E08255144C300C5520A /* Licence.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Licence.rtf; sourceTree = "<group>"; };
 		6D67A48F24C3D06300C9B377 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		6D67A49124C3FA9400C9B377 /* OnboardingViewHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewHome.swift; sourceTree = "<group>"; };
-		6D6CA62824F67D7800F87610 /* PreviewValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewValues.swift; sourceTree = "<group>"; };
 		6D74C709251C59C90016F543 /* iShop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iShop.entitlements; sourceTree = "<group>"; };
 		6D780D9E24C1A28F00380C17 /* InCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InCart.swift; sourceTree = "<group>"; };
 		6D83AC0A24CFB7BE00797E5F /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
-		6D8D8E4724F205220035E31C /* ContentView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView1.swift; sourceTree = "<group>"; };
 		6D96372124F8A44600243E0A /* RenameCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameCategory.swift; sourceTree = "<group>"; };
 		6D96372524F9284500243E0A /* MKiCloudSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKiCloudSync.h; sourceTree = "<group>"; };
 		6D96372624F9284500243E0A /* MKiCloudSync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKiCloudSync.m; sourceTree = "<group>"; };
@@ -207,7 +201,6 @@
 				6D0C5B5124B14811000842C2 /* Views */,
 				6D0C5B2424B147E5000842C2 /* Helpers */,
 				6D0C5B3C24B14803000842C2 /* Model */,
-				6D0C5B3124B147EC000842C2 /* Misc */,
 				6D0C5AFC24B142E1000842C2 /* Preview Content */,
 			);
 			path = iShop;
@@ -250,23 +243,12 @@
 				6D0C5B2824B147E5000842C2 /* AdaptsToSk.swift */,
 				6D0C5B2924B147E5000842C2 /* HostingController.swift */,
 				6D0C5B2A24B147E5000842C2 /* NavigationConfigurator.swift */,
-				6D6CA62824F67D7800F87610 /* PreviewValues.swift */,
 				6D96372724F9284500243E0A /* iShop-Bridging-Header.h */,
 				6D96372524F9284500243E0A /* MKiCloudSync.h */,
 				6D96372624F9284500243E0A /* MKiCloudSync.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
-		};
-		6D0C5B3124B147EC000842C2 /* Misc */ = {
-			isa = PBXGroup;
-			children = (
-				6D0C5B3224B147EC000842C2 /* UsefulCode.swift */,
-				6D8D8E4724F205220035E31C /* ContentView1.swift */,
-			);
-			name = Misc;
-			path = iShop/Misc;
-			sourceTree = SOURCE_ROOT;
 		};
 		6D0C5B3C24B14803000842C2 /* Model */ = {
 			isa = PBXGroup;
@@ -463,13 +445,11 @@
 				6DA186D124C9AEDC00427EA1 /* InitDate+CoreDataProperties.swift in Sources */,
 				6DFAE5D224B5C07D005E8E6B /* UserDefaults.swift in Sources */,
 				6D0C5B6F24B1490C000842C2 /* Category+CoreDataProperties.swift in Sources */,
-				6D8D8E4824F205220035E31C /* ContentView1.swift in Sources */,
 				6D0C5B3024B147E5000842C2 /* NavigationConfigurator.swift in Sources */,
 				6D0C5B2B24B147E5000842C2 /* Functions.swift in Sources */,
 				6D96372224F8A44600243E0A /* RenameCategory.swift in Sources */,
 				6D0C5B5024B1480C000842C2 /* SceneDelegate.swift in Sources */,
 				6D0C5B6D24B1490C000842C2 /* Category+CoreDataClass.swift in Sources */,
-				6D6CA62924F67D7800F87610 /* PreviewValues.swift in Sources */,
 				6DF871C524D93227007C6434 /* AddListButton.swift in Sources */,
 				6D0C5B2E24B147E5000842C2 /* AdaptsToSk.swift in Sources */,
 				6D780D9F24C1A28F00380C17 /* InCart.swift in Sources */,
@@ -498,7 +478,6 @@
 				6D0C5B6024B14811000842C2 /* ItemList.swift in Sources */,
 				6D0C5B4F24B1480C000842C2 /* AppDelegate.swift in Sources */,
 				6D0C5B6124B14811000842C2 /* AddList.swift in Sources */,
-				6D0C5B3724B147EC000842C2 /* UsefulCode.swift in Sources */,
 				6DEEA135251EB54A001BA886 /* ChooseItemOrder.swift in Sources */,
 				6D066CC724B6987400121692 /* ItemDetails.swift in Sources */,
 				6DEC8AFC24F3651B00078E70 /* CustomTextField.swift in Sources */,

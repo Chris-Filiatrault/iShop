@@ -236,11 +236,6 @@ func createSubviews() -> [UIViewController] {
          title: "Add From Item History",
          caption: "Items added to any list are saved in the Item History. Tap an item to add it to the current list."
       )),
-      //      UIHostingController(rootView: Subview(
-      //         imageString: "FilteredCatalogueView",
-      //         title: "Filter Item History",
-      //         caption: "Start typing to filter the list and quickly find the item you're looking for."
-      //      )),
       UIHostingController(rootView: Subview(
          imageString: "iPhoneiPadOnboarding",
          title: "iCloud Sync",

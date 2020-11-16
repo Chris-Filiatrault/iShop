@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 
+/// In iOS 13, the software keyboard will prevent the user from being able to view the bottom of a list. This ViewModifier can resolve this. This isn't needed for SwiftUI in iOS 14.
 struct AdaptsToSoftwareKeyboard: ViewModifier {
   @State var currentHeight: CGFloat = 0
    
