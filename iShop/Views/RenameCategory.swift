@@ -182,12 +182,4 @@ struct RenameCategory: View {
 }
 
 
-struct RenameCategory_Previews: PreviewProvider {
-   static var previews: some View {
-      ZStack {
-      Color(.black)
-         RenameCategory(thisItem: randomItem()!, thisCategory: uncategorisedCategory()!, showRenameCategory: PreviewValues().$myBinding, categoryName: PreviewValues().$categoryName)
-   }
-   }
 
-}

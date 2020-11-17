@@ -20,13 +20,16 @@ I won't be very active on this, though others are welcome to make pull requests.
 - UserDefaults sync using MKiCloudSync.
 - Most functions were made global in Functions.swift (I only created methods inside a struct when I needed access to one of the struct's properties).
 - All commits were pushed to the Development branch
-- The Production branch is the Master branch, and only received commits when a new version of the app went live on the App Store.
+- The Production branch is the Master branch. I aimed to only push to Production when a new version of the app went live on the App Store.
+- "Show Introduction" in the settings crashes on 14.0 simulator (though should work on devices.)
 
 
 
 ## Known issues:
 - Code hasn't been fully tailored specifically for iOS 13 vs 14 users. I fixed up most bugs after iOS 14 was introduced, though some issues may remain there. Particularly scrolling to the bottom of the Catalogue (Item History) for iOS 13 users. AdaptsToSK can be used to fix this.
-- No back button when selecting what list an item belongs to (iOS 14 bug).
+- No back button when selecting what list an item belongs to within Item Details (iOS 14 bug).
+- The Done button when closing the Item Details sheet can be a bit buggy when creating/changing/deleting categories. 
+- Restoring items from In Cart in a list makes them lose the white background.
 
 
 ## Feature ideas:
