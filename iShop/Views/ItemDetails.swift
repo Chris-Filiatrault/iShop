@@ -46,6 +46,7 @@ struct ItemDetails: View {
                
                Form {
                   
+                  // Name
                   HStack {
                   Text("Name: ")
                   CustomTextField("", text: ItemDetails.itemNameBinding, focusTextfieldCursor: false, onCommit: {
