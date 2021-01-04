@@ -27,6 +27,7 @@ struct AddList: View {
             .bold()
             .font(.largeTitle)
             .padding(.top, 50)
+            .foregroundColor(.black)
          Divider()
             .padding(.bottom, 30)
             .offset(y: -15)

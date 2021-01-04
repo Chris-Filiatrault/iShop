@@ -23,6 +23,8 @@ struct NavBarLeading: View {
            Button(action : {
               self.presentationMode.wrappedValue.dismiss()
            }) {
+            
+            
               HStack {
                  Image(systemName: "chevron.left")
                     .imageScale(.large)
@@ -32,6 +34,7 @@ struct NavBarLeading: View {
               }
               .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 15))
               .foregroundColor(Color("navBarFont"))
+            
            }
            
            // More options ellipsis for iPad (the action sheet doesn't work as a trailing button on iPad)

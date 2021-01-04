@@ -37,6 +37,7 @@
 		6D0C5B6E24B1490C000842C2 /* ListOfItems+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B6824B1490B000842C2 /* ListOfItems+CoreDataProperties.swift */; };
 		6D0C5B6F24B1490C000842C2 /* Category+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0C5B6924B1490B000842C2 /* Category+CoreDataProperties.swift */; };
 		6D3B0F3C24CFBF6500A0B486 /* NavBarTrailing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3B0F3B24CFBF6500A0B486 /* NavBarTrailing.swift */; };
+		6D5BF37025A1A89000BA8CE5 /* NewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5BF36F25A1A89000BA8CE5 /* NewView.swift */; };
 		6D67A49024C3D06300C9B377 /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D67A48F24C3D06300C9B377 /* MailView.swift */; };
 		6D67A49224C3FA9400C9B377 /* OnboardingViewHome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D67A49124C3FA9400C9B377 /* OnboardingViewHome.swift */; };
 		6D780D9F24C1A28F00380C17 /* InCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D780D9E24C1A28F00380C17 /* InCart.swift */; };
@@ -115,6 +116,7 @@
 		6D3B0F3B24CFBF6500A0B486 /* NavBarTrailing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarTrailing.swift; sourceTree = "<group>"; };
 		6D3D7E072551447400C5520A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6D3D7E08255144C300C5520A /* Licence.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Licence.rtf; sourceTree = "<group>"; };
+		6D5BF36F25A1A89000BA8CE5 /* NewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewView.swift; sourceTree = "<group>"; };
 		6D67A48F24C3D06300C9B377 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		6D67A49124C3FA9400C9B377 /* OnboardingViewHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewHome.swift; sourceTree = "<group>"; };
 		6D74C709251C59C90016F543 /* iShop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iShop.entitlements; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				6D0C5B2524B147E5000842C2 /* Functions.swift */,
+				6D5BF36F25A1A89000BA8CE5 /* NewView.swift */,
 				6D0C5B2724B147E5000842C2 /* Globals.swift */,
 				6D0C5B2624B147E5000842C2 /* Extensions.swift */,
 				6DE6003F24E9F1B100AA3F1D /* ViewModifiers.swift */,
@@ -440,6 +443,7 @@
 				6D96372824F9284500243E0A /* MKiCloudSync.m in Sources */,
 				6D0C5B5C24B14811000842C2 /* ItemCategory.swift in Sources */,
 				6D0C5B6E24B1490C000842C2 /* ListOfItems+CoreDataProperties.swift in Sources */,
+				6D5BF37025A1A89000BA8CE5 /* NewView.swift in Sources */,
 				6D0C5B5B24B14811000842C2 /* ItemRow.swift in Sources */,
 				6DF0947724BB3F2C00FB051C /* AddCategory.swift in Sources */,
 				6DA186D124C9AEDC00427EA1 /* InitDate+CoreDataProperties.swift in Sources */,
@@ -651,25 +655,27 @@
 				CODE_SIGN_ENTITLEMENTS = iShop/iShop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"iShop/Preview Content\"";
 				DEVELOPMENT_TEAM = U29H955YLN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iShop/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"$(SRCROOT)/**",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cfiliatrault.ishop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "iShop/Helpers/iShop-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -681,24 +687,26 @@
 				CODE_SIGN_ENTITLEMENTS = iShop/iShop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"iShop/Preview Content\"";
 				DEVELOPMENT_TEAM = U29H955YLN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iShop/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"$(SRCROOT)/**",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cfiliatrault.ishop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "iShop/Helpers/iShop-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};

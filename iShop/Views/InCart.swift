@@ -11,12 +11,12 @@ import CoreData
 
 struct InCart: View {
    @ObservedObject var userDefaultsManager = UserDefaultsManager()
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    
    var thisList: ListOfItems
    var category: Category
    var items: FetchRequest<Item>
    @State var restoreItems: Bool = false
-   
    init(listFromHomePage: ListOfItems, categoryFromItemList: Category) {
       
       thisList = listFromHomePage
@@ -41,6 +41,7 @@ struct InCart: View {
                   .font(.headline)
                   .listRowBackground(Color("listBackground"))
                   .offset(y: 7)
+               
                
                HStack {
                Spacer()
@@ -79,6 +80,7 @@ struct InCart: View {
                
             }
          }
+      
    }
    
    // REMOVE (swiped) ITEM

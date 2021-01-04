@@ -54,6 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          
          // Change color scheme to light only (remove this if implementing dark mode)
          window.overrideUserInterfaceStyle = .light
+         
       }
    }
    

@@ -25,11 +25,19 @@ struct SettingsButton: View {
                self.editMode?.wrappedValue = .inactive 
             }
            }) {
+            
+            HStack {
+            if globalVariables.userIsOnMac {
+               Text("Settings")
+            } else {
               Image(systemName: "gear")
                  .imageScale(.large)
-                 .padding()
-                 .foregroundColor(Color("navBarFont"))
-                 .offset(x: -5)
+            }
+            }
+            .padding()
+            .foregroundColor(Color("navBarFont"))
+            .offset(x: -5)
+
            }
         .sheet(isPresented: self.$showSettings){
            Settings(startUp: self.startUp, showSettingsBinding: self.$showSettings)

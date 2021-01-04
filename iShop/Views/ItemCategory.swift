@@ -11,6 +11,7 @@ import CoreData
 
 struct ItemCategory: View {
    
+   @EnvironmentObject var globalVariables: GlobalVariableClass
    var thisList: ListOfItems
    var thisCategory: Category
    var items: FetchRequest<Item>
@@ -60,7 +61,7 @@ struct ItemCategory: View {
                Text(thisCategory.wrappedName)
                   .font(.headline)
                   .listRowBackground(Color("listBackground"))
-                  .offset(y: 7)
+                  .offset(y: globalVariables.userIsOnMac ? 4 : 7)
             }
             
             ForEach(items.wrappedValue) { item in

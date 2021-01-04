@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
       // Sync User Defaults to iCloud
       MKiCloudSync.start(withPrefix: "sync")
+      
       return true
    }
    

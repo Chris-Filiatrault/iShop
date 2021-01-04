@@ -41,7 +41,7 @@ struct ItemDetails: View {
    var body: some View {
       
       NavigationView {
-         GeometryReader { geometry in
+      
             VStack {
                
                Form {
@@ -112,7 +112,6 @@ struct ItemDetails: View {
                   Button(action: {
                      removeItemFromList(thisItem: self.thisItem, listOrigin: self.newList)
                      self.showItemDetails = false
-//                     self.presentationMode.wrappedValue.dismiss()
                   }) {
                      Text("Delete")
                         .foregroundColor(.red)
@@ -146,7 +145,7 @@ struct ItemDetails: View {
                })
          }
          .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
-      }
+      
       .environment(\.horizontalSizeClass, .compact)
       
       .onAppear {

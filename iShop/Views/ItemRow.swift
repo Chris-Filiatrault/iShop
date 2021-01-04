@@ -24,8 +24,9 @@ struct ItemRow: View {
    var body: some View {
       
       HStack {
+         
+         
          Button(action: {
-            
             if self.thisItem.markedOff == false {
                withAnimation {
                markOffItemInList(thisItem: self.thisItem, thisList: self.thisList)
@@ -40,9 +41,11 @@ struct ItemRow: View {
             hapticFeedback()
          }) {
             HStack {
+               
+               // Checkbox & name
                Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
                   .imageScale(.large)
-                  .foregroundColor(thisItem.markedOff == true ? Color("lightBlue") : .black)
+                  .foregroundColor(thisItem.markedOff == true ? Color("markedOffBlue") : .black)
                
                Text(thisItem.quantity > 1 ?
                   "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
@@ -56,18 +59,20 @@ struct ItemRow: View {
                Divider()
                
                // Item details button
-               
                Button(action: {
                   self.showItemDetails.toggle()
                   withAnimation {
                      self.editMode?.wrappedValue = .inactive
                   }
-                  
                }) {
-                  Image(systemName: "square.and.pencil")
-                     .imageScale(.large)
-                     .foregroundColor(thisItem.markedOff == true ? .white : .black)
-                     .padding(7)
+                  if !globalVariables.userIsOnMac {
+                     Image(systemName: "square.and.pencil")
+                        .imageScale(.large)
+                        .foregroundColor(thisItem.markedOff == true ? .white : .black)
+                        .padding(7)
+                  } else {
+                     Text("✏️")
+                  }
                }
                
             }

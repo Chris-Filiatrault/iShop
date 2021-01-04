@@ -46,7 +46,7 @@ struct CustomTextField: View {
                Text(placeholder)
                   .foregroundColor(.gray)
                   .padding(.leading, 8)
-
+                  .font(.headline)
                Spacer()
             }
          }

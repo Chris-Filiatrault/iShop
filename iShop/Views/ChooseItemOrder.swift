@@ -43,6 +43,7 @@ struct ChooseItemOrder: View {
                      } else {
                         Text(option)
                            .foregroundColor(.black)
+                           .font(.headline)
                      }
                   }
                }

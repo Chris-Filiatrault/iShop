@@ -35,6 +35,7 @@ struct ChooseCategory: View {
    
    var body: some View {
       
+      
          List {
             
             // Add new category
@@ -106,9 +107,9 @@ struct ChooseCategory: View {
             }
             .onDelete(perform: deleteSwipedCategory)
          }
-         .listStyle(GroupedListStyle())
+//         .listStyle(GroupedListStyle())
          .navigationBarTitle(Text("Category"), displayMode: .inline)
-         .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
+//         .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
          .navigationBarItems(
             leading:
                Button(action : {
@@ -162,7 +163,8 @@ struct ChooseCategory: View {
                      }
                   }, secondaryButton: .cancel())
       })
-         }
+      
+      }
          
       
       

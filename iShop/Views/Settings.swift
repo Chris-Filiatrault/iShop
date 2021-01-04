@@ -40,10 +40,11 @@ struct Settings: View {
    var body: some View {
       
       NavigationView {
+
+
          VStack {
             
             Form {
-               
                
                // ===LIST OPTIONS===
                Section(header: Text("LIST OPTIONS")) {
@@ -51,6 +52,7 @@ struct Settings: View {
                   // Use categories
                   Toggle(isOn: $userDefaultsManager.useCategories) {
                      Text("Use Categories")
+                        .foregroundColor(.black)
                   }
                   
                   // Item Order
@@ -58,28 +60,32 @@ struct Settings: View {
                   ) {
                         HStack {
                            Text("Item Order")
+                              .foregroundColor(.black)
                            Spacer()
                            Text(userDefaultsManager.useCategories == true ?
                               "Alphabetical" :
                               "\(sortItemsBy)"
-                           ).foregroundColor(.gray)
+                           )
+                           .foregroundColor(.gray)
+                           .font(.headline)
                   }
                }
                   
                
                }
+               .listRowBackground(Color(.white))
                
-               
+               if !globalVariables.userIsOnMac {
                // ===GENERAL===
                Section(header: Text("GENERAL")) {
                   
                   // Keep screen on
                   Toggle(isOn: $userDefaultsManager.keepScreenOn) {
                      Text("Keep Screen On")
+                        .foregroundColor(.black)
                   }
-                  
-
-                  
+               }
+               .listRowBackground(Color(.white))
                }
                
                // ===ISHOP===
@@ -89,8 +95,10 @@ struct Settings: View {
                   Text("Version \(appVersion ?? "")")
                   
                ) {
-                                    
+                                 
+
                   // Introduction
+                  if !globalVariables.userIsOnMac {
                   Button(action: {
                      self.onboardingShownFromSettings.toggle()
                   }) {
@@ -100,7 +108,7 @@ struct Settings: View {
                   .sheet(isPresented: $onboardingShownFromSettings) {
                      OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
                   }
-                  
+                  }
                   
                   // Contact
                   Button(action: {
@@ -108,10 +116,10 @@ struct Settings: View {
                   }) {
                      HStack {
                         Text("Contact")
-                           .foregroundColor(.black)
                         Image(systemName: "envelope")
-                           .foregroundColor(.gray)
                      }
+                     .foregroundColor(.black)
+
                   }
                   .sheet(isPresented: $isShowingMailView) {
                      MailView(result: self.$result)
@@ -122,16 +130,19 @@ struct Settings: View {
                   }
                   
                }
+               .listRowBackground(Color(.white))
                
                
             }
+            .font(.headline)
             .padding(.top, 15)
+            
                
             
                
          }
+         .navigationBarColor(backgroundColor: .clear, fontColor: .black)
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))
-         .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
          
          // === Nav bar ===
          .navigationBarTitle("Settings", displayMode: .inline)

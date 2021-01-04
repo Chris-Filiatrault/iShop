@@ -46,6 +46,10 @@ struct StartUp: View {
       // Remove UITableView background, so the background color can be programmed using SwiftUI
       UITableView.appearance().backgroundColor = .clear
       
+      if UIDevice.current.userInterfaceIdiom == .mac {
+//         UINavigationBar.appearance().backgroundColor = self.navBarColor
+      }
+      
       
       // Run first time code after a 3 second delay, to (hopefully) let UserDefaults sync
       DispatchQueue.main.asyncAfter(deadline: .now() + 3) {

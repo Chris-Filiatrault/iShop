@@ -32,9 +32,15 @@ struct ListActionSheet: View {
                self.editMode?.wrappedValue = .inactive
             }
          }) {
-            Image(systemName: "ellipsis.circle")
+            HStack {
+               if globalVariables.userIsOnMac {
+                  Text("More")
+               } else {
+                  Image(systemName: "ellipsis.circle")
+                     .imageScale(.large)
+               }
+            }
                .foregroundColor(Color("navBarFont"))
-               .imageScale(.large)
                .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 5))
          }.padding(.vertical, 10)
        

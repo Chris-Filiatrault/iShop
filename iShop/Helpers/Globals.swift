@@ -24,7 +24,7 @@ class GlobalVariableClass: ObservableObject {
    @State var onboardingShownFromSettings: Bool = false
    @State var showItemDetails: Bool = false
    let navBarColor: UIColor = UIColor(red: 5/255, green: 15/255, blue: 35/255, alpha: 0.9)
-
+   let userIsOnMac = UIDevice.current.userInterfaceIdiom == .mac
    
    
    @State var testTextString: String = ""

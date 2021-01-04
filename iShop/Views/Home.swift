@@ -35,7 +35,7 @@ struct Home: View {
          NavigationView {
             List {
                
-               VStack {
+               VStack {	
                   if listsAlphabetical.count == 0 {
                      VStack {
                         Text("\nNo Lists?\nPlease keep the app open, iCloud should sync before long.\n\nIf your lists don't sync within a few minutes you can request support via the Contact button in Settings or at ishop-groceries@outlook.com.\n")
@@ -116,7 +116,4 @@ struct Home: View {
 
    
 }
-
-
-
 
