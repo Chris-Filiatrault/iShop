@@ -655,7 +655,7 @@
 				CODE_SIGN_ENTITLEMENTS = iShop/iShop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iShop/Preview Content\"";
 				DEVELOPMENT_TEAM = U29H955YLN;
 				ENABLE_PREVIEWS = YES;
@@ -667,11 +667,12 @@
 					"@executable_path/Frameworks",
 					"$(SRCROOT)/**",
 				);
-				MARKETING_VERSION = 1.3.7;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cfiliatrault.ishop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "iShop/Helpers/iShop-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -687,7 +688,7 @@
 				CODE_SIGN_ENTITLEMENTS = iShop/iShop.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iShop/Preview Content\"";
 				DEVELOPMENT_TEAM = U29H955YLN;
 				ENABLE_PREVIEWS = YES;
@@ -699,11 +700,12 @@
 					"@executable_path/Frameworks",
 					"$(SRCROOT)/**",
 				);
-				MARKETING_VERSION = 1.3.7;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cfiliatrault.ishop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "iShop/Helpers/iShop-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";

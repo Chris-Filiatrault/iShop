@@ -50,8 +50,11 @@ struct MailView: UIViewControllerRepresentable {
       let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
       var OS: String = ""
       
-      if UIDevice.current.userInterfaceIdiom == .pad { OS = "iPadOS" }
-      else { OS = "iOS" }
+      let userOS = UIDevice.current.userInterfaceIdiom
+      
+      if userOS == .phone { OS = "iOS" }
+      else if userOS == .pad { OS = "iPadOS" }
+      else if userOS == .mac { OS = "MacOS" }
       let osVersion = UIDevice.current.systemVersion
       
       let vc = MFMailComposeViewController()

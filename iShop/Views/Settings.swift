@@ -75,8 +75,8 @@ struct Settings: View {
                }
                .listRowBackground(Color(.white))
                
-               if !globalVariables.userIsOnMac {
                // ===GENERAL===
+               if !globalVariables.userIsOnMac {
                Section(header: Text("GENERAL")) {
                   
                   // Keep screen on
@@ -111,26 +111,36 @@ struct Settings: View {
                   }
                   
                   // Contact
-                  Button(action: {
-                     MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
-                  }) {
-                     HStack {
-                        Text("Contact")
-                        Image(systemName: "envelope")
-                     }
-                     .foregroundColor(.black)
 
+                  //Mac
+                  if globalVariables.userIsOnMac {
+                     Link("Contact", destination: URL(string: "https://chrisfiliatrault.com/contact/")!)
+                        .foregroundColor(.black)
+                        .listRowBackground(Color(.white))
+                  } else
+                  // iPad & iOS
+                  {
+                     Button(action: {
+                        MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
+                     }) {
+                        HStack {
+                           Text("Contact")
+                           Image(systemName: "envelope")
+                        }
+                        .foregroundColor(.black)
+
+                     }
+                     .sheet(isPresented: $isShowingMailView) {
+                        MailView(result: self.$result)
+                        
+                     }
+                     .alert(isPresented: self.$alertNoMail) {
+                        Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
+                     }
+                     .listRowBackground(Color(.white))
                   }
-                  .sheet(isPresented: $isShowingMailView) {
-                     MailView(result: self.$result)
-                     
-                  }
-                  .alert(isPresented: self.$alertNoMail) {
-                     Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
-                  }
-                  
                }
-               .listRowBackground(Color(.white))
+               
                
                
             }
