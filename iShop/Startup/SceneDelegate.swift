@@ -28,8 +28,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       // Get the managed object context from the shared persistent container.
       guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
          fatalError("Unable to read managed object context.")
+         
       }
-      
       
       
       // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
@@ -51,10 +51,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          self.window = window
          window.makeKeyAndVisible()
          
-         
-         // Change color scheme to light only (remove this if implementing dark mode)
-         window.overrideUserInterfaceStyle = .light
-         
+         window.overrideUserInterfaceStyle = UserDefaultsManager().useDarkMode ? .dark : .light
+                           
       }
    }
    
@@ -73,6 +71,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       
       UserDefaults.standard.set(UserDefaults.standard.integer(forKey: "syncNumTimesUsed") + 1, forKey: "syncNumTimesUsed")
       print("Num times used from Scene Delegate: \(UserDefaults.standard.integer(forKey: "syncNumTimesUsed"))")
+      
+      window?.overrideUserInterfaceStyle = UserDefaultsManager().useDarkMode ? .dark : .light
+      
+      
+//      // Choose theme
+//      if UserDefaults.standard.string(forKey: "syncTheme") == "Light" {
+//         window?.overrideUserInterfaceStyle = .light
+//      }
+//
+//      if UserDefaults.standard.string(forKey: "syncTheme") == "Dark" {
+//         window?.overrideUserInterfaceStyle = .light
+//      }
+//
+//      if UserDefaults.standard.string(forKey: "syncTheme") == "System" {
+//         window?.overrideUserInterfaceStyle = .light
+//      }
+
    }
    
    func sceneWillResignActive(_ scene: UIScene) {
@@ -91,6 +106,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       // to restore the scene back to its current state.
       
       UIApplication.shared.isIdleTimerDisabled = false
+      
+      
       
       // Save changes in the application's managed object context when the application transitions to the background.
       (UIApplication.shared.delegate as? AppDelegate)?.saveContext()

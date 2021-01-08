@@ -181,13 +181,13 @@
       "size" : "128x128"
     },
     {
-      "filename" : "Mac-257.png",
+      "filename" : "Mac-256.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "Mac-256.png",
+      "filename" : "Mac-257.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"

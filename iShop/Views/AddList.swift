@@ -27,22 +27,25 @@ struct AddList: View {
             .bold()
             .font(.largeTitle)
             .padding(.top, 50)
-            .foregroundColor(.black)
          Divider()
             .padding(.bottom, 30)
             .offset(y: -15)
          
          
-         // ===Add List Textfield===
-         CustomTextField("Enter list name",
-                         text: AddList.newListBinding,
-                         focusTextfieldCursor: AddList.focusTextfield,
-                         onCommit: { self.commit() }
-         )
-            .padding(.bottom)
+         
+         TextField("Enter list name", text: AddList.newListBinding)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
             .alert(isPresented: $duplicateListAlert) {
                Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("Done")))
-         }
+            }
+         
+         // ===Add List Textfield===
+//         CustomTextField("Enter list name",
+//                         text: AddList.newListBinding,
+//                         focusTextfieldCursor: AddList.focusTextfield,
+//                         onCommit: { self.commit() }
+//         )
+//            .padding(.bottom)
          
          // ===Buttons===
          HStack {
@@ -76,7 +79,7 @@ struct AddList: View {
       }
       .padding()
       .environment(\.horizontalSizeClass, .compact)
-      .background(Color("plainSheetBackground").edgesIgnoringSafeArea(.all))
+      .background(Color("listBackground").edgesIgnoringSafeArea(.all))
       
    }
    

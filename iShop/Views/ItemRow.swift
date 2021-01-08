@@ -79,7 +79,10 @@ struct ItemRow: View {
          }
       }
       .id(globalVariables.refreshingID)
-      .listRowBackground(thisItem.markedOff == true ? Color("standardDarkBlue") : Color(.white))
+      
+      
+      ///=========HERE=============
+      .listRowBackground(Color(thisItem.markedOff == true ? "standardDarkBlue" :"listRowBackground"))
          
       .sheet(isPresented: self.$showItemDetails) {
          VStack {

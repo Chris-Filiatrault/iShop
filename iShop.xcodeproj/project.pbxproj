@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6D066CC724B6987400121692 /* ItemDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D066CC624B6987400121692 /* ItemDetails.swift */; };
+		6D0B774625A81B4C006A2C3E /* ChooseTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0B774525A81B4C006A2C3E /* ChooseTheme.swift */; };
 		6D0C5AFB24B142E1000842C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C5AFA24B142E1000842C2 /* Assets.xcassets */; };
 		6D0C5AFE24B142E1000842C2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C5AFD24B142E1000842C2 /* Preview Assets.xcassets */; };
 		6D0C5B0124B142E1000842C2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C5AFF24B142E1000842C2 /* LaunchScreen.storyboard */; };
@@ -79,6 +80,7 @@
 
 /* Begin PBXFileReference section */
 		6D066CC624B6987400121692 /* ItemDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetails.swift; sourceTree = "<group>"; };
+		6D0B774525A81B4C006A2C3E /* ChooseTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseTheme.swift; sourceTree = "<group>"; };
 		6D0C5AEE24B142DB000842C2 /* iShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D0C5AFA24B142E1000842C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6D0C5AFD24B142E1000842C2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				6D0C5B5A24B14811000842C2 /* Catalogue.swift */,
 				6D0C5B5424B14811000842C2 /* CatalogueRow.swift */,
 				6DF0947424BB330500FB051C /* ChooseCategory.swift */,
+				6D0B774525A81B4C006A2C3E /* ChooseTheme.swift */,
 				6DEEA134251EB54A001BA886 /* ChooseItemOrder.swift */,
 				6DEC8AFB24F3651B00078E70 /* CustomTextField.swift */,
 				6D83AC0A24CFB7BE00797E5F /* Home.swift */,
@@ -470,6 +473,7 @@
 				6DE6004424E9F60900AA3F1D /* ListActionSheet.swift in Sources */,
 				6D0C5B5D24B14811000842C2 /* CatalogueRow.swift in Sources */,
 				6D0C5B6324B14811000842C2 /* Catalogue.swift in Sources */,
+				6D0B774625A81B4C006A2C3E /* ChooseTheme.swift in Sources */,
 				6DE5B61A24EA448700608449 /* NavBarLeading.swift in Sources */,
 				6D0C5B5F24B14811000842C2 /* StartUp.swift in Sources */,
 				6DA186D024C9AEDC00427EA1 /* InitDate+CoreDataClass.swift in Sources */,
@@ -666,7 +670,7 @@
 					"@executable_path/Frameworks",
 					"$(SRCROOT)/**",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cfiliatrault.ishop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -675,7 +679,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "iShop/Helpers/iShop-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -698,7 +702,7 @@
 					"@executable_path/Frameworks",
 					"$(SRCROOT)/**",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cfiliatrault.ishop;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -706,7 +710,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "iShop/Helpers/iShop-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};

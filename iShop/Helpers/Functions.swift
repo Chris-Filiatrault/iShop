@@ -20,9 +20,9 @@ import StoreKit
 /**
  Adds a new Item object
  
-   * If `itemName` is unique, an Item object with that name is added to all lists, and the object in the current list is added.
-   * If `itemName` is not unique, the existing `Item` object is simply added to the list.
-   * If the existing object is already in the list, `quantity` is incremented by 1.
+ * If `itemName` is unique, an Item object with that name is added to all lists, and the object in the current list is added.
+ * If `itemName` is not unique, the existing `Item` object is simply added to the list.
+ * If the existing object is already in the list, `quantity` is incremented by 1.
  
  */
 func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
@@ -80,10 +80,10 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
             }
          }
       }
-         
-         
-         // Existing item name --> add from current catalogue to the current list
-         // Or increase quantity by 1 if already in the list
+      
+      
+      // Existing item name --> add from current catalogue to the current list
+      // Or increase quantity by 1 if already in the list
       else if !itemNameIsUnique(name: itemName.wrappedValue) {
          
          let originPredicate = NSPredicate(format: "origin = %@", listOrigin)
@@ -219,8 +219,8 @@ func removeItemFromList(thisItem: Item, listOrigin: ListOfItems) {
 func renameItem(currentName: String, newName: String) {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
    
    let managedContext =
@@ -401,10 +401,10 @@ func changeItemList(thisItem: Item, oldList: ListOfItems, newList: ListOfItems) 
       
       // Set up new item
       for item in newList.itemArray {
-
+         
          // Find item
          if item.wrappedName == thisItem.wrappedName {
-   
+            
             // If item wasn't in new list, assign old item properties.
             if item.addedToAList == false {
                item.addedToAList = true
@@ -440,8 +440,8 @@ func changeItemList(thisItem: Item, oldList: ListOfItems, newList: ListOfItems) 
          print("Could not save. \(error), \(error.userInfo)")
       }
       
-   
-
+      
+      
    } catch let error as NSError {
       print("Could not fetch. \(error), \(error.userInfo)")
    }
@@ -454,8 +454,8 @@ func itemNameIsUnique(name: String) -> Bool {
    var result: Bool = true
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return true
+   else {
+      return true
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
@@ -488,8 +488,8 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
    var result: Bool = true
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return true
+   else {
+      return true
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
@@ -521,8 +521,8 @@ func itemNameInListIsUnique(name: String, thisList: ListOfItems) -> Bool {
 func sortItemPositionsAlphabetically(thisList: ListOfItems) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return
+   else {
+      return
    }
    let managedContext = appDelegate.persistentContainer.viewContext
    
@@ -590,9 +590,9 @@ func incrementItemPurchaseCount(thisItem: Item) {
 func addList(listName: String) {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate
-      else {
-         return
+            UIApplication.shared.delegate as? AppDelegate
+   else {
+      return
    }
    
    let managedContext =
@@ -720,8 +720,8 @@ func listNameIsUnique(name: String) -> Bool {
    var result: Bool = true
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return true
+   else {
+      return true
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
@@ -766,8 +766,8 @@ func numListUntickedItems(list: ListOfItems) -> Int {
 func clearList(thisList: ListOfItems) {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
    let managedContext =
       appDelegate.persistentContainer.viewContext
@@ -791,8 +791,8 @@ func clearList(thisList: ListOfItems) {
 func moveList(IndexSet: IndexSet, destination: Int) {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
    
    let managedContext =
@@ -866,8 +866,8 @@ func moveList(IndexSet: IndexSet, destination: Int) {
 func sortListPositionsAlphabetically() {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return
+   else {
+      return
    }
    let managedContext = appDelegate.persistentContainer.viewContext
    
@@ -904,8 +904,8 @@ func listItemsWithCategoriesAsString(thisList: ListOfItems) -> String {
    var categoriesAndItems: [String] = []
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return ""
+            UIApplication.shared.delegate as? AppDelegate else {
+      return ""
    }
    let managedContext =
       appDelegate.persistentContainer.viewContext
@@ -1014,15 +1014,15 @@ func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
    var result = ""
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return ""
+            UIApplication.shared.delegate as? AppDelegate else {
+      return ""
    }
    let managedContext =
       appDelegate.persistentContainer.viewContext
    
    let originPredicate = NSPredicate(format: "origin = %@", thisList)
    let inListPredicate = NSPredicate(format: "addedToAList == true")
-//   let markedOffPredicate = NSPredicate(format: "markedOff == false")
+   //   let markedOffPredicate = NSPredicate(format: "markedOff == false")
    let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, inListPredicate])
    
    let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
@@ -1036,7 +1036,7 @@ func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
       var inCartItems: String = ""
       for item in items {
          if item.markedOff == false {
-         uncheckedItems.append("☐ " + item.wrappedName + "\n")
+            uncheckedItems.append("☐ " + item.wrappedName + "\n")
          }
          else if item.markedOff == true {
             inCartItems.append("☑ " + item.wrappedName + "\n")
@@ -1209,7 +1209,7 @@ func listItemsWithoutCategoriesAsString(thisList: ListOfItems) -> String {
 func addCategory(categoryName: String, thisItem: Item) {
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-         return
+      return
    }
    
    let managedContext =
@@ -1251,8 +1251,8 @@ func addCategory(categoryName: String, thisItem: Item) {
 func deleteCategory(category: Category) {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
    
    let managedContext =
@@ -1283,8 +1283,8 @@ func deleteCategory(category: Category) {
 func renameCategory(currentName: String, newName: String) {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
    
    let managedContext =
@@ -1321,15 +1321,15 @@ func renameCategory(currentName: String, newName: String) {
 // ===CHANGE CATEGORY===
 /// Changes both the category array + category origin, upon the ItemDetails sheet disappearing (to avoid issues with the Done button in the sheet not working).
 func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: Category) {
-
+   
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
-
+   
    let managedContext =
       appDelegate.persistentContainer.viewContext
-
+   
    let fetchRequest:NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    fetchRequest.sortDescriptors = [
       NSSortDescriptor(key: "name", ascending: true, selector:  #selector(NSString.localizedCaseInsensitiveCompare(_:)))
@@ -1346,7 +1346,7 @@ func changeCategory(thisItem: Item, oldItemCategory: Category, newItemCategory: 
          newItemCategory.addToItemsInCategory(item)
       }
    }
-
+   
    do {
       let items = try managedContext.fetch(fetchRequest)
       for item in items {
@@ -1387,8 +1387,8 @@ func categoryNameIsUnique(name: String) -> Bool {
    var result: Bool = true
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return true
+   else {
+      return true
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
@@ -1419,8 +1419,8 @@ func categoryNameIsUnique(name: String) -> Bool {
 func uncategorisedCategory() -> Category? {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return nil
+            UIApplication.shared.delegate as? AppDelegate else {
+      return nil
    }
    
    let managedContext =
@@ -1446,8 +1446,8 @@ func uncategorisedCategory() -> Category? {
 func inCartCategory() -> Category? {
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return nil
+            UIApplication.shared.delegate as? AppDelegate else {
+      return nil
    }
    
    let managedContext =
@@ -1615,8 +1615,8 @@ func userHasNoLists() -> Bool {
    var result: Bool = false
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return false
+   else {
+      return false
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
@@ -1643,8 +1643,8 @@ func userHasNoCategories() -> Bool {
    var result: Bool = false
    
    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else {
-         return false
+   else {
+      return false
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
@@ -1710,23 +1710,23 @@ func errorMessage(debuggingErrorMessage: String) -> some View {
    
    return
       VStack {
-      
-         Text("\nAn error occurred.\n\n").font(.headline)
-            
-         Text("Please contact the developer via the Settings and quote the error message:\n") +
          
-         Text("\"" + debuggingErrorMessage + "\"" + "\n\n").italic()
+         Text("\nAn error occurred.\n\n").font(.headline)
+         
+         Text("Please contact the developer via the Settings and quote the error message:\n") +
+            
+            Text("\"" + debuggingErrorMessage + "\"" + "\n\n").italic()
          
          Button(action: {
-               let pasteboard = UIPasteboard.general
-               pasteboard.string = debuggingErrorMessage
-               successHapticFeedback()
+            let pasteboard = UIPasteboard.general
+            pasteboard.string = debuggingErrorMessage
+            successHapticFeedback()
          }) {
             Text("Copy error message")
-            .bold()
+               .bold()
          }
-      
-   }.padding()
+         
+      }.padding()
 }
 
 
@@ -1777,8 +1777,8 @@ func resetMOC() {
    UserDefaults.standard.set(0, forKey: "syncNumTimesUsed")
    
    guard let appDelegate =
-      UIApplication.shared.delegate as? AppDelegate else {
-         return
+            UIApplication.shared.delegate as? AppDelegate else {
+      return
    }
    
    let managedContext =
@@ -1833,7 +1833,7 @@ func resetMOC() {
 // Reset Button
 // runs resetMOC() and resetDefaults()
 func resetButton() -> some View {
-
+   
    return Button(action: {
       resetMOC()
       resetDefaults()
@@ -1870,3 +1870,18 @@ func randomItem() -> Item? {
    
    return nil
 }
+
+
+// Change Theme
+//func changeTheme(theme: String) {
+//   switch theme {
+//   case "dark":
+//      SceneDelegate().window?.overrideUserInterfaceStyle = .dark
+//      break
+//   case "light":
+//      SceneDelegate().window?.overrideUserInterfaceStyle = .dark
+//      break
+//   default:
+//      SceneDelegate().window?.overrideUserInterfaceStyle = .dark
+//   }
+//}

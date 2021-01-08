@@ -13,7 +13,7 @@ struct Home: View {
    @Environment(\.presentationMode) var presentationModeHome
    @Environment(\.managedObjectContext) var context
    @EnvironmentObject var globalVariables: GlobalVariableClass
-   
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @State var showSettings: Bool = false
    @State var showAddList: Bool = false
    @State var showDeleteListAlert: Bool = false
@@ -102,6 +102,7 @@ struct Home: View {
          self.navBarFont = UIColor.white
          self.navBarColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
       }
+      .environment(\.colorScheme, userDefaultsManager.useDarkMode ? .dark : .light)
    } // End of body
    
    

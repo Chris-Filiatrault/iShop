@@ -20,7 +20,7 @@ struct Settings: View {
    var lists: FetchedResults<ListOfItems>
    
    let sortOptions: [String] = ["Alphabetical", "Manual"]
-//   let hapticFeedbackOptions: [String] = ["On", "Off"]
+   //   let hapticFeedbackOptions: [String] = ["On", "Off"]
    var startUp: StartUp
    
    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
@@ -30,6 +30,7 @@ struct Settings: View {
    @State var disableAutocorrect: Bool = false
    @State var sortItemsBy: String = UserDefaults.standard.string(forKey: "syncSortItemsBy") ?? "Manual"
    @State var sortListsBy: String = UserDefaults.standard.string(forKey: "syncSortListsBy") ?? "Manual"
+   @State var theme: String = UserDefaults.standard.string(forKey: "syncTheme") ?? "System"
    @State var navBarFont: UIColor = UIColor.white
    @State var navBarColor: UIColor = UIColor(red: 0/255, green: 10/255, blue: 30/255, alpha: 1)
    @State var onboardingShownFromSettings: Bool = false
@@ -40,8 +41,8 @@ struct Settings: View {
    var body: some View {
       
       NavigationView {
-
-
+         
+         
          VStack {
             
             Form {
@@ -52,71 +53,84 @@ struct Settings: View {
                   // Use categories
                   Toggle(isOn: $userDefaultsManager.useCategories) {
                      Text("Use Categories")
-                        .foregroundColor(.black)
                   }
                   
                   // Item Order
-                  NavigationLink(destination: ChooseItemOrder(sortItemsBy: $sortItemsBy)
-                  ) {
-                        HStack {
-                           Text("Item Order")
-                              .foregroundColor(.black)
-                           Spacer()
-                           Text(userDefaultsManager.useCategories == true ?
+                  NavigationLink(destination: ChooseItemOrder(sortItemsBy: $sortItemsBy)) {
+                     HStack {
+                        Text("Item Order")
+                        Spacer()
+                        Text(userDefaultsManager.useCategories == true ?
                               "Alphabetical" :
                               "\(sortItemsBy)"
-                           )
-                           .foregroundColor(.gray)
-                           .font(.headline)
+                        )
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                     }
                   }
-               }
                   
-               
+                  
                }
-               .listRowBackground(Color(.white))
                
                // ===GENERAL===
-               if !globalVariables.userIsOnMac {
                Section(header: Text("GENERAL")) {
                   
+                  // Theme
+                  
                   // Keep screen on
-                  Toggle(isOn: $userDefaultsManager.keepScreenOn) {
-                     Text("Keep Screen On")
-                        .foregroundColor(.black)
+                  Toggle(isOn: $userDefaultsManager.useDarkMode) {
+                     Text("Dark Mode")
+                  }
+                  
+//                  NavigationLink(destination: ChooseTheme(theme: $theme)) {
+//                     HStack {
+//                        Text("Theme")
+//                        Spacer()
+//                        Text("\(theme)")
+//                           .foregroundColor(.gray)
+//                           .font(.headline)
+//                     }
+//                  }
+                  
+                  // Keep Screen On
+                  if !globalVariables.userIsOnMac {
+                     // Keep screen on
+                     Toggle(isOn: $userDefaultsManager.keepScreenOn) {
+                        Text("Keep Screen On")
+                     }
                   }
                }
-               .listRowBackground(Color(.white))
-               }
+               
+               
                
                // ===ISHOP===
                Section(header: Text("ISHOP"),
                        footer: appVersion == "" ?
-                  Text("") :
-                  Text("Version \(appVersion ?? "")")
-                  
+                        Text("") :
+                        Text("Version \(appVersion ?? "")")
+                       
                ) {
-                                 
-
+                  
+                  
                   // Introduction
                   if !globalVariables.userIsOnMac {
-                  Button(action: {
-                     self.onboardingShownFromSettings.toggle()
-                  }) {
-                     Text("Show Introduction")
-                        .foregroundColor(.black)
-                  }
-                  .sheet(isPresented: $onboardingShownFromSettings) {
-                     OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
-                  }
+                     Button(action: {
+                        self.onboardingShownFromSettings.toggle()
+                     }) {
+                        Text("Show Introduction")
+                           .foregroundColor(Color("blackWhiteFont"))
+                     }
+                     .sheet(isPresented: $onboardingShownFromSettings) {
+                        OnboardingViewSettings(onboardingShownFromSettings: self.$onboardingShownFromSettings)
+                     }
                   }
                   
                   // Contact
-
+                  
                   //Mac
                   if globalVariables.userIsOnMac {
                      Link("Contact", destination: URL(string: "https://chrisfiliatrault.com/contact/")!)
-                        .foregroundColor(.black)
-                        .listRowBackground(Color(.white))
+                        .foregroundColor(Color("blackWhiteFont"))
                   } else
                   // iPad & iOS
                   {
@@ -125,10 +139,11 @@ struct Settings: View {
                      }) {
                         HStack {
                            Text("Contact")
+                              .foregroundColor(Color("blackWhiteFont"))
                            Image(systemName: "envelope")
+                              .foregroundColor(.gray)
                         }
-                        .foregroundColor(.black)
-
+                        
                      }
                      .sheet(isPresented: $isShowingMailView) {
                         MailView(result: self.$result)
@@ -137,7 +152,6 @@ struct Settings: View {
                      .alert(isPresented: self.$alertNoMail) {
                         Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
                      }
-                     .listRowBackground(Color(.white))
                   }
                }
                
@@ -147,47 +161,68 @@ struct Settings: View {
             .font(.headline)
             .padding(.top, 15)
             
-               
             
-               
+            
+            
          }
-         .navigationBarColor(backgroundColor: .clear, fontColor: .black)
-         .background(Color("listBackground").edgesIgnoringSafeArea(.all))
+         .navigationBarColor(backgroundColor: .clear, fontColor: .gray)
+         .background(Color("listBackground"))
          
          // === Nav bar ===
          .navigationBarTitle("Settings", displayMode: .inline)
          .navigationBarItems(trailing:
-            
-            // Done button
-            Button(action: {
-               self.showSettingsBinding.toggle()
-               
-               // If going from alphabetically ordered items to manually ordered, update indices (so the items don't move)
-               if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
-                  for list in self.lists {
-                     sortItemPositionsAlphabetically(thisList: list)
-                     print("Change item order")
-                  }
-               }
-               
-               // If going from alphabetically ordered lists to manually ordered, update indices (so the lists don't move)
-               if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
-                  sortListPositionsAlphabetically()
-               }
-               
-               // Update user defaults
-               UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
-               UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
-               
-            }) {
-               Text("Done")
-                  .font(.headline)
-                  .foregroundColor(.blue)
-                  .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
-               
-         })
+                              
+                              // Save button
+                              Button(action: {
+                                 self.showSettingsBinding.toggle()
+                                 
+                                 // If going from alphabetically ordered items to manually ordered, update indices (so the items don't move)
+                                 if self.sortItemsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortItemsBy") == "Alphabetical" {
+                                    for list in self.lists {
+                                       sortItemPositionsAlphabetically(thisList: list)
+                                    }
+                                 }
+                                 
+                                 // If going from alphabetically ordered lists to manually ordered, update indices (so the lists don't move)
+                                 if self.sortListsBy == "Manual" && UserDefaults.standard.string(forKey: "syncSortListsBy") == "Alphabetical" {
+                                    sortListPositionsAlphabetically()
+                                 }
+                                 
+                                 // Update user defaults
+                                 UserDefaults.standard.set(self.sortItemsBy, forKey: "syncSortItemsBy")
+                                 UserDefaults.standard.set(self.sortListsBy, forKey: "syncSortListsBy")
+                                 
+                                 // Update theme
+                                 UserDefaults.standard.set(self.theme, forKey: "syncTheme")
+                                 
+                              }) {
+                                 Text("Save")
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                                    .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 5))
+                                 
+                              })
+         
+         
+
          
       } // End of VStack
-         .environment(\.horizontalSizeClass, .compact)
+      .environment(\.horizontalSizeClass, .compact)
+      .environment(\.colorScheme, userDefaultsManager.useDarkMode ? .dark : .light)
    }
 }
+
+
+//
+//// Choose theme
+//if UserDefaults.standard.string(forKey: "syncTheme") == "Light" {
+//   window?.overrideUserInterfaceStyle = .light
+//}
+//
+//if UserDefaults.standard.string(forKey: "syncTheme") == "Dark" {
+//   window?.overrideUserInterfaceStyle = .dark
+//}
+//
+//if UserDefaults.standard.string(forKey: "syncTheme") == "System" {
+//   window?.overrideUserInterfaceStyle = .unspecified
+//}

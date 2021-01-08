@@ -22,4 +22,20 @@ class UserDefaultsManager: ObservableObject {
       didSet { UserDefaults.standard.set(self.keepScreenOn, forKey: "syncKeepScreenOn") }
    }
    
+   @Published var useDarkMode: Bool = UserDefaults.standard.bool(forKey: "syncUseDarkMode") {
+      didSet {
+         UserDefaults.standard.set(self.useDarkMode, forKey: "syncUseDarkMode")
+      }
+   }
+   
+   
 }
+
+
+//struct ToggleModel {
+//    var isDark: Bool = true {
+//        didSet {
+//         SceneDelegate().window?.overrideUserInterfaceStyle = isDark ? .dark : .light
+//        }
+//    }
+//}

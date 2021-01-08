@@ -25,7 +25,7 @@ struct AddListButton: View {
       }) {
          HStack {
             if globalVariables.userIsOnMac {
-               Text("➕")
+               Text("Add")
 
             } else {
                Image(systemName: "plus")

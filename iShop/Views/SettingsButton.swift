@@ -14,11 +14,14 @@ struct SettingsButton: View {
    @EnvironmentObject var globalVariables: GlobalVariableClass
    @Environment(\.managedObjectContext) var context
    @Environment(\.editMode)  var editMode
+   @ObservedObject var userDefaultsManager = UserDefaultsManager()
    @Binding var showSettings: Bool
    var startUp: StartUp
    
     var body: some View {
       
+      
+      VStack {
            Button(action: {
               self.showSettings = true
             withAnimation {
@@ -45,6 +48,7 @@ struct SettingsButton: View {
               .environment(\.managedObjectContext, self.context)
                .navigationBarColor(backgroundColor: .clear, fontColor: UIColor.black)
       }
-      
+         
+      }.environment(\.colorScheme, userDefaultsManager.useDarkMode ? .dark : .light)
    }
 }
