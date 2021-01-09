@@ -56,7 +56,7 @@ struct ItemList: View {
    var body: some View {
       
       VStack(spacing: 0) {
-            
+                     
             // ===Add Item Textfield===
             CustomTextField("Add item", text: $globalVariables.itemInTextfield, focusTextfieldCursor: false, onCommit: {
                         if self.globalVariables.itemInTextfield != "" {
@@ -70,7 +70,7 @@ struct ItemList: View {
                               UIApplication.shared.endEditing()
                            }
                         }
-                        
+
                      }, onBeginEditing: {
                         self.globalVariables.catalogueShown = true
                         self.editMode?.wrappedValue = .inactive
@@ -81,9 +81,10 @@ struct ItemList: View {
                      .padding(.top, 10)
                      .modifier(ClearButton())
                      .environmentObject(globalVariables)
-         
+
          
          VStack {
+            
          // ===List of items WITH categories===
          if globalVariables.catalogueShown == false && useCategories == true {
             
@@ -114,6 +115,7 @@ struct ItemList: View {
                }
                .onDelete(perform: removeSwipedItem)
                .onMove(perform: moveItem)
+               .listRowBackground(Color("listRowBackground"))
                
                if inCart != nil {
                InCart(listFromHomePage: self.thisList, categoryFromItemList: self.inCart!)

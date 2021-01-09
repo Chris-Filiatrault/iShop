@@ -32,20 +32,16 @@ struct AddList: View {
             .offset(y: -15)
          
          
-         
-         TextField("Enter list name", text: AddList.newListBinding)
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .alert(isPresented: $duplicateListAlert) {
-               Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("Done")))
-            }
-         
          // ===Add List Textfield===
-//         CustomTextField("Enter list name",
-//                         text: AddList.newListBinding,
-//                         focusTextfieldCursor: AddList.focusTextfield,
-//                         onCommit: { self.commit() }
-//         )
-//            .padding(.bottom)
+         CustomTextField("Enter list name",
+                         text: AddList.newListBinding,
+                         focusTextfieldCursor: AddList.focusTextfield,
+                         onCommit: { self.commit() }
+         )
+         .padding(.bottom)
+         .alert(isPresented: $duplicateListAlert) {
+            Alert(title: Text("Alert"), message: Text("List names must be unique\nPlease choose another name"), dismissButton: .default(Text("Done")))
+         }
          
          // ===Buttons===
          HStack {

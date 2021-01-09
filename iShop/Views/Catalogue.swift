@@ -47,7 +47,7 @@ struct Catalogue: View {
                CatalogueRow(thisList: self.thisList, thisItem: item)
             }
             .onDelete(perform: deleteSwipedCatalogueItem)
-            .listRowBackground(Color(.white))
+            .listRowBackground(Color("listRowBackground"))
             
          }
          .background(Color("listBackground").edgesIgnoringSafeArea(.all))

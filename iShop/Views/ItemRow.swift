@@ -45,13 +45,15 @@ struct ItemRow: View {
                // Checkbox & name
                Image(systemName: thisItem.markedOff == true ? "checkmark.circle.fill" : "circle")
                   .imageScale(.large)
-                  .foregroundColor(thisItem.markedOff == true ? Color("markedOffBlue") : .black)
+                  .foregroundColor(thisItem.markedOff == true ? Color("markedOffBlue") : Color("blackWhiteFont"))
                
+               
+               // Quantity
                Text(thisItem.quantity > 1 ?
                   "\(self.thisItem.quantity) x \(thisItem.wrappedName)" :
                   "\(thisItem.wrappedName)")
-                  .foregroundColor(thisItem.markedOff == true ? .white : .black)
                   .multilineTextAlignment(.leading)
+                  .foregroundColor(thisItem.markedOff == true ? Color("markedOffBlue") : Color("blackWhiteFont"))
                
                
                Spacer()
@@ -68,7 +70,7 @@ struct ItemRow: View {
                   if !globalVariables.userIsOnMac {
                      Image(systemName: "square.and.pencil")
                         .imageScale(.large)
-                        .foregroundColor(thisItem.markedOff == true ? .white : .black)
+                        .foregroundColor(thisItem.markedOff == true ? Color("markedOffBlue") : Color("blackWhiteFont"))
                         .padding(7)
                   } else {
                      Text("✏️")
@@ -76,13 +78,10 @@ struct ItemRow: View {
                }
                
             }
+
          }
       }
       .id(globalVariables.refreshingID)
-      
-      
-      ///=========HERE=============
-      .listRowBackground(Color(thisItem.markedOff == true ? "standardDarkBlue" :"listRowBackground"))
          
       .sheet(isPresented: self.$showItemDetails) {
          VStack {

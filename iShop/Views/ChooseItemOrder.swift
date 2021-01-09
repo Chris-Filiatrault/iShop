@@ -42,8 +42,8 @@ struct ChooseItemOrder: View {
                         .foregroundColor(.blue)
                      } else {
                         Text(option)
-                           .foregroundColor(.black)
                            .font(.headline)
+                           .foregroundColor(Color("blackWhiteFont"))
                      }
                   }
                }

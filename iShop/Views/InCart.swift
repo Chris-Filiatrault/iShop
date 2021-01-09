@@ -71,11 +71,11 @@ struct InCart: View {
                   }
                Spacer()
                }.padding(.horizontal, 10)
-               .listRowBackground(Color("standardDarkBlue"))
+               .listRowBackground(Color("inCartRowBackground"))
                
                ForEach(items.wrappedValue) { item in
                   ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
-                     .listRowBackground(Color("standardDarkBlue"))
+                     .listRowBackground(Color("inCartRowBackground"))
                }.onDelete(perform: removeSwipedItem)
                
             }

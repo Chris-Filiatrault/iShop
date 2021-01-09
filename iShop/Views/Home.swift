@@ -63,6 +63,7 @@ struct Home: View {
                      }
                }
                .onDelete(perform: deleteSwipedList)
+               .listRowBackground(Color("listRowBackground"))
                
             }
             .background(Color("listBackground").edgesIgnoringSafeArea(.all))

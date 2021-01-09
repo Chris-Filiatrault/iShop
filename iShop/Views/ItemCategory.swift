@@ -68,6 +68,7 @@ struct ItemCategory: View {
                ItemRow(thisList: self.thisList, thisItem: item, markedOff: item.markedOff, position: item.position)
             }
             .onDelete(perform: removeSwipedItem)
+            .listRowBackground(Color("listRowBackground"))
          }
       }
    }

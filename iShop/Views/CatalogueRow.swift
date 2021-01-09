@@ -38,18 +38,16 @@ struct CatalogueRow: View {
             
             Image(systemName: thisItem.addedToAList ? "plus.circle" : "plus.circle.fill")
                .imageScale(.medium)
-               .foregroundColor(thisItem.addedToAList ? .clear : Color("tickedOffItemBox"))
-            VStack {
+               .foregroundColor(thisItem.addedToAList ? .clear : .green)
+            HStack {
                if thisItem.quantity > 1 {
                   Text("\(thisItem.quantity) x \(thisItem.wrappedName)")
-                     .foregroundColor(thisItem.addedToAList ? .gray : .black)
                      .font(thisItem.addedToAList ? .subheadline : .headline)
                } else {
                   Text(thisItem.wrappedName)
-                     .foregroundColor(thisItem.addedToAList ? .gray : .black)
                      .font(thisItem.addedToAList ? .subheadline : .headline)
                }
-            }
+            }.foregroundColor(thisItem.addedToAList ? .gray : Color("blackWhiteFont"))
             
          }
          .frame(height: 20)

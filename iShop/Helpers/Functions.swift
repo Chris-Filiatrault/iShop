@@ -1742,12 +1742,28 @@ func deviceIsiPhoneSE() -> Bool {
 
 
 // ===REQUEST APP STORE REVIEW===
+// requestReview() was deprecated in iOS 13
 func requestAppStoreReview() {
    if UserDefaults.standard.integer(forKey: "syncNumTimesUsed") > 20 && UserDefaults.standard.bool(forKey: "syncShownReviewRequest") != true {
-      SKStoreReviewController.requestReview()
+      
+      if #available(iOS 14.0, *) {
+         if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+             SKStoreReviewController.requestReview(in: scene)
+         }
+      } else {
+          SKStoreReviewController.requestReview()
+      }
+      
       UserDefaults.standard.set(true, forKey: "syncShownReviewRequest")
    }
 }
+
+//
+func requestAppStoreReviewiOS14() {
+
+}
+
+
 
 // =====================================================
 // ================== Development ======================
@@ -1871,17 +1887,3 @@ func randomItem() -> Item? {
    return nil
 }
 
-
-// Change Theme
-//func changeTheme(theme: String) {
-//   switch theme {
-//   case "dark":
-//      SceneDelegate().window?.overrideUserInterfaceStyle = .dark
-//      break
-//   case "light":
-//      SceneDelegate().window?.overrideUserInterfaceStyle = .dark
-//      break
-//   default:
-//      SceneDelegate().window?.overrideUserInterfaceStyle = .dark
-//   }
-//}

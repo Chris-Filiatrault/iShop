@@ -68,7 +68,7 @@ struct CustomTextField: View {
          .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.gray))
          .background(
             ZStack {
-            RoundedRectangle(cornerRadius: 5).foregroundColor(.white)
+            RoundedRectangle(cornerRadius: 5).foregroundColor(Color("textFieldBackground"))
             placeholderView
             }
          )
