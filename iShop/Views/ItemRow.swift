@@ -78,7 +78,6 @@ struct ItemRow: View {
                }
                
             }
-
          }
       }
       .id(globalVariables.refreshingID)

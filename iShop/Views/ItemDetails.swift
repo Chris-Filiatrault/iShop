@@ -63,7 +63,7 @@ struct ItemDetails: View {
                      Text("\(self.thisItemQuantity)")
                      Spacer()
                      Image(systemName: "plus")
-                        .foregroundColor(.black)
+                        .foregroundColor(.gray)
                         .imageScale(.large)
                         .onTapGesture {
                            incrementItemQuantity(thisItem: self.thisItem)
@@ -71,7 +71,7 @@ struct ItemDetails: View {
                            hapticFeedback()
                      }
                      Image(systemName: "minus")
-                        .foregroundColor(.black)
+                        .foregroundColor(.gray)
                         .imageScale(.large)
                         .onTapGesture {
                            hapticFeedback()
