@@ -121,7 +121,6 @@
 		6D5BF36F25A1A89000BA8CE5 /* NewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewView.swift; sourceTree = "<group>"; };
 		6D67A48F24C3D06300C9B377 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		6D67A49124C3FA9400C9B377 /* OnboardingViewHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewHome.swift; sourceTree = "<group>"; };
-		6D74C709251C59C90016F543 /* iShop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iShop.entitlements; sourceTree = "<group>"; };
 		6D780D9E24C1A28F00380C17 /* InCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InCart.swift; sourceTree = "<group>"; };
 		6D83AC0A24CFB7BE00797E5F /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		6D96372124F8A44600243E0A /* RenameCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameCategory.swift; sourceTree = "<group>"; };
@@ -196,7 +195,6 @@
 		6D0C5AF024B142DB000842C2 /* iShop */ = {
 			isa = PBXGroup;
 			children = (
-				6D74C709251C59C90016F543 /* iShop.entitlements */,
 				6D0C5B0224B142E1000842C2 /* Info.plist */,
 				6D0C5AFF24B142E1000842C2 /* LaunchScreen.storyboard */,
 				6D0C5B4D24B1480C000842C2 /* AppDelegate.swift */,
