@@ -42,35 +42,9 @@ struct Settings: View {
       
       NavigationView {
          
-         
          VStack {
             
             Form {
-               
-               // ===LIST OPTIONS===
-               Section(header: Text("LIST OPTIONS")) {
-                  
-                  // Use categories
-                  Toggle(isOn: $userDefaultsManager.useCategories) {
-                     Text("Use Categories")
-                  }
-                  
-                  // Item Order
-                  NavigationLink(destination: ChooseItemOrder(sortItemsBy: $sortItemsBy)) {
-                     HStack {
-                        Text("Item Order")
-                        Spacer()
-                        Text(userDefaultsManager.useCategories == true ?
-                              "Alphabetical" :
-                              "\(sortItemsBy)"
-                        )
-                        .foregroundColor(.gray)
-                        .font(.headline)
-                     }
-                  }
-                  
-                  
-               }
                
                // ===GENERAL===
                Section(header: Text("GENERAL"),
@@ -78,8 +52,26 @@ struct Settings: View {
                         Text("") :
                         Text("Version \(appVersion ?? "")")
                ) {
+                
+                // Use categories
+                Toggle(isOn: $userDefaultsManager.useCategories) {
+                   Text("Use Categories")
+                }
+                
+                // Item Order
+                NavigationLink(destination: ChooseItemOrder(sortItemsBy: $sortItemsBy)) {
+                   HStack {
+                      Text("Item Order")
+                      Spacer()
+                      Text(userDefaultsManager.useCategories == true ?
+                            "Alphabetical" :
+                            "\(sortItemsBy)"
+                      )
+                      .foregroundColor(.gray)
+                      .font(.headline)
+                   }
+                }
 
-                  
                   // Keep Screen On
                   if !globalVariables.userIsOnMac {
                      // Keep screen on
@@ -88,39 +80,8 @@ struct Settings: View {
                      }
                   }
                 
-                
-                // Contact
-                
-                //Mac
-                if globalVariables.userIsOnMac {
-                   Link("Contact", destination: URL(string: "https://chrisfiliatrault.com/contact/")!)
-                      .foregroundColor(Color("blackWhiteFont"))
-                }
-                
-                // iPad & iOS
-                else {
-                   Button(action: {
-                      MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
-                   }) {
-                      HStack {
-                         Text("Contact")
-                            .foregroundColor(Color("blackWhiteFont"))
-                         Image(systemName: "envelope")
-                            .foregroundColor(.gray)
-                      }
-                      
-                   }
-                   .sheet(isPresented: $isShowingMailView) {
-                      MailView(result: self.$result)
-                      
-                   }
-                   .alert(isPresented: self.$alertNoMail) {
-                      Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
-                   }
-                }
                }
                 
-               
             }
             .font(.headline)
             .padding(.top, 15)
@@ -209,3 +170,49 @@ struct Settings: View {
 //                           .font(.headline)
 //                     }
 //                  }
+
+
+
+
+
+// ===LIST OPTIONS===
+//               Section(header: Text("LIST OPTIONS")) {
+//
+//
+//               }
+
+
+
+
+
+
+
+// Contact
+//
+//                //Mac
+//                if globalVariables.userIsOnMac {
+//                   Link("Contact", destination: URL(string: "https://chrisfiliatrault.com/contact/")!)
+//                      .foregroundColor(Color("blackWhiteFont"))
+//                }
+//
+//                // iPad & iOS
+//                else {
+//                   Button(action: {
+//                      MFMailComposeViewController.canSendMail() ? self.isShowingMailView.toggle() : self.alertNoMail.toggle()
+//                   }) {
+//                      HStack {
+//                         Text("Contact")
+//                            .foregroundColor(Color("blackWhiteFont"))
+//                         Image(systemName: "envelope")
+//                            .foregroundColor(.gray)
+//                      }
+//
+//                   }
+//                   .sheet(isPresented: $isShowingMailView) {
+//                      MailView(result: self.$result)
+//
+//                   }
+//                   .alert(isPresented: self.$alertNoMail) {
+//                      Alert(title: Text("Oops! 😵"), message: Text("Can't send emails on this device."))
+//                   }
+//                }
