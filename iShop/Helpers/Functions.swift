@@ -32,91 +32,41 @@ func addNewItem(itemName: Binding<String>, listOrigin: ListOfItems) {
    }
    
    let managedContext = appDelegate.persistentContainer.viewContext
-   
    let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
-   
-   let listFetchRequest:NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
-   
    let categoryFetchRequest:NSFetchRequest<Category> = NSFetchRequest.init(entityName: "Category")
    categoryFetchRequest.predicate = NSPredicate(format: "name == %@", "Uncategorised")
    
    do {
-      let lists = try managedContext.fetch(listFetchRequest)
       let returnedCategories = try managedContext.fetch(categoryFetchRequest)
-      
-      // Unique item name --> create a new object of that name for every list
-      if itemNameIsUnique(name: itemName.wrappedValue) {
-         
-         for list in lists {
-            let newItem = Item(entity: itemEntity, insertInto: managedContext)
-            newItem.name = itemName.wrappedValue
-            newItem.id = UUID()
-            newItem.dateAdded = Date()
-            newItem.addedToAList = false
-            newItem.markedOff = false
-            newItem.quantity = 1
-            newItem.origin = listOrigin
-            newItem.categoryOriginName = "Uncategorised"
-            list.addToItems(newItem)
-            
-            if returnedCategories != [] {
-               let uncategorised = returnedCategories[0]
-               
-               // add to uncategorised category
-               uncategorised.addToItemsInCategory(newItem)
-               newItem.categoryOrigin = uncategorised
-            }
-            
-            // Add a copy of the new item to the list in which it was added
-            if list == listOrigin {
-               var numItemsInList = 0
-               for item in list.itemArray {
-                  if item.addedToAList == true && item.markedOff == false {
-                     numItemsInList += 1
-                  }
-               }
-               newItem.addedToAList = true
-               newItem.position = Int32(numItemsInList)
-            }
-         }
-      }
-         
-         
-         // Existing item name --> add from current catalogue to the current list
-         // Or increase quantity by 1 if already in the list
-      else if !itemNameIsUnique(name: itemName.wrappedValue) {
-         
-         let originPredicate = NSPredicate(format: "origin = %@", listOrigin)
-         let namePredicate = NSPredicate(format: "name = %@", itemName.wrappedValue)
-         let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [originPredicate, namePredicate])
-         
-         let fetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
-         fetchRequest.predicate = compoundPredicate
-         
-         do {
-            let items = try managedContext.fetch(fetchRequest)
-            
-            if items != [] {
-               
-               let itemToModify = items[0]
-               
-               if itemToModify.addedToAList == true {
-                  itemToModify.quantity += 1
-                  print("Added 1 to quantity")
-               }
-               else if itemToModify.addedToAList == false {
-                  itemToModify.addedToAList = true
-                  print("Set addedToAList = true")
-               }
-            } else if items == [] {
-               print("No items fetched, didn't modify item.")
-            }
-            
-            
-         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-         }
-      }
+    
+       // Create item
+       let newItem = Item(entity: itemEntity, insertInto: managedContext)
+       newItem.name = itemName.wrappedValue
+       newItem.id = UUID()
+       newItem.dateAdded = Date()
+       newItem.addedToAList = false
+       newItem.markedOff = false
+       newItem.quantity = 1
+       newItem.origin = listOrigin
+       newItem.categoryOriginName = "Uncategorised"
+       newItem.addedToAList = true
+       
+       // Add item to uncategorised category
+       let uncategorised = returnedCategories[0]
+       uncategorised.addToItemsInCategory(newItem)
+       newItem.categoryOrigin = uncategorised
+       
+        // Set position
+          var numItemsInList = 0
+          for item in listOrigin.itemArray {
+             if item.addedToAList == true && item.markedOff == false {
+                numItemsInList += 1
+             }
+          }
+          newItem.position = Int32(numItemsInList)
+    
+        // Add to list
+        listOrigin.addToItems(newItem)
       
       
    } catch let error as NSError {
@@ -599,16 +549,16 @@ func addList(listName: String) {
       appDelegate.persistentContainer.viewContext
    
    let listEntity = NSEntityDescription.entity(forEntityName: "ListOfItems", in: managedContext)!
-   let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
+//   let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
    
-   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
+//   let itemFetchRequest: NSFetchRequest<Item> = NSFetchRequest.init(entityName: "Item")
    
    let listFetchRequest: NSFetchRequest<ListOfItems> = NSFetchRequest.init(entityName: "ListOfItems")
    listFetchRequest.predicate = NSPredicate(format: "name != %@", "Default-4BB59BCD-CCDA-4AC2-BC9E-EA193AE31B5D")
    
    
    do {
-      let items = try managedContext.fetch(itemFetchRequest)
+//      let items = try managedContext.fetch(itemFetchRequest)
       let lists = try managedContext.fetch(listFetchRequest)
       
       let newList = ListOfItems(entity: listEntity, insertInto: managedContext)
@@ -616,28 +566,28 @@ func addList(listName: String) {
       newList.id = UUID()
       newList.position = Int32(lists.count)
       
-      var itemsToBeAdded: [Item] = []
-      for item in items {
-         if itemNameInListIsUnique(name: item.wrappedName, thisList: newList) {
-            
-            let newItem = Item(entity: itemEntity, insertInto: managedContext)
-            newItem.name = item.wrappedName
-            newItem.id = UUID()
-            newItem.dateAdded = Date()
-            newItem.addedToAList = false
-            newItem.markedOff = false
-            newItem.quantity = 1
-            newItem.origin = newList
-            newItem.categoryOrigin = item.categoryOrigin
-            newItem.categoryOriginName = item.categoryOriginName
-            newItem.position = 0
-            
-            itemsToBeAdded.append(newItem)
-         }
-         for item in itemsToBeAdded {
-            newList.addToItems(item)
-         }
-      }
+//      var itemsToBeAdded: [Item] = []
+//      for item in items {
+//         if itemNameInListIsUnique(name: item.wrappedName, thisList: newList) {
+//
+//            let newItem = Item(entity: itemEntity, insertInto: managedContext)
+//            newItem.name = item.wrappedName
+//            newItem.id = UUID()
+//            newItem.dateAdded = Date()
+//            newItem.addedToAList = false
+//            newItem.markedOff = false
+//            newItem.quantity = 1
+//            newItem.origin = newList
+//            newItem.categoryOrigin = item.categoryOrigin
+//            newItem.categoryOriginName = item.categoryOriginName
+//            newItem.position = 0
+//
+//            itemsToBeAdded.append(newItem)
+//         }
+//         for item in itemsToBeAdded {
+//            newList.addToItems(item)
+//         }
+//      }
       
    } catch let error as NSError {
       print("Could not fetch. \(error)")
