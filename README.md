@@ -11,6 +11,7 @@ The app features:
 - Ability to send lists via text, or copy list items
 - A host of useful settings to enable customisation
 
+Click [here](https://1drv.ms/v/s!ArD4GThUJSRbm80F2P2yXkRu1GV8lQ?e=0XEmGb) for a quick demo.
 
 ![simulator screenshot](simulator-screenshot.png)
 
@@ -23,11 +24,9 @@ The app features:
 - All commits were pushed to the Development branch
 - The Production branch is the Master branch. I aimed to only push to Production when a new version of the app went live on the App Store.
 
-This was a project to test the viability of making a living as an independent iOS developer. My final conclusion was a resounding no! 
-While making apps was financially a dead-end, I learned a great deal and was able to demonstrate my enthusiasm for software development, helping me secure my first job as a Developer.
+This was a project to test the viability of making a living as an independent iOS developer. While making apps was financially a dead-end, I learned a great deal and was able to demonstrate my enthusiasm for software development, helping me secure my first job as a Developer.
 
 I still use the app today, and would have kept it on the app store, if not for the $150AU annual fee Apple charges.
 
-If using this project for learning purposes, note that note following a design pattern and implementing separation of concerns by mixing UI/logic/data code was a big mistake I would work hard to avoid a if doing the app over again.
-
+This last image shows the XCode IDE and simulator running on MacOS.
 ![XCode screenshot](XCode-and-simulator.png)
