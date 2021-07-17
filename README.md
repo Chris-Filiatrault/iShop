@@ -1,6 +1,6 @@
 #  iShop
 
-iShop is a shopping list app built using SwiftUI, available for iPhone and iPad from iOS 14.0+ and MacOS 11.0+
+iShop is a shopping list app built using SwiftUI, available for iPhone, iPad and Mac. Compatible with iOS 14.0+ and MacOS 11.0+
 
 The app features:
 - iCloud sync
@@ -11,7 +11,9 @@ The app features:
 - Ability to send lists via text, or copy list items
 - A host of useful settings to enable customisation
 
-This was a 3 month project, which after some deliberation I have decided to make open source so others may use/learn from it, contribute to development or report issues.
+
+![simulator screenshot](simulator-screenshot.png)
+
 
 ## Notes:
 - Data persistence is done through core data.
@@ -21,5 +23,11 @@ This was a 3 month project, which after some deliberation I have decided to make
 - All commits were pushed to the Development branch
 - The Production branch is the Master branch. I aimed to only push to Production when a new version of the app went live on the App Store.
 
+This was a project to test the viability of making a living as an independent iOS developer. My final conclusion was a resounding no! 
+While making apps was financially a dead-end, I learned a great deal and was able to demonstrate my enthusiasm for software development, helping me secure my first job as a Developer.
 
+I still use the app today, and would have kept it on the app store, if not for the $150AU annual fee Apple charges.
 
+If using this project for learning purposes, note that note following a design pattern and implementing separation of concerns by mixing UI/logic/data code was a big mistake I would work hard to avoid a if doing the app over again.
+
+![XCode screenshot](XCode-and-simulator.png)
