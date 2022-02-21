@@ -11,8 +11,6 @@ The app features:
 - Ability to send lists via text, or copy list items
 - A host of useful settings to enable customisation
 
-Click [here](https://1drv.ms/v/s!ArD4GThUJSRbm80F2P2yXkRu1GV8lQ?e=0XEmGb) for a quick demo.
-
 ![simulator screenshot](simulator-screenshot.png)
 
 
